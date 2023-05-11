@@ -62,6 +62,278 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     ));
   }
 
+  itemTitleHeader() {
+    return Builder(builder: (context) {
+      if (_currentSelection == 0) {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Text(
+                  'Purchase List',
+                  style: TextStyle(fontSize: fontBig, color: primaryText),
+                ),
+              ),
+              Container(
+                child: OutlinedButton.icon(
+                  icon: Icon(
+                    Icons.add,
+                    color: primaryText,
+                  ),
+                  label: Text(
+                    "Add New Purchase",
+                    style: TextStyle(
+                      color: primaryText,
+                    ),
+                  ),
+                  onPressed: () {
+                    // showCustomDialog(context, "Add New Purchase",
+                    //     addNewPurchaseForm(), 100, 260);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    side: BorderSide(width: 1.0, color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else if (_currentSelection == 1) {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Text(
+                  'Expense List',
+                  style: TextStyle(fontSize: fontBig, color: primaryText),
+                ),
+              ),
+              Container(
+                child: OutlinedButton.icon(
+                  icon: Icon(
+                    Icons.add,
+                    color: primaryText,
+                  ),
+                  label: Text(
+                    "Add New Expense",
+                    style: TextStyle(
+                      color: primaryText,
+                    ),
+                  ),
+                  onPressed: () {
+                    showCustomDialog(
+                        context, "Add New Expence", addNewExpence(), 100, 300);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    side: BorderSide(width: 1.0, color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else if (_currentSelection == 2) {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Text(
+                  'Expense Category List',
+                  style: TextStyle(fontSize: fontBig, color: primaryText),
+                ),
+              ),
+              Container(
+                child: OutlinedButton.icon(
+                  icon: Icon(
+                    Icons.add,
+                    color: primaryText,
+                  ),
+                  label: Text(
+                    "Add Expense Category",
+                    style: TextStyle(
+                      color: primaryText,
+                    ),
+                  ),
+                  onPressed: () {
+                    showCustomDialog(context, "Add New Expense Category",
+                        addNewExpenseCategory(), 100, 400);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    side: BorderSide(width: 1.0, color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      }
+      return Container();
+    });
+  }
+
+  Widget customTapbarHeader(TabController controller) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: MaterialSegmentedControl(
+              children: {
+                0: Text(
+                  'Purchase List',
+                  style: TextStyle(
+                      color: _currentSelection == 0 ? white : textSecondary),
+                ),
+                1: Text(
+                  'Expense',
+                  style: TextStyle(
+                      color: _currentSelection == 1 ? white : textSecondary),
+                ),
+                2: Text(
+                  'Expense Category',
+                  style: TextStyle(
+                      color: _currentSelection == 2 ? white : textSecondary),
+                ),
+              },
+              selectionIndex: _currentSelection,
+              borderColor: Colors.grey,
+              selectedColor: primaryColor,
+              unselectedColor: Colors.white,
+              borderRadius: 32.0,
+              disabledChildren: [
+                6,
+              ],
+              onSegmentChosen: (index) {
+                print(index);
+                setState(() {
+                  _currentSelection = index;
+                  controller.index = _currentSelection;
+                });
+              },
+            ),
+          ),
+          Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.only(left: 100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Card(
+                      elevation: 0.0,
+                      child: SizedBox(
+                          width: 250,
+                          height: 30,
+                          child: TextField(
+                              style: TextStyle(
+                                fontSize: fontSmall,
+                                color: Colors.blueAccent,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white10,
+                                contentPadding:
+                                EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  size: 18,
+                                ),
+                                hintText: "Search Item",
+                                hintStyle: TextStyle(
+                                    fontSize: fontVerySmall,
+                                    color: textSecondary),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                              ))),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Text(
+                            "Show :",
+                            style: TextStyle(color: textSecondary),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            height: 30,
+                            padding: const EdgeInsets.only(left: 15, right: 15),
+                            decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(color: Colors.black12)),
+                            child: DropdownButton<int>(
+                              hint: Text(
+                                '1',
+                                style: TextStyle(color: textSecondary),
+                              ),
+                              dropdownColor: white,
+                              icon: Icon(Icons.keyboard_arrow_down),
+                              iconSize: 15,
+                              underline: SizedBox(),
+                              items: <int>[1, 2, 3, 4].map((int value) {
+                                return DropdownMenuItem<int>(
+                                  value: value,
+                                  child: Text(value.toString()),
+                                );
+                              }).toList(),
+                              onChanged: (int? newVal) {},
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Entries",
+                            style: TextStyle(color: textSecondary),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
   Widget purchaseDataTable() {
     return Card(
       color: secondaryBackground,
@@ -506,277 +778,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     );
   }
 
-  itemTitleHeader() {
-    return Builder(builder: (context) {
-      if (_currentSelection == 0) {
-        return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Purchase List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                child: OutlinedButton.icon(
-                  icon: Icon(
-                    Icons.add,
-                    color: primaryText,
-                  ),
-                  label: Text(
-                    "Add New Purchase",
-                    style: TextStyle(
-                      color: primaryText,
-                    ),
-                  ),
-                  onPressed: () {
-                    // showCustomDialog(context, "Add New Purchase",
-                    //     addNewPurchaseForm(), 100, 260);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-      } else if (_currentSelection == 1) {
-        return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Expense List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                child: OutlinedButton.icon(
-                  icon: Icon(
-                    Icons.add,
-                    color: primaryText,
-                  ),
-                  label: Text(
-                    "Add New Expense",
-                    style: TextStyle(
-                      color: primaryText,
-                    ),
-                  ),
-                  onPressed: () {
-                    showCustomDialog(
-                        context, "Add New Expence", addNewExpence(), 100, 300);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-      } else if (_currentSelection == 2) {
-        return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Expense Category List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                child: OutlinedButton.icon(
-                  icon: Icon(
-                    Icons.add,
-                    color: primaryText,
-                  ),
-                  label: Text(
-                    "Add Expense Category",
-                    style: TextStyle(
-                      color: primaryText,
-                    ),
-                  ),
-                  onPressed: () {
-                    showCustomDialog(context, "Add New Expense Category",
-                        addNewExpenseCategory(), 100, 400);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-      }
-      return Container();
-    });
-  }
 
-  Widget customTapbarHeader(TabController controller) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: MaterialSegmentedControl(
-              children: {
-                0: Text(
-                  'Purchase List',
-                  style: TextStyle(
-                      color: _currentSelection == 0 ? white : textSecondary),
-                ),
-                1: Text(
-                  'Expense',
-                  style: TextStyle(
-                      color: _currentSelection == 1 ? white : textSecondary),
-                ),
-                2: Text(
-                  'Expense Category',
-                  style: TextStyle(
-                      color: _currentSelection == 2 ? white : textSecondary),
-                ),
-              },
-              selectionIndex: _currentSelection,
-              borderColor: Colors.grey,
-              selectedColor: primaryColor,
-              unselectedColor: Colors.white,
-              borderRadius: 32.0,
-              disabledChildren: [
-                6,
-              ],
-              onSegmentChosen: (index) {
-                print(index);
-                setState(() {
-                  _currentSelection = index;
-                  controller.index = _currentSelection;
-                });
-              },
-            ),
-          ),
-          Expanded(
-              flex: 1,
-              child: Container(
-                margin: EdgeInsets.only(left: 100),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Card(
-                      elevation: 0.0,
-                      child: SizedBox(
-                          width: 250,
-                          height: 30,
-                          child: TextField(
-                              style: TextStyle(
-                                fontSize: fontSmall,
-                                color: Colors.blueAccent,
-                              ),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white10,
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  size: 18,
-                                ),
-                                hintText: "Search Item",
-                                hintStyle: TextStyle(
-                                    fontSize: fontVerySmall,
-                                    color: textSecondary),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                              ))),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Show :",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            height: 30,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(color: Colors.black12)),
-                            child: DropdownButton<int>(
-                              hint: Text(
-                                '1',
-                                style: TextStyle(color: textSecondary),
-                              ),
-                              dropdownColor: white,
-                              icon: Icon(Icons.keyboard_arrow_down),
-                              iconSize: 15,
-                              underline: SizedBox(),
-                              items: <int>[1, 2, 3, 4].map((int value) {
-                                return DropdownMenuItem<int>(
-                                  value: value,
-                                  child: Text(value.toString()),
-                                );
-                              }).toList(),
-                              onChanged: (int? newVal) {},
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Entries",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )),
-        ],
-      ),
-    );
-  }
+
+
 
   Widget viewPurchaseData() {
     return Container(

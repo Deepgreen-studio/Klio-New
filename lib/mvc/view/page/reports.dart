@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:klio_staff/mvc/controller/report_management_controller.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
@@ -10,6 +12,9 @@ class Reports extends StatefulWidget {
 }
 
 class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
+
+  ReportManagementController _reportController = Get.put(ReportManagementController());
+
   int _currentSelection = 0 ;
   late TabController controller;
   int dropdownvalue = 1;
@@ -20,6 +25,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     controller = TabController(length: 4, vsync: this);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -33,10 +39,10 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
               Expanded(child: TabBarView(
                   controller: controller,
                   children:[
-                    stockReport(),
-                    saleReport(),
-                    profitLossReport(),
-                    wasteReport(),
+                    saleReportDataTable(),
+                    stockReportDataTable(),
+                    profitLossReportDataTable(),
+                    wasteReportDataTable(),
                   ]))
             ],
           )
@@ -238,29 +244,411 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     );
   }
 
-  stockReport() {
+  saleReportDataTable() {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        child: GetBuilder<ReportManagementController>(builder: (controller) {
+          return DataTable(
+              dataRowHeight: 70,
+              columns: [
+                // column to set the name
+                DataColumn(
+                  label: Text(
+                    'SL NO',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Invoice',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Customer Name',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Type',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Grand Total',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Date',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Action',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+              ],
+              rows: controller.saleRepData.value.data!
+                  .map(
+                    (item) => DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        '${item.id ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.invoice ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.customerName?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.type ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.grandTotal ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.date ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          color: Color(0xffE1FDE8),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Image.asset(
+                            "assets/hide.png",
+                            height: 15,
+                            width: 15,
+                            color: Color(0xff00A600),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+                  .toList());
+        }),
+      ),
     );
   }
 
-  saleReport() {
+  stockReportDataTable() {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        child: GetBuilder<ReportManagementController>(builder: (controller) {
+          return DataTable(
+              dataRowHeight: 70,
+              columns: [
+                // column to set the name
+                DataColumn(
+                  label: Text(
+                    'SL NO',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Quantity Amount',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Ingredient Name',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Ingredient Code',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Alert Quantity',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Category Name',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Unit name',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+              ],
+              rows: controller.stockRepData.value.data!
+                  .map(
+                    (item) => DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        '${item.id ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.qtyAmount ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.ingredient.name?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.ingredient.code?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.ingredient.alertQty?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.ingredient.category.name ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.ingredient.unit?.name ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .toList());
+        }),
+      ),
     );
   }
 
-  profitLossReport() {
+  profitLossReportDataTable() {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        child: GetBuilder<ReportManagementController>(builder: (controller)=>
+            DataTable(
+              columns: [
+                DataColumn(label: Text('Loss Item', style: TextStyle(color: textSecondary))),
+                DataColumn(label: Text('Amount', style: TextStyle(color: textSecondary))),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(Text("Total Purchase Shipping Charge: ")),
+                  DataCell(Text(controller.profitLossData.value.grossProfit.toString())),
+                ]),
+              DataRow(cells: [
+                DataCell(Text("Total Purchase Discount: ")),
+                DataCell(Text(controller.profitLossData.value.totalPurchaseDiscount.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Purchase: ")),
+                DataCell(Text(controller.profitLossData.value.totalPurchase.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Sell Discount: ")),
+                DataCell(Text(controller.profitLossData.value.totalSellDiscount.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Customer Reward: ")),
+                DataCell(Text(controller.profitLossData.value.totalCustomerReward.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Expense: ")),
+                DataCell(Text(controller.profitLossData.value.totalExpense.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Waste: ")),
+                DataCell(Text(controller.profitLossData.value.totalWaste.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Sell Shipping Charge: ")),
+                DataCell(Text(controller.profitLossData.value.totalSellShippingCharge.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Sell Service Charge: ")),
+                DataCell(Text(controller.profitLossData.value.totalSellServiceCharge.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Sales: ")),
+                DataCell(Text(controller.profitLossData.value.totalSales.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Total Sell Vat: ")),
+                DataCell(Text(controller.profitLossData.value.totalSellVat.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Gross Profit: ")),
+                DataCell(Text(controller.profitLossData.value.grossProfit.toString())),
+              ]),
+              DataRow(cells: [
+                DataCell(Text("Net Profit: ")),
+                DataCell(Text(controller.profitLossData.value.netProfit.toString())),
+              ]),
+            ],
+          ),
+        ),
+      )
     );
   }
 
-  wasteReport() {
+  wasteReportDataTable() {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        child: GetBuilder<ReportManagementController>(builder: (controller) {
+          return DataTable(
+              dataRowHeight: 70,
+              columns: [
+                // column to set the name
+                DataColumn(
+                  label: Text(
+                    'SL NO',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Name',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Ref No',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Date',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Note',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Added By',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Total Loss',
+                    style: TextStyle(color: textSecondary),
+                  ),
+                ),
+              ],
+              rows: controller.wasteRepData.value.data!
+                  .map(
+                    (item) => DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        '${item.id ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.personName ?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.referenceNo?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.date?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 300,
+                        child: Text(
+                          '${item.note?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.addedBy?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${item.totalLoss?? ""}',
+                        style: TextStyle(color: primaryText),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .toList());
+        }),
+      ),
     );
   }
-
 
 }

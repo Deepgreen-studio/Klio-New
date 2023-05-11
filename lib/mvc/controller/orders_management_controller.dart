@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/controller/error_controller.dart';
+import 'package:klio_staff/mvc/model/all_orders_model.dart';
 import 'package:klio_staff/service/api/api_client.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
@@ -10,7 +11,7 @@ import '../model/orders.dart';
 
 class OrdersManagementController extends GetxController with ErrorController{
   ///Api data fetch varriable
-  Rx<Orders> ordersData = Orders(data: []).obs;
+  Rx<AllOrdersModel> allOrdersData = AllOrdersModel(data:[]).obs;
 
 
 
@@ -38,11 +39,11 @@ class OrdersManagementController extends GetxController with ErrorController{
   }
 
   Future<void> getOrdersData({dynamic id =''})async{
-    String endPoint = 'pos/order';
+    String endPoint = 'orders/order';
     var response = await ApiClient()
     .get(endPoint, header: Utils.apiHeader)
     .catchError(handleApiError);
-    ordersData.value= ordersFromJson(response);
+    allOrdersData.value= allOrdersModelFromJson(response);
     print("Check order data ${response}");
     update();
   }

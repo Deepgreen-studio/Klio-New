@@ -494,7 +494,7 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                       ),
                     ),
                   ],
-                  rows: controller.ordersData.value.data!.reversed
+                  rows: controller.allOrdersData.value.data!
                   .map(
                   (item) => DataRow(
                 cells: [
@@ -512,7 +512,7 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                   ),
                   DataCell(
                     Text(
-                      '${item.id ?? ""}',
+                      '${item.customerName ?? ""}',
                       style: TextStyle(color: primaryText),
                     ),
                   ),
@@ -523,14 +523,21 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                     ),
                   ),
                   DataCell(
-                    Text(
-                      '${item.id ?? ""}',
-                      style: TextStyle(color: primaryText),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: item.status=='processing'? green: red,
+                        borderRadius: BorderRadius.all(Radius.circular(5))
+                      ),
+                      child: Text(
+                        '${item.status ?? ""}',
+                        style: TextStyle(color: white),
+                      ),
                     ),
                   ),
                   DataCell(
                     Text(
-                      '${item.id ?? ""}',
+                      '${item.grandTotal ?? ""}',
                       style: TextStyle(color: primaryText),
                     ),
                   ),
