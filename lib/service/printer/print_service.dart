@@ -203,7 +203,7 @@ class DefaultPrinter {
                               pw.Expanded(
                                 flex: 1,
                                 child: pw.Text(
-                                  "£${homeController.order.value.data!.orderDetails!.data![index].price}",
+                                  "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].price}",
                                   style: pw.TextStyle(
                                       fontSize: fontVerySmall,
                                       fontWeight: pw.FontWeight.bold),
@@ -234,7 +234,7 @@ class DefaultPrinter {
                               pw.Expanded(
                                 flex: 1,
                                 child: pw.Text(
-                                  "£${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
+                                  "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
                                   style: pw.TextStyle(
                                       fontSize: fontVerySmall,
                                       fontWeight: pw.FontWeight.bold),
@@ -294,11 +294,11 @@ class DefaultPrinter {
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Subtotal",
-              '£${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
+              '${homeController.settings.value.data![11].value}${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Discount",
-              '£' + homeController.order.value.data!.discount.toString(),
+              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Vat",
@@ -309,7 +309,7 @@ class DefaultPrinter {
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Service",
-              '£' + homeController.order.value.data!.serviceCharge.toString(),
+              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.serviceCharge.toString(),
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Give Amount",
@@ -326,7 +326,7 @@ class DefaultPrinter {
               "Payment Method", method, MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Delivery Charge",
-              '£' + homeController.order.value.data!.deliveryCharge.toString(),
+              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.deliveryCharge.toString(),
               MainAxisAlignment.spaceBetween),
           pw.Divider(thickness: 0.1, height: 0.1),
           pw.SizedBox(height: 10),
@@ -339,7 +339,7 @@ class DefaultPrinter {
           ),
           pw.Center(
             child: pw.Text(
-              '£${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
+              '${homeController.settings.value.data![11].value}${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
               style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold, fontSize: fontSmall),
             ),
@@ -416,7 +416,7 @@ class SumniPrinter {
     await SunmiPrinter.printText(
         'Order Type: ${homeController.order.value.data!.type.toString()}');
     await SunmiPrinter.printText(
-        'Subtotal: £${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}');
+        'Subtotal: ${homeController.settings.value.data![11].value}${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}');
     await SunmiPrinter.printText(
         'Discount: ${homeController.order.value.data!.discount.toString()}');
     await SunmiPrinter.printText(

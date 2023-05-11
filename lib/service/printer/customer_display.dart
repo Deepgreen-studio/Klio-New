@@ -7,13 +7,13 @@ class CustomerDisplay {
   static Future<void> cartPrint(HomeController homeController) async {
     await SunmiPrinter.lcdWakeup(); //Turn the LCD ON
     String subTotal =
-        await "Sub Total: £${Utils.calcSubTotal(homeController.cardList)}";
+        await "Sub Total: ${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList)}";
     String vatService =
-        await "Service + Vat: £${homeController.settings.value.data![14].value} + £${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}";
+        await "Service + Vat: ${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}";
     String discount =
-        await "Discount: £-${homeController.discount.value.toStringAsFixed(2)}";
+        await "Discount: ${homeController.settings.value.data![11].value}-${homeController.discount.value.toStringAsFixed(2)}";
     String total =
-        await "Total: £${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}";
+        await "Total: ${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}";
     await SunmiPrinter.lcdMultiString([subTotal, vatService, discount, total],
         [1, 1, 1, 1]); // Write multiple lines with alignment
   }

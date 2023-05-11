@@ -372,7 +372,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                        "£${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList.value[index].variants!.data!, homeController.cardList.value[index].variant!)))}",
+                                        "${homeController.settings.value.data![11].value}${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList.value[index].variants!.data!, homeController.cardList.value[index].variant!)))}",
                                         style: TextStyle(
                                             color: primaryText,
                                             fontSize: fontVerySmall)),
@@ -492,7 +492,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                '£${Utils.calcSubTotal(homeController.cardList)}'
+                                '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList)}'
                                     .toString(),
                                 style: TextStyle(
                                     color: primaryText,
@@ -503,7 +503,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                '£${homeController.settings.value.data![14].value} + £${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
+                                '${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
                                 style: TextStyle(
                                     color: primaryText,
                                     fontSize: fontVerySmall,
@@ -513,7 +513,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                '£-${homeController.discount.value.toStringAsFixed(2)}',
+                                '${homeController.settings.value.data![11].value}-${homeController.discount.value.toStringAsFixed(2)}',
                                 style: TextStyle(
                                     color: primaryText,
                                     fontSize: fontVerySmall,
@@ -523,7 +523,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                '£${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
+                                '${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
                                 style: TextStyle(
                                     fontSize: fontMedium,
                                     color: primaryColor,
@@ -599,7 +599,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                       TextEditingController controller =
                           TextEditingController();
 
-                      showDiscountDialog('Add Discount in £', controller,
+                      showDiscountDialog('Add Discount in ${homeController.settings.value.data![11].value}', controller,
                           onAccept: () {
                         if (homeController.cardList.length == 0) {
                           Utils.showSnackBar('No cart item to discount');

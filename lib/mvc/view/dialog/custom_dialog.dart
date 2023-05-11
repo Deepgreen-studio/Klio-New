@@ -525,7 +525,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                   Expanded(
                     flex: 1,
                     child: Text(
-                        "£${(homeController.menuData.value.quantity! * unitPrice)}",
+                        "${homeController.settings.value.data![11].value}${(homeController.menuData.value.quantity! * unitPrice)}",
                         style: TextStyle(
                             fontSize: fontMedium,
                             color: primaryText,
@@ -674,7 +674,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                  "£${homeController.menuData.value.addons!.data![index].quantity! * double.parse(homeController.menuData.value.addons!.data![index].price.toString())}",
+                                  "${homeController.settings.value.data![11].value}${homeController.menuData.value.addons!.data![index].quantity! * double.parse(homeController.menuData.value.addons!.data![index].price.toString())}",
                                   style: TextStyle(
                                       fontSize: fontSmall,
                                       color: primaryText,
@@ -1103,7 +1103,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Price: ',
-                    '£' +
+                    '${homeController.settings.value.data![11].value}' +
                         homeController.order.value.data!.grandTotal.toString(),
                     MainAxisAlignment.end)),
           ],
@@ -1286,7 +1286,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                "£${homeController.order.value.data!.orderDetails!.data![index].price}",
+                                "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].price}",
                                 style: TextStyle(
                                     fontSize: fontVerySmall,
                                     color: textSecondary,
@@ -1320,7 +1320,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                "£${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
+                                "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
                                 style: TextStyle(
                                     fontSize: fontVerySmall,
                                     color: textSecondary,
@@ -1396,13 +1396,13 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                             .order.value.data!.orderDetails!.data!
                             .toList())
                         .toString(),
-                    // '£${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
+                    // '${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
                     MainAxisAlignment.center)),
             Expanded(
                 flex: 1,
                 child: textMixer(
                     'Service Charge: ',
-                    '£' +
+                    '${homeController.settings.value.data![11].value}' +
                         homeController.order.value.data!.serviceCharge
                             .toString(),
                     MainAxisAlignment.end)),
@@ -1417,7 +1417,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Delivery Charge: ',
-                    '£' +
+                    '${homeController.settings.value.data![11].value}' +
                         homeController.order.value.data!.deliveryCharge
                             .toString(),
                     MainAxisAlignment.start)),
@@ -1427,14 +1427,14 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Discount: ',
-                    '£' + homeController.order.value.data!.discount.toString(),
+                    '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
                     MainAxisAlignment.end)),
           ],
         ),
         SizedBox(height: 30),
         Center(
           child: Text(
-            'Grand Total: £${homeController.order.value.data!.grandTotal}',
+            'Grand Total: ${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: fontSmall,
@@ -1471,7 +1471,7 @@ Widget finalizeOrder(BuildContext context) {
           double.parse(homeController.settings.value.data![23].value!));
 
   CustomerDisplay.totalPayPrint(
-      '£${homeController.order.value.data!.grandTotal}');
+      '${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}');
   return Container(
     height: Size.infinite.height,
     width: Size.infinite.width,
@@ -1483,7 +1483,7 @@ Widget finalizeOrder(BuildContext context) {
         SizedBox(height: 20),
         Center(
           child: Text(
-            'Reward: ${homeController.settings.value.data![21].value}, 1R = £${homeController.settings.value.data![23].value}, You get £${double.parse(homeController.settings.value.data![21].value!) *
+            'Reward: ${homeController.settings.value.data![21].value}, 1R = ${homeController.settings.value.data![11].value}${homeController.settings.value.data![23].value}, You get ${homeController.settings.value.data![11].value}${double.parse(homeController.settings.value.data![21].value!) *
                 double.parse(homeController.settings.value.data![23].value!)}',
             style: TextStyle(fontSize: fontSmall, color: primaryText),
           ),
@@ -1499,14 +1499,14 @@ Widget finalizeOrder(BuildContext context) {
                   });
             }),
             Text(
-              // 'Use Rewards: £${12}',
+              // 'Use Rewards: ${12}',
               'Use Rewards',
               style: TextStyle(fontSize: fontSmall, color: primaryText),
             ),
             Expanded(child: SizedBox(width: Size.infinite.width)),
             Obx(
               () => Text(
-                'Payable Amount: £${homeController.reward.value ? totalPayableWithReward.toStringAsFixed(3) : totalPayable.toStringAsFixed(3)}',
+                'Payable Amount: ${homeController.settings.value.data![11].value}${homeController.reward.value ? totalPayableWithReward.toStringAsFixed(3) : totalPayable.toStringAsFixed(3)}',
                 style: TextStyle(fontSize: fontSmall, color: primaryText),
               ),
             ),
@@ -1795,7 +1795,7 @@ Widget orderInvoice(BuildContext context, String method) {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                        "£${homeController.order.value.data!.orderDetails!.data![index].price}",
+                                        "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].price}",
                                         style: TextStyle(
                                             fontSize: fontVerySmall,
                                             color: textSecondary,
@@ -1829,7 +1829,7 @@ Widget orderInvoice(BuildContext context, String method) {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                        "£${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
+                                        "${homeController.settings.value.data![11].value}${homeController.order.value.data!.orderDetails!.data![index].totalPrice}",
                                         style: TextStyle(
                                             fontSize: fontVerySmall,
                                             color: textSecondary,
@@ -1902,11 +1902,11 @@ Widget orderInvoice(BuildContext context, String method) {
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Subtotal",
-                    '£${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}',
+                    '${homeController.settings.value.data![11].value}${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}',
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Discount",
-                    '£' + homeController.order.value.data!.discount.toString(),
+                    '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Vat",
@@ -1917,7 +1917,7 @@ Widget orderInvoice(BuildContext context, String method) {
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Service",
-                    '£' +
+                    '${homeController.settings.value.data![11].value}' +
                         homeController.order.value.data!.serviceCharge
                             .toString(),
                     MainAxisAlignment.spaceBetween),
@@ -1936,7 +1936,7 @@ Widget orderInvoice(BuildContext context, String method) {
                     "Payment Method", method, MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Delivery Charge",
-                    '£' +
+                    '${homeController.settings.value.data![11].value}' +
                         homeController.order.value.data!.deliveryCharge
                             .toString(),
                     MainAxisAlignment.spaceBetween),
@@ -1953,7 +1953,7 @@ Widget orderInvoice(BuildContext context, String method) {
                 ),
                 Center(
                   child: Text(
-                    '£${homeController.order.value.data!.grandTotal.toString()}',
+                    '${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal.toString()}',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: fontSmall,
