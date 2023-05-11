@@ -298,6 +298,8 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         Obx(() {
+
+
                           return homeController.currentPage.value == 0
                               ? Expanded(
                                   child: Column(
@@ -657,6 +659,9 @@ class _HomeState extends State<Home> {
                                                       .length,
                                                   itemBuilder:
                                                       (context, index) {
+                                                        String value =  homeController.orders.value.data![index].customerName != null &&  homeController.orders.value.data![index].customerName!.isNotEmpty?
+                                                        "Customer Name : ${homeController.orders.value.data![index].customerName}" :
+                                                        "Invoice : ${homeController.orders.value.data![index].invoice.toString()}";
                                                     return Card(
                                                       clipBehavior: Clip
                                                           .antiAliasWithSaveLayer,
@@ -717,8 +722,7 @@ class _HomeState extends State<Home> {
                                                                       FontWeight
                                                                           .bold)),
                                                           subtitle: Text(
-                                                              'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n'
-                                                              'Invoice : ${homeController.orders.value.data![index].invoice.toString()}',
+                                                              'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n $value' ,
                                                               style: TextStyle(
                                                                 fontSize:
                                                                     fontVerySmall,

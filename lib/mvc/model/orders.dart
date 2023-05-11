@@ -29,6 +29,7 @@ class OrderDatum {
     this.id,
     this.type,
     this.invoice,
+    this.customerName,
     this.tables,
   });
 
@@ -36,10 +37,12 @@ class OrderDatum {
   String? type;
   String? invoice;
   Tables? tables;
+  String? customerName;
 
   factory OrderDatum.fromJson(Map<String, dynamic> json) => OrderDatum(
     id: json["id"],
     type: json["type"],
+    customerName: json["customer_name"],
     invoice: json["invoice"] == null ? null : json["invoice"],
     tables: Tables.fromJson(json["tables"]),
   );
@@ -47,6 +50,7 @@ class OrderDatum {
   Map<String, dynamic> toJson() => {
     "id": id,
     "type": type,
+    "customer_name": customerName,
     "invoice": invoice == null ? null : invoice,
     "tables": tables!.toJson(),
   };

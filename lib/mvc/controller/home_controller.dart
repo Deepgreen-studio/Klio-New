@@ -14,6 +14,8 @@ import '../model/dash_model.dart';
 import '../model/menu.dart';
 import '../model/category.dart';
 import '../model/customers.dart';
+import '../model/customers.dart' as cus;
+
 import '../model/menus.dart';
 import '../model/online_order.dart';
 import '../model/order.dart';
@@ -40,6 +42,7 @@ class HomeController extends GetxController with ErrorController {
   Rx<TextEditingController> controllerAddress =
       TextEditingController(text: '').obs;
   RxBool withoutTable = false.obs;
+  int orderTypeNumber = 0;
   Rx<DashData> dashData = DashData().obs;
 
   // temp variables
@@ -128,8 +131,11 @@ class HomeController extends GetxController with ErrorController {
     var response = await ApiClient()
         .get('pos/customer', header: Utils.apiHeader)
         .catchError(handleApiError);
+
+
     customers.value = customerFromJson(response);
-    customerName.value = customerFromJson(response).data!.first.name.toString();
+    customers.value.data?.add(cus.Datum(id: 0, name: "None"));
+    customerName.value = "None";
   }
 
   Future<Customer> getCustomer(String id) async {
@@ -171,6 +177,8 @@ class HomeController extends GetxController with ErrorController {
   }
 
   Future<void> getTables() async {
+
+    print("=========================");
     var response = await ApiClient()
         .get('pos/table', header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -186,6 +194,9 @@ class HomeController extends GetxController with ErrorController {
       "phone": controllerPhone.value.text,
       "delivery_address": controllerAddress.value.text
     });
+
+    print(body);
+    print("=========================");
     var response;
     if (add) {
       response = await ApiClient()

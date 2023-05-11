@@ -101,6 +101,7 @@ class Utils {
     return '';
   }
 
+
   static String findPriceByListId(List list, String id) {
     for (var element in list) {
       if (element.id == int.parse(id)) {

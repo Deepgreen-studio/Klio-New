@@ -61,6 +61,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               homeController.topBtnPosition.value = i;
                               switch (i) {
                                 case 1:
+                                  homeController.orderTypeNumber = 1;
                                   Utils.showLoading();
                                   await homeController.getTables();
                                   Utils.hidePopup();
@@ -68,12 +69,15 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                       tableBody(context, false), 50, 200);
                                   break;
                                 case 2:
+                                  homeController.orderTypeNumber = 2;
                                   homeController.withoutTable.value = true;
                                   break;
                                 case 3:
+                                  homeController.orderTypeNumber = 3;
                                   homeController.withoutTable.value = true;
                                   break;
                                 default:
+                                  homeController.orderTypeNumber = 4;
                                   homeController.withoutTable.value = false;
                                   // Utils.showLoading();
                                   homeController.getTables();
@@ -96,6 +100,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
+                      // dropdown to add
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(width: 10),
@@ -127,6 +132,10 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   value: homeController.customerName.toString(),
                                   onChanged: (value) {
                                     homeController.customerName.value = value!;
+
+                                    print(homeController
+                                        .controllerName.value.text);
+                                    print("===============================");
                                   },
                                 );
                               })),
@@ -251,6 +260,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     ),
                   ),
                   Row(
+                    // Start
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Expanded(
@@ -549,11 +559,35 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                           "assets/check.png",
                           homeController.isUpdate.value ? 'UPDATE' : 'ORDER',
                           primaryColor,
-                          white, onPressed: () {
-                        homeController.addUpdateOrder();
-                        homeController.getOrders();
-                        homeController.orders.refresh();
-                        CustomerDisplay.sleep();
+                          white, onPressed: () async {
+                        if (homeController.orderTypeNumber == 2 &&
+                            homeController.customerName.value == "None") {
+                          Utils.showSnackBar("Please select a name");
+                        } else if (homeController.orderTypeNumber == 3) {
+                          if (homeController.customerName.value == "None") {
+                            Utils.showSnackBar("Please select a name");
+                          }else{
+                            Customer customer = await homeController
+                                .getCustomer(Utils.findIdByListNearValue(
+                                homeController.customers.value.data!
+                                    .toList(),
+                                homeController.customerName.value));
+
+                            if(customer.data!.deliveryAddress!.isNotEmpty){
+                              homeController.addUpdateOrder();
+                              homeController.getOrders();
+                              homeController.orders.refresh();
+                              CustomerDisplay.sleep();
+                            }else{
+                              Utils.showSnackBar("Please add your delivery address");
+                            }
+                          }
+                        } else {
+                          homeController.addUpdateOrder();
+                          homeController.getOrders();
+                          homeController.orders.refresh();
+                          CustomerDisplay.sleep();
+                        }
                       }),
                       iconTextBtnWide("assets/credit-card.png", 'Pay',
                           alternate, primaryText, onPressed: () async {
@@ -599,8 +633,9 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                       TextEditingController controller =
                           TextEditingController();
 
-                      showDiscountDialog('Add Discount in ${homeController.settings.value.data![11].value}', controller,
-                          onAccept: () {
+                      showDiscountDialog(
+                          'Add Discount in ${homeController.settings.value.data![11].value}',
+                          controller, onAccept: () {
                         if (homeController.cardList.length == 0) {
                           Utils.showSnackBar('No cart item to discount');
                           return;
@@ -626,11 +661,11 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     iconTextBtnWide(
                         "assets/add.png", 'Add Misc', alternate, primaryText,
                         onPressed: () async {
-                          await showCustomDialog(
-                              context, "Add New menu", addNewMenuForm(foodCtlr), 30, 400);
-                          await homeController.getMenuByKeyword();
-                          homeController.menus.refresh();
-                          // showCustomDialog(
+                      await showCustomDialog(context, "Add New menu",
+                          addNewMenuForm(foodCtlr), 30, 400);
+                      await homeController.getMenuByKeyword();
+                      homeController.menus.refresh();
+                      // showCustomDialog(
                       //     context, "Add Food Menu", addMisc(context), 30, 400);
                     }),
                     iconTextBtnWide(
