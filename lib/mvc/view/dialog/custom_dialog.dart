@@ -1464,7 +1464,14 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
 
 Widget finalizeOrder(BuildContext context) {
   homeController.giveAmount.value = 0;
-  CustomerDisplay.totalPayPrint('£${homeController.order.value.data!.grandTotal}');
+
+  double totalPayable = Utils.calcSubTotal(homeController.cardList);
+  double totalPayableWithReward = Utils.calcSubTotal(homeController.cardList) -
+      (double.parse(homeController.settings.value.data![21].value!) *
+          double.parse(homeController.settings.value.data![23].value!));
+
+  CustomerDisplay.totalPayPrint(
+      '£${homeController.order.value.data!.grandTotal}');
   return Container(
     height: Size.infinite.height,
     width: Size.infinite.width,
@@ -1476,7 +1483,8 @@ Widget finalizeOrder(BuildContext context) {
         SizedBox(height: 20),
         Center(
           child: Text(
-            'Reward: £${homeController.settings.value.data![21].value}, 1R = £${homeController.settings.value.data![23].value}, You get £4.0',
+            'Reward: ${homeController.settings.value.data![21].value}, 1R = £${homeController.settings.value.data![23].value}, You get £${double.parse(homeController.settings.value.data![21].value!) *
+                double.parse(homeController.settings.value.data![23].value!)}',
             style: TextStyle(fontSize: fontSmall, color: primaryText),
           ),
         ),
@@ -1496,9 +1504,11 @@ Widget finalizeOrder(BuildContext context) {
               style: TextStyle(fontSize: fontSmall, color: primaryText),
             ),
             Expanded(child: SizedBox(width: Size.infinite.width)),
-            Text(
-              'Payable Amount: £${homeController.order.value.data!.grandTotal}',
-              style: TextStyle(fontSize: fontSmall, color: primaryText),
+            Obx(
+              () => Text(
+                'Payable Amount: £${homeController.reward.value ? totalPayableWithReward.toStringAsFixed(3) : totalPayable.toStringAsFixed(3)}',
+                style: TextStyle(fontSize: fontSmall, color: primaryText),
+              ),
             ),
           ],
         ),
