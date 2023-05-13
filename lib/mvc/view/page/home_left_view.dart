@@ -61,6 +61,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               homeController.topBtnPosition.value = i;
                               switch (i) {
                                 case 1:
+                                  homeController.customerName.value = "None";
                                   homeController.orderTypeNumber = 1;
                                   Utils.showLoading();
                                   await homeController.getTables();
@@ -70,13 +71,16 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   break;
                                 case 2:
                                   homeController.orderTypeNumber = 2;
+                                  homeController.customerName.value = "None";
                                   homeController.withoutTable.value = true;
                                   break;
                                 case 3:
+                                  homeController.customerName.value = "None";
                                   homeController.orderTypeNumber = 3;
                                   homeController.withoutTable.value = true;
                                   break;
                                 default:
+                                  homeController.customerName.value = "None";
                                   homeController.orderTypeNumber = 4;
                                   homeController.withoutTable.value = false;
                                   // Utils.showLoading();
@@ -382,7 +386,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                        "${homeController.settings.value.data![11].value}${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList.value[index].variants!.data!, homeController.cardList.value[index].variant!)))}",
+                                        "${homeController.settings.value.data![11].value}${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList.value[index].variants!.data!, homeController.cardList.value[index].variant!))).toStringAsFixed(2)}",
                                         style: TextStyle(
                                             color: primaryText,
                                             fontSize: fontVerySmall)),
@@ -502,7 +506,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                             Expanded(
                               flex: 4,
                               child: Text(
-                                '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList)}'
+                                '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList).toStringAsFixed(2)}'
                                     .toString(),
                                 style: TextStyle(
                                     color: primaryText,

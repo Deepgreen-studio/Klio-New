@@ -214,7 +214,7 @@ class HomeController extends GetxController with ErrorController {
   }
 
   void addUpdateOrder() {
-    if (withoutTable.isFalse) {
+    if (orderTypeNumber == 1 && withoutTable.isFalse) {
       Utils.showSnackBar("No table selected for new order");
       return;
     }

@@ -299,7 +299,6 @@ class _HomeState extends State<Home> {
                         ),
                         Obx(() {
 
-
                           return homeController.currentPage.value == 0
                               ? Expanded(
                                   child: Column(
@@ -660,7 +659,7 @@ class _HomeState extends State<Home> {
                                                   itemBuilder:
                                                       (context, index) {
                                                         String value =  homeController.orders.value.data![index].customerName != null &&  homeController.orders.value.data![index].customerName!.isNotEmpty?
-                                                        "Customer Name : ${homeController.orders.value.data![index].customerName}" :
+                                                        "C Name : ${homeController.orders.value.data![index].customerName}" :
                                                         "Invoice : ${homeController.orders.value.data![index].invoice.toString()}";
                                                     return Card(
                                                       clipBehavior: Clip

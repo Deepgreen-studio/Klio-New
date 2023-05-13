@@ -493,7 +493,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                             primaryColor,
                             0,
                             2,
-                            16, onPressed: () {
+                            26, onPressed: () {
                           homeController.menuData.value.quantity =
                               Utils.incrementDecrement(
                                   false,
@@ -511,7 +511,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                             primaryColor,
                             0,
                             2,
-                            16, onPressed: () {
+                            26, onPressed: () {
                           homeController.menuData.value.quantity =
                               Utils.incrementDecrement(
                                   true,
