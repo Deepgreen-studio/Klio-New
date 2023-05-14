@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -15,6 +16,10 @@ class ApiClient {
     try {
       var response =
           await http.get(uri, headers: header).timeout(Duration(seconds: 20));
+      print("---------------------");
+      print(uri);
+      print(response.body);
+      print("---------------------");
       return _processResponse(response);
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());

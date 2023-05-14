@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:klio_staff/constant/color.dart';
@@ -22,13 +25,19 @@ KitchenController kitchenController = Get.put(KitchenController());
 
 class _KitchenState extends State<Kitchen> {
   ScrollController _scrollController = ScrollController();
+  Timer? timer;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     applyThem(darkMode);
-    kitchenController.getKitchenOrder();
+    kitchenController.getKitchenOrder(false).then((value) {
+      setState(() {});
+    });
+    timer = Timer.periodic(const Duration(minutes: 1), (Timer t) {
+      kitchenController.getKitchenOrder(true);
+    });
   }
 
   @override
@@ -39,7 +48,7 @@ class _KitchenState extends State<Kitchen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
+              padding: const EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -78,7 +87,7 @@ class _KitchenState extends State<Kitchen> {
                                 onChanged: (text) async {},
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.search,
-                                style: TextStyle(fontSize: fontSmall),
+                                style: const TextStyle(fontSize: fontSmall),
                                 decoration: InputDecoration(
                                     filled: true,
                                     fillColor: secondaryBackground,
@@ -99,18 +108,17 @@ class _KitchenState extends State<Kitchen> {
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide.none),
                                     contentPadding: EdgeInsets.zero))),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         topBarIconBtn(
                             Image.asset('assets/reload.png',
                                 color: primaryColor),
                             secondaryBackground,
                             8,
                             15,
-                            40,
-                            onPressed: () {
-                              kitchenController.getKitchenOrder();
-                            }),
-                        SizedBox(width: 12),
+                            40, onPressed: () {
+                          kitchenController.getKitchenOrder(false);
+                        }),
+                        const SizedBox(width: 12),
                         topBarIconBtn(
                             Image.asset('assets/moon.png', color: primaryColor),
                             secondaryBackground,
@@ -121,7 +129,7 @@ class _KitchenState extends State<Kitchen> {
                           applyThem(darkMode);
                           setState(() {});
                         }),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         topBarIconBtn(
                             Image.asset('assets/logout.png', color: white),
                             primaryColor,
@@ -132,7 +140,7 @@ class _KitchenState extends State<Kitchen> {
                               onAccept: () async {
                             await SharedPref().saveValue('token', '');
                             await SharedPref().saveValue('loginType', '');
-                            Get.off(Login());
+                            Get.off(const Login());
                           });
                         }),
                       ],
@@ -147,80 +155,90 @@ class _KitchenState extends State<Kitchen> {
                 trackVisibility: true,
                 thickness: 12,
                 thumbColor: primaryColor,
-                radius: Radius.circular(20),
+                radius: const Radius.circular(20),
                 controller: _scrollController,
-                child: Obx(() {
-                  return GridView.count(
-                    crossAxisCount: 3,
-                    padding: const EdgeInsets.all(15),
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    controller: _scrollController,
-                    childAspectRatio: (1.1 / 1.2),
-                    children: List.generate(
-                        kitchenController.kitchenOrder.value.data!.length,
-                        (index) {
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        elevation: 5,
-                        color: secondaryBackground,
-                        child: Column(
-                          children: [
-                            Expanded(
-                                flex: 2, child: topContainer(context, index)),
-                            SizedBox(height: 5),
-                            Expanded(
-                              flex: 12,
-                              child: ListView.builder(
-                                  itemCount: kitchenController.kitchenOrder.value
-                                      .data![index].orderDetails!.data!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index2) {
-                                    return GestureDetector(
-                                        onTap: () {
-                                          if (kitchenController
-                                                  .kitchenOrder
-                                                  .value
-                                                  .data![index]
-                                                  .orderDetails!
-                                                  .data![index2]
-                                                  .selected ==
-                                              true) {
-                                            kitchenController
-                                                .kitchenOrder
-                                                .value
-                                                .data![index]
-                                                .orderDetails!
-                                                .data![index2]
-                                                .selected = false;
-                                          } else {
-                                            kitchenController
-                                                .kitchenOrder
-                                                .value
-                                                .data![index]
-                                                .orderDetails!
-                                                .data![index2]
-                                                .selected = true;
-                                          }
-                                          kitchenController.kitchenOrder
-                                              .refresh();
-                                        },
-                                        child: innerItemCard(
-                                            context, index, index2));
-                                  }),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: footerCard(index),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  );
-                }),
+                child:  GetBuilder<KitchenController>(
+                  id: 'changeUi',
+                  builder: (Ccontext) {
+                   return GridView.count(
+                      crossAxisCount: 3,
+                      padding: const EdgeInsets.all(15),
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      controller: _scrollController,
+                      childAspectRatio: (1.1 / 1.2),
+                      children: List.generate(
+                          kitchenController.kitchenOrder.value.data?.length ?? 0,
+                          (index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          elevation: 5,
+                          color: secondaryBackground,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  flex: 2, child: topContainer(context, index)),
+                              const SizedBox(height: 5),
+                              Expanded(
+                                flex: 12,
+                                child: Obx(() {
+                                  return ListView.builder(
+                                      itemCount: kitchenController
+                                          .kitchenOrder
+                                          .value
+                                          .data![index]
+                                          .orderDetails!
+                                          .data!
+                                          .length,
+                                      itemBuilder:
+                                          (BuildContext context, int index2) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              if (kitchenController
+                                                      .kitchenOrder
+                                                      .value
+                                                      .data![index]
+                                                      .orderDetails!
+                                                      .data![index2]
+                                                      .selected ==
+                                                  true) {
+                                                kitchenController
+                                                    .kitchenOrder
+                                                    .value
+                                                    .data![index]
+                                                    .orderDetails!
+                                                    .data![index2]
+                                                    .selected = false;
+                                              } else {
+                                                kitchenController
+                                                    .kitchenOrder
+                                                    .value
+                                                    .data![index]
+                                                    .orderDetails!
+                                                    .data![index2]
+                                                    .selected = true;
+                                              }
+                                              kitchenController.kitchenOrder
+                                                  .refresh();
+                                            },
+                                            child: innerItemCard(
+                                                context, index, index2));
+                                      });
+                                }),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: footerCard(index),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    );
+                  }
+                ),
               ),
             ),
           ],
@@ -230,8 +248,14 @@ class _KitchenState extends State<Kitchen> {
   }
 
   Widget topContainer(BuildContext context, int index) {
+    String time =
+        kitchenController.kitchenOrder.value.data![index].availableTime ??
+            "00:00:00";
+    int hour = int.parse(time[0] + time[1]);
+    int minute = int.parse(time[3] + time[4]);
+    int second = int.parse(time[6] + time[7]);
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: primaryColor,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(10.0),
@@ -241,9 +265,8 @@ class _KitchenState extends State<Kitchen> {
       height: MediaQuery.of(context).size.height * 0.1,
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15),
-        child: Obx(() {
-          return Column(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -252,70 +275,86 @@ class _KitchenState extends State<Kitchen> {
                 children: [
                   Text(
                       "Invoice: ${kitchenController.kitchenOrder.value.data![index].invoice}",
-                      style: TextStyle(fontSize: fontSmall, color: white)),
-                  Text(
+                      style:
+                          const TextStyle(fontSize: fontSmall, color: white)),
+                  TimerCountdown(
+                    format: CountDownTimerFormat.hoursMinutesSeconds,
+                    enableDescriptions: false,
+                    timeTextStyle:
+                        const TextStyle(color: white, fontSize: fontSmall),
+                    colonsTextStyle:
+                        const TextStyle(color: white, fontSize: fontSmall),
+                    endTime: DateTime.now().add(
+                      Duration(
+                        hours: hour,
+                        minutes: minute,
+                        seconds: second,
+                      ),
+                    ),
+                    onEnd: () {},
+                  ),
+                  /*   Text(
                       kitchenController
                           .kitchenOrder.value.data![index].availableTime
                           .toString(),
-                      style: TextStyle(fontSize: fontSmall, color: white)),
+                      style: TextStyle(fontSize: fontSmall, color: white)),*/
                 ],
               ),
               Text(
                   "Table No: ${kitchenController.kitchenOrder.value.data![index].tables!.toString()}",
-                  style: TextStyle(fontSize: fontSmall, color: white)),
+                  style: const TextStyle(fontSize: fontSmall, color: white)),
             ],
-          );
-        }),
-      ),
+          )),
     );
   }
 
   Widget innerItemCard(BuildContext context, int index1, int index2) {
-    return Obx(() {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: BoxDecoration(
-          color: kitchenController.kitchenOrder.value.data![index1]
-                      .orderDetails!.data![index2].selected ==
-                  true
-              ? greenLight
-              : secondaryBackground,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                kitchenController.kitchenOrder.value.data![index1].orderDetails!
-                    .data![index2].foodName
-                    .toString(),
-                style: TextStyle(
-                    fontSize: fontSmall,
-                    color: primaryText,
-                    fontWeight: FontWeight.bold)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    child: Row(
-                  children: [
-                    Text(
-                        "Quantity: ${kitchenController.kitchenOrder.value.data![index1].orderDetails!.data![index2].quantity.toString()}",
-                        style: TextStyle(
-                            fontSize: fontVerySmall,
-                            color: textSecondary,
-                            fontWeight: FontWeight.w100)),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                        "Size: ${kitchenController.kitchenOrder.value.data![index1].orderDetails!.data![index2].variantName!.toString()}",
-                        style: TextStyle(
-                            fontSize: fontVerySmall,
-                            color: textSecondary,
-                            fontWeight: FontWeight.w100)),
-                  ],
-                )),
-                SizedBox(
+/*    log(
+        "---------------------------------------- building ");*/
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: kitchenController.kitchenOrder.value.data![index1].orderDetails!
+                    .data![index2].selected ==
+                true
+            ? greenLight
+            : secondaryBackground,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+              kitchenController.kitchenOrder.value.data![index1].orderDetails!
+                  .data![index2].foodName
+                  .toString(),
+              style: TextStyle(
+                  fontSize: fontSmall,
+                  color: primaryText,
+                  fontWeight: FontWeight.bold)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                      "Quantity: ${kitchenController.kitchenOrder.value.data![index1].orderDetails!.data![index2].quantity.toString()}",
+                      style: TextStyle(
+                          fontSize: fontVerySmall,
+                          color: textSecondary,
+                          fontWeight: FontWeight.w100)),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      "Size: ${kitchenController.kitchenOrder.value.data![index1].orderDetails?.data![index2].variantName.toString() ?? "null"}",
+                      style: TextStyle(
+                          fontSize: fontVerySmall,
+                          color: textSecondary,
+                          fontWeight: FontWeight.w100)),
+                ],
+              ),
+              Obx(() {
+                return SizedBox(
                     width: 110,
                     height: 35,
                     child: normalButton(
@@ -332,17 +371,24 @@ class _KitchenState extends State<Kitchen> {
                                 ? green
                                 : blue,
                         white,
-                        onPressed: () {})),
-              ],
-            ),
-            Row(
+                        onPressed: () {}));
+              }),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: kitchenController.kitchenOrder.value
+                .data![index1].orderDetails!.data![index2].addons!.data!.isEmpty? 0 : 35,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
                 for (AddonsDatum addons in kitchenController.kitchenOrder.value
                     .data![index1].orderDetails!.data![index2].addons!.data!
                     .toList())
                   Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      margin: EdgeInsets.only(right: 5),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      margin: const EdgeInsets.only(right: 5),
                       decoration: BoxDecoration(
                           color: alternate,
                           borderRadius: BorderRadius.circular(10)),
@@ -351,11 +397,11 @@ class _KitchenState extends State<Kitchen> {
                               fontSize: fontVerySmall, color: primaryText)))
               ],
             ),
-            Divider(color: textSecondary, thickness: 1),
-          ],
-        ),
-      );
-    });
+          ),
+          Divider(color: textSecondary, thickness: 1),
+        ],
+      ),
+    );
   }
 
   Widget footerCard(int index) {
@@ -383,16 +429,16 @@ class _KitchenState extends State<Kitchen> {
           height: 40,
           child: normalButton('Unselect All', primaryBackground, primaryText,
               onPressed: () {
-                for (int i = 0;
+            for (int i = 0;
                 i <
                     kitchenController.kitchenOrder.value.data![index]
                         .orderDetails!.data!.length;
                 i++) {
-                  kitchenController.kitchenOrder.value.data![index].orderDetails!
-                      .data![i].selected = false;
-                }
-                kitchenController.kitchenOrder.refresh();
-              }),
+              kitchenController.kitchenOrder.value.data![index].orderDetails!
+                  .data![i].selected = false;
+            }
+            kitchenController.kitchenOrder.refresh();
+          }),
         ),
         SizedBox(
             width: 70,
@@ -415,12 +461,12 @@ class _KitchenState extends State<Kitchen> {
   Future<void> changeStatus(String status, int index) async {
     Utils.showLoading();
     List<int> itemList = [];
-    kitchenController.kitchenOrder.value.data![index].orderDetails!.data!
-        .forEach((element) {
+    for (var element in kitchenController
+        .kitchenOrder.value.data![index].orderDetails!.data!) {
       if (element.selected == true) {
         itemList.add(element.id!.toInt());
       }
-    });
+    }
     if (itemList.isNotEmpty) {
       bool done = await kitchenController.acceptOrder(
           kitchenController.kitchenOrder.value.data![index].id!.toInt(),
@@ -428,7 +474,7 @@ class _KitchenState extends State<Kitchen> {
           status);
       if (done) {
         // Utils.showSnackBar('Order updated successfully');
-        await kitchenController.getKitchenOrder();
+        await kitchenController.getKitchenOrder(false);
         kitchenController.kitchenOrder.refresh();
         Utils.hidePopup();
       }
