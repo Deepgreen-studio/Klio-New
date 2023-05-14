@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
 import '../../controller/orders_management_controller.dart';
+import '../../model/all_orders_model.dart';
 import '../dialog/custom_dialog.dart';
+
 class OrdersManagement extends StatefulWidget {
   const OrdersManagement({Key? key}) : super(key: key);
 
@@ -13,45 +16,79 @@ class OrdersManagement extends StatefulWidget {
   State<OrdersManagement> createState() => _OrdersManagementState();
 }
 
-class _OrdersManagementState extends State<OrdersManagement> with SingleTickerProviderStateMixin{
-  OrdersManagementController _ordersManagementController = Get.put(OrdersManagementController());
+class _OrdersManagementState extends State<OrdersManagement>
+    with SingleTickerProviderStateMixin {
+  OrdersManagementController _ordersManagementController =
+      Get.put(OrdersManagementController());
 
   int _currentSelection = 0;
   late TabController controller;
   int dropdownvalue = 1;
 
+  late ScrollController scrollController;
+  bool isLoading = false;
+  bool hasMore = true;
+  int page = 1;
+
   @override
   void initState() {
     // TODO: implement initState
     controller = TabController(vsync: this, length: 5);
+
+    scrollController = ScrollController();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent * 0.95 &&
+          !isLoading) {
+        page++;
+        if (hasMore) {
+          if(_currentSelection==0){
+            _ordersManagementController.getOrdersData(pageKey: page);
+          }
+          else if(_currentSelection==1){
+            _ordersManagementController.getSuccessData(pageKey: page);
+          }
+          else{
+
+          }
+        }
+      }
+    });
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(child: Container(
-        height:double.infinity,
-        width: double.infinity,
-        child: Column(
-          children: [
-            itemTitleHeader(),
-            customTapbarHeader(controller),
-            Expanded(
-              child: TabBarView(controller: controller, children: [
-                allOrder(context),
-                successOrder(context),
-                processingOrder(context),
-                pendingOrders(context),
-                cancelOrder(context),
-              ]),
-            )
-          ],
-        )
-    )
-    );
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
-  itemTitleHeader(){
-    if(_currentSelection==0){
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Column(
+              children: [
+                itemTitleHeader(),
+                customTapbarHeader(controller),
+                Expanded(
+                  child: TabBarView(controller: controller, children: [
+                    allOrder(context),
+                    successOrder(context),
+                    processingOrder(context),
+                    pendingOrders(context),
+                    cancelOrder(context),
+                  ]),
+                )
+              ],
+            )));
+  }
+
+  itemTitleHeader() {
+    if (_currentSelection == 0) {
       return Padding(
         padding: const EdgeInsets.all(15.0),
         child: Row(
@@ -96,7 +133,7 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
           ],
         ),
       );
-    }else if(_currentSelection==1){
+    } else if (_currentSelection == 1) {
       return Padding(
           padding: EdgeInsets.all(15.0),
           child: Row(
@@ -139,9 +176,8 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                 ),
               )
             ],
-          )
-      );
-    } else if(_currentSelection==2){
+          ));
+    } else if (_currentSelection == 2) {
       return Padding(
           padding: EdgeInsets.all(15.0),
           child: Row(
@@ -184,9 +220,8 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                 ),
               )
             ],
-          )
-      );
-    }else if(_currentSelection==3){
+          ));
+    } else if (_currentSelection == 3) {
       return Padding(
           padding: EdgeInsets.all(15.0),
           child: Row(
@@ -229,9 +264,8 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                 ),
               )
             ],
-          )
-      );
-    }else if(_currentSelection==4){
+          ));
+    } else if (_currentSelection == 4) {
       return Padding(
           padding: EdgeInsets.all(15.0),
           child: Row(
@@ -274,8 +308,7 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                 ),
               )
             ],
-          )
-      );
+          ));
     }
     return Container();
   }
@@ -332,9 +365,6 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                 },
               ),
             ),
-
-
-
             Expanded(
                 flex: 1,
                 child: Container(
@@ -356,7 +386,7 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                                   filled: true,
                                   fillColor: Colors.white10,
                                   contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                                      EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
                                   prefixIcon: Icon(
                                     Icons.search,
                                     size: 18,
@@ -396,7 +426,8 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                             ),
                             Container(
                               height: 30,
-                              padding: const EdgeInsets.only(left: 15, right: 15),
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
                               decoration: BoxDecoration(
                                   color: white,
                                   borderRadius: BorderRadius.circular(25.0),
@@ -438,139 +469,31 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
                   ),
                 )),
           ],
-        )
-    );
+        ));
   }
 
- Widget allOrder(BuildContext context) {
+  Widget allOrder(BuildContext context) {
     return Card(
-      color: secondaryBackground,
+        color: secondaryBackground,
         child: SingleChildScrollView(
-            child: GetBuilder<OrdersManagementController>(builder: (controller){
-              return DataTable(
-                  dataRowHeight: 70,
-                  columns: [
-                    // column to set the name
-                    DataColumn(
-                      label: Text(
-                        'SL NO',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Invoice',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Customer Name',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Order Type',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Status',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Grand Total',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Action',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
-                  ],
-                  rows: controller.allOrdersData.value.data!
-                  .map(
-                  (item) => DataRow(
-                cells: [
-                  DataCell(
-                    Text(
-                      '${item.id ?? ""}',
-                      style: TextStyle(color: primaryText),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      '${item.invoice ?? ""}',
-                      style: TextStyle(color: primaryText),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      '${item.customerName ?? ""}',
-                      style: TextStyle(color: primaryText),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      '${item.type ?? ""}',
-                      style: TextStyle(color: primaryText),
-                    ),
-                  ),
-                  DataCell(
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: item.status=='processing'? green: red,
-                        borderRadius: BorderRadius.all(Radius.circular(5))
-                      ),
-                      child: Text(
-                        '${item.status ?? ""}',
-                        style: TextStyle(color: white),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      '${item.grandTotal ?? ""}',
-                      style: TextStyle(color: primaryText),
-                    ),
-                  ),
-                  DataCell(
-                    Container(
-                      height: 35,
-                      width: 35,
-                      decoration: BoxDecoration(
-                        color: Color(0xffE1FDE8),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      child: Image.asset(
-                        "assets/hide.png",
-                        height: 15,
-                        width: 15,
-                        color: Color(0xff00A600),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              )
-              .toList()
-              );
-            })
-        )
-    );
+            controller: scrollController,
+            child:
+                GetBuilder<OrdersManagementController>(builder: (controller) {
+              return dataTable(controller, controller.allOrdersData.value.data!, controller.allOrdersData.value);
+            })));
   }
+
+
 
   successOrder(BuildContext context) {
     return Card(
-      color: secondaryBackground,
-    );
+        color: secondaryBackground,
+        child: SingleChildScrollView(
+          controller: scrollController,
+            child:
+            GetBuilder<OrdersManagementController>(builder: (controller) {
+          return dataTable(controller, controller.allSuccessData.value.data!, controller.allSuccessData.value);
+        })));
   }
 
   Widget processingOrder(BuildContext context) {
@@ -585,9 +508,167 @@ class _OrdersManagementState extends State<OrdersManagement> with SingleTickerPr
     );
   }
 
-  Widget cancelOrder(BuildContext context){
+  Widget cancelOrder(BuildContext context) {
     return Card(
       color: secondaryBackground,
     );
+  }
+
+  DataTable dataTable(OrdersManagementController controller, List<Datum> data, AllOrdersModel model ) {
+    return DataTable(
+        dataRowHeight: 70,
+        columns: [
+          // column to set the name
+          DataColumn(
+            label: Text(
+              'SL NO',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Invoice',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Customer Name',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Order Type',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Status',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Grand Total',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Action',
+              style: TextStyle(color: textSecondary),
+            ),
+          ),
+        ],
+        rows: data.map(
+              (item) {
+            if (model.data?.last == item) {
+              return DataRow(cells: [
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+                DataCell(CircularProgressIndicator()),
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(
+                    color: Colors.transparent)),
+              ]);
+            }
+           else if(!hasMore){
+              return DataRow(
+                cells: [
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                  DataCell(Text('No Data')),
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                  DataCell(CircularProgressIndicator(
+                      color: Colors.transparent)),
+                ]
+              );
+            }
+            return DataRow(
+              cells: [
+                DataCell(
+                  Text(
+                    '${item.id ?? ""}',
+                    style: TextStyle(color: primaryText),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    '${item.invoice ?? ""}',
+                    style: TextStyle(color: primaryText),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    '${item.customerName ?? ""}',
+                    style: TextStyle(color: primaryText),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    '${item.type ?? ""}',
+                    style: TextStyle(color: primaryText),
+                  ),
+                ),
+                DataCell(
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: item.status == "success"
+                            ? green
+                            : item.status == "processing"
+                            ? primaryColor
+                            : red,
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5))),
+                    child: Text(
+                      '${item.status ?? ""}',
+                      style: TextStyle(color: white),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    '${item.grandTotal ?? ""}',
+                    style: TextStyle(color: primaryText),
+                  ),
+                ),
+                DataCell(
+                  Container(
+                    height: 35,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: Color(0xffE1FDE8),
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: Image.asset(
+                      "assets/hide.png",
+                      height: 15,
+                      width: 15,
+                      color: Color(0xff00A600),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        ).toList());
   }
 }

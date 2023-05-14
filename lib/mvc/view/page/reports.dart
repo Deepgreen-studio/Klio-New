@@ -483,56 +483,56 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
               ],
               rows: [
                 DataRow(cells: [
-                  DataCell(Text("Total Purchase Shipping Charge: ")),
-                  DataCell(Text(controller.profitLossData.value.grossProfit.toString())),
+                  DataCell(Text("Total Purchase Shipping Charge : ")),
+                  DataCell(Text(controller.profitLossData.value.grossProfit!.toStringAsFixed(2))),
                 ]),
               DataRow(cells: [
-                DataCell(Text("Total Purchase Discount: ")),
+                DataCell(Text("Total Purchase Discount : ")),
                 DataCell(Text(controller.profitLossData.value.totalPurchaseDiscount.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Purchase: ")),
+                DataCell(Text("Total Purchase : ")),
                 DataCell(Text(controller.profitLossData.value.totalPurchase.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Sell Discount: ")),
+                DataCell(Text("Total Sell Discount : ")),
                 DataCell(Text(controller.profitLossData.value.totalSellDiscount.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Customer Reward: ")),
+                DataCell(Text("Total Customer Reward : ")),
                 DataCell(Text(controller.profitLossData.value.totalCustomerReward.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Expense: ")),
+                DataCell(Text("Total Expense : ")),
                 DataCell(Text(controller.profitLossData.value.totalExpense.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Waste: ")),
+                DataCell(Text("Total Waste : ")),
                 DataCell(Text(controller.profitLossData.value.totalWaste.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Sell Shipping Charge: ")),
+                DataCell(Text("Total Sell Shipping Charge : ")),
                 DataCell(Text(controller.profitLossData.value.totalSellShippingCharge.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Sell Service Charge: ")),
+                DataCell(Text("Total Sell Service Charge : ")),
                 DataCell(Text(controller.profitLossData.value.totalSellServiceCharge.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Sales: ")),
+                DataCell(Text("Total Sales : ")),
                 DataCell(Text(controller.profitLossData.value.totalSales.toString())),
               ]),
               DataRow(cells: [
-                DataCell(Text("Total Sell Vat: ")),
-                DataCell(Text(controller.profitLossData.value.totalSellVat.toString())),
+                DataCell(Text("Total Sell Vat : ")),
+                DataCell(Text(controller.profitLossData.value.totalSellVat!.toStringAsFixed(2))),
               ]),
               DataRow(cells: [
-                DataCell(Text("Gross Profit: ")),
-                DataCell(Text(controller.profitLossData.value.grossProfit.toString())),
+                DataCell(Text("Gross Profit : ")),
+                DataCell(Text(controller.profitLossData.value.grossProfit!.toStringAsFixed(2))),
               ]),
               DataRow(cells: [
-                DataCell(Text("Net Profit: ")),
-                DataCell(Text(controller.profitLossData.value.netProfit.toString())),
+                DataCell(Text("Net Profit : ")),
+                DataCell(Text(controller.profitLossData.value.netProfit!.toStringAsFixed(2))),
               ]),
             ],
           ),
