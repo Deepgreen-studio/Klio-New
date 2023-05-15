@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
-
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
 import '../../controller/orders_management_controller.dart';
@@ -25,9 +24,6 @@ class _OrdersManagementState extends State<OrdersManagement>
   int dropdownvalue = 1;
 
   late ScrollController scrollController;
-  bool isLoading = false;
-  bool hasMore = true;
-  int page = 1;
 
   @override
   void initState() {
@@ -38,19 +34,25 @@ class _OrdersManagementState extends State<OrdersManagement>
 
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent * 0.95 &&
-          !isLoading) {
-        page++;
-        if (hasMore) {
-          if(_currentSelection==0){
-            _ordersManagementController.getOrdersData(pageKey: page);
-          }
-          else if(_currentSelection==1){
-            _ordersManagementController.getSuccessData(pageKey: page);
-          }
-          else{
-
-          }
+          scrollController.position.maxScrollExtent * 0.95) {
+        if (_currentSelection == 0 &&
+            !_ordersManagementController.isLoadingAllOrder) {
+          _ordersManagementController.getOrdersData();
+        } else if (_currentSelection == 1 &&
+            !_ordersManagementController.isLoadingSuccessOrder) {
+          _ordersManagementController.getSuccessData();
+        } else if (_currentSelection == 2 &&
+            !_ordersManagementController.isLoadingProcessingOrder) {
+          print("======+++++++++++++++++++++++++++++++++++++++++");
+          _ordersManagementController.getProcessingData();
+        } else if (_currentSelection == 3 &&
+            !_ordersManagementController.isLoadingPendingOrder) {
+          print("======+++++++++++++++++++++++++++++++++++++++++");
+          _ordersManagementController.getPendingData();
+        } else if (_currentSelection == 4 &&
+            !_ordersManagementController.isLoadingCancelOrder) {
+          print("======+++++++++++++++++++++++++++++++++++++++++");
+          _ordersManagementController.getCancelData();
         }
       }
     });
@@ -72,7 +74,7 @@ class _OrdersManagementState extends State<OrdersManagement>
             child: Column(
               children: [
                 itemTitleHeader(),
-                customTapbarHeader(controller),
+                customTapBarHeader(controller),
                 Expanded(
                   child: TabBarView(controller: controller, children: [
                     allOrder(context),
@@ -312,7 +314,7 @@ class _OrdersManagementState extends State<OrdersManagement>
     return Container();
   }
 
-  customTapbarHeader(TabController controller) {
+  customTapBarHeader(TabController controller) {
     return Padding(
         padding: EdgeInsets.all(15.0),
         child: Row(
@@ -355,8 +357,29 @@ class _OrdersManagementState extends State<OrdersManagement>
                 // disabledChildren: [
                 //   6,
                 // ],
-                onSegmentChosen: (index) {
-                  print(index);
+                onSegmentTapped: (index) {
+                  if (index == 0 &&
+                      _ordersManagementController
+                          .allOrdersData.value.data!.isEmpty) {
+                    _ordersManagementController.getOrdersData();
+                  } else if (index == 1 &&
+                      _ordersManagementController
+                          .allSuccessData.value.data!.isEmpty) {
+                    _ordersManagementController.getSuccessData();
+                  } else if (index == 2 &&
+                      _ordersManagementController
+                          .allProcessingData.value.data!.isEmpty) {
+                    _ordersManagementController.getProcessingData();
+                  } else if (index == 3 &&
+                      _ordersManagementController
+                          .allPendingData.value.data!.isEmpty) {
+                    _ordersManagementController.getPendingData();
+                  } else if (index == 4 &&
+                      _ordersManagementController
+                          .allCancelData.value.data!.isEmpty) {
+                    _ordersManagementController.getCancelData();
+                  }
+                  print("${index}indexxxxxxxxxxxxxxxxxxxxxxxxxxx");
                   setState(() {
                     _currentSelection = index;
                     controller.index = _currentSelection;
@@ -371,7 +394,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Card(
+                      const Card(
                         elevation: 0.0,
                         child: SizedBox(
                             width: 250,
@@ -473,47 +496,127 @@ class _OrdersManagementState extends State<OrdersManagement>
 
   Widget allOrder(BuildContext context) {
     return Card(
-        color: secondaryBackground,
-        child: SingleChildScrollView(
-            controller: scrollController,
-            child:
-                GetBuilder<OrdersManagementController>(builder: (controller) {
-              return dataTable(controller, controller.allOrdersData.value.data!, controller.allOrdersData.value);
-            })));
+      color: secondaryBackground,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: GetBuilder<OrdersManagementController>(
+          id: "allOrders",
+          builder: (controller) {
+            return dataTable(
+              controller,
+              controller.allOrdersData.value.data ?? [],
+              controller.allOrdersData.value.data!.isNotEmpty
+                  ? controller.allOrdersData.value.data!.last
+                  : Datum(),
+              controller.haveMoreAllOrder,
+              controller.isLoadingAllOrder,
+            );
+          },
+        ),
+      ),
+    );
   }
-
-
 
   successOrder(BuildContext context) {
     return Card(
-        color: secondaryBackground,
-        child: SingleChildScrollView(
-          controller: scrollController,
-            child:
-            GetBuilder<OrdersManagementController>(builder: (controller) {
-          return dataTable(controller, controller.allSuccessData.value.data!, controller.allSuccessData.value);
-        })));
+      color: secondaryBackground,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: GetBuilder<OrdersManagementController>(
+          id: "allSuccessOrders",
+          builder: (controller) {
+            return dataTable(
+              controller,
+              controller.allSuccessData.value.data ?? [],
+              controller.allSuccessData.value.data!.isNotEmpty
+                  ? controller.allSuccessData.value.data!.last
+                  : Datum(),
+              controller.haveMoreSuccessOrder,
+              controller.isLoadingSuccessOrder,
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Widget processingOrder(BuildContext context) {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: GetBuilder<OrdersManagementController>(
+          id: "allProcessingOrders",
+          builder: (controller) {
+            return dataTable(
+              controller,
+              controller.allProcessingData.value.data ?? [],
+              controller.allProcessingData.value.data!.isNotEmpty
+                  ? controller.allProcessingData.value.data!.last
+                  : Datum(),
+              controller.haveMoreProcessingOrder,
+              controller.isLoadingProcessingOrder,
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget pendingOrders(BuildContext context) {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: GetBuilder<OrdersManagementController>(
+          id: "allPendingOrders",
+          builder: (controller) {
+            print("*********************************************");
+            print(controller.allPendingData.value.data!.length);
+            return dataTable(
+              controller,
+              controller.allPendingData.value.data ?? [],
+              controller.allPendingData.value.data!.isNotEmpty
+                  ? controller.allPendingData.value.data!.last
+                  : Datum(),
+              controller.haveMorePendingOrder,
+              controller.isLoadingPendingOrder,
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget cancelOrder(BuildContext context) {
     return Card(
       color: secondaryBackground,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: GetBuilder<OrdersManagementController>(
+          id: "allCancelOrders",
+          builder: (controller) {
+            return dataTable(
+                controller,
+                controller.allCancelData.value.data ?? [],
+                controller.allCancelData.value.data!.isNotEmpty
+                    ? controller.allCancelData.value.data!.last
+                    : Datum(),
+                controller.haveMoreCancelOrder,
+                controller.isLoadingCancelOrder);
+          },
+        ),
+      ),
     );
   }
 
-  DataTable dataTable(OrdersManagementController controller, List<Datum> data, AllOrdersModel model ) {
+  DataTable dataTable(OrdersManagementController controller, List<Datum> data,
+      Datum lastItem, bool haveMoreData, bool isLoading) {
+    if (!haveMoreData && data.last.id != 0) {
+
+      data.add(Datum(id: 0));
+    }
+
     return DataTable(
         dataRowHeight: 70,
         columns: [
@@ -562,42 +665,30 @@ class _OrdersManagementState extends State<OrdersManagement>
           ),
         ],
         rows: data.map(
-              (item) {
-            if (model.data?.last == item) {
-              return DataRow(cells: [
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
-                DataCell(CircularProgressIndicator()),
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(
-                    color: Colors.transparent)),
+          (item) {
+            print(!isLoading);
+            print(item == lastItem);
+            print("//////////////////////////////////////////");
+            if (item.id == 0 && !haveMoreData) {
+              return const DataRow(cells: [
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(Text('No Data')),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
               ]);
-            }
-           else if(!hasMore){
-              return DataRow(
-                cells: [
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                  DataCell(Text('No Data')),
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                  DataCell(CircularProgressIndicator(
-                      color: Colors.transparent)),
-                ]
-              );
+            } else if (item == lastItem && !isLoading && haveMoreData) {
+              return const DataRow(cells: [
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator()),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+              ]);
             }
             return DataRow(
               cells: [
@@ -627,16 +718,14 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
                 DataCell(
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     decoration: BoxDecoration(
                         color: item.status == "success"
                             ? green
                             : item.status == "processing"
-                            ? primaryColor
-                            : red,
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(5))),
+                                ? primaryColor
+                                : red,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: Text(
                       '${item.status ?? ""}',
                       style: TextStyle(color: white),

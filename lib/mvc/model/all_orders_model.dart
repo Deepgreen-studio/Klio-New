@@ -86,7 +86,7 @@ class Links {
   String first;
   String last;
   dynamic prev;
-  String next;
+  String? next;
 
   Links({
     required this.first,
