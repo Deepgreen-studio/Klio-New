@@ -33,14 +33,14 @@ class StockReportListModel {
 }
 
 class Datum {
-  int id;
-  String qtyAmount;
-  Ingredient ingredient;
+  int? id;
+  String? qtyAmount;
+  Ingredient? ingredient;
 
   Datum({
-    required this.id,
-    required this.qtyAmount,
-    required this.ingredient,
+     this.id,
+     this.qtyAmount,
+     this.ingredient,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -52,7 +52,7 @@ class Datum {
   Map<String, dynamic> toJson() => {
     "id": id,
     "qty_amount": qtyAmount,
-    "ingredient": ingredient.toJson(),
+    "ingredient": ingredient?.toJson(),
   };
 }
 

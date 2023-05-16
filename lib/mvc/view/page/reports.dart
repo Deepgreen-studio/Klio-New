@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/controller/report_management_controller.dart';
+import 'package:klio_staff/mvc/model/sale_report_list_model.dart' as SaleReport;
+import 'package:klio_staff/mvc/model/stock_report_list_model.dart' as StockReport;
+import 'package:klio_staff/mvc/model/waste_report_list_model.dart' as WasteReport;
 import 'package:material_segmented_control/material_segmented_control.dart';
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
@@ -15,15 +18,49 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
 
   ReportManagementController _reportController = Get.put(ReportManagementController());
 
-  int _currentSelection = 0 ;
+  int _currentSelection = 0;
   late TabController controller;
   int dropdownvalue = 1;
+
+  late ScrollController scrollController;
 
   @override
   void initState() {
     // TODO: implement initState
     controller = TabController(length: 4, vsync: this);
+
+    scrollController = ScrollController();
+    controller.addListener(() {
+      _currentSelection = controller.index;
+      _reportController.update(['changeCustomTabBar']);
+
+    });
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent * 0.95) {
+        if(_currentSelection==0 && !_reportController.isLoadingAllSale) {
+            _reportController.getSaleReportDataList();
+            print('===================');
+          }
+        else if(_currentSelection==1&& !_reportController.isLoadingStockReport){
+          _reportController.getSaleReportDataList();
+        }
+        else if(_currentSelection==2){
+          _reportController.getProfitLossReportList();
+        }else if(_currentSelection==3 && !_reportController.isLoadingWasteReport){
+          _reportController.getWasteReportDataList();
+        }
+      }
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,10 +76,10 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
               Expanded(child: TabBarView(
                   controller: controller,
                   children:[
-                    saleReportDataTable(),
-                    stockReportDataTable(),
-                    profitLossReportDataTable(),
-                    wasteReportDataTable(),
+                    saleReportDataTable(context),
+                    stockReportDataTable(context),
+                    profitLossReportDataTable(context),
+                    wasteReportDataTable(context),
                   ]))
             ],
           )
@@ -98,54 +135,76 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         padding: EdgeInsets.all(15.0),
         child:Row(
           children: [
-            Expanded(
-                flex: 1,
-                child: MaterialSegmentedControl(
-                    children: {
-                      0: Text(
-                        'Sale Report',
-                        style: TextStyle(
-                            color: _currentSelection == 0 ? white : Colors.black),
-                      ),
-                      1: Text(
-                        'Stock Report',
-                        style: TextStyle(
-                            color: _currentSelection == 1 ? white : Colors.black),
-                      ),
-                      2: Text(
-                        'Profit Loss Report',
-                        style: TextStyle(
-                            color: _currentSelection == 2 ? white : Colors.black),
-                      ),
-                      3: Text(
-                        'Waste Report',
-                        style: TextStyle(
-                            color: _currentSelection == 3 ? white : Colors.black),
-                      ),
-                    },
-                    selectionIndex: _currentSelection,
-                    borderColor: Colors.grey,
-                    selectedColor: primaryColor,
-                    unselectedColor: Colors.white,
-                    borderRadius: 32.0,
-                    onSegmentChosen: (index)
-                    {
-                      print(index);
-                      setState(() {
-                        _currentSelection=index;
-                        controller.index = _currentSelection;
-                      });
-                    }
-                )
+            GetBuilder<ReportManagementController>(
+              id: 'changeCustomTabBar',
+              builder: (context) {
+                return Expanded(
+                    flex: 1,
+                    child: MaterialSegmentedControl(
+                        children: {
+
+                          0: Text(
+                            'Sale Report',
+                            style: TextStyle(
+                                color: _currentSelection == 0 ? white : Colors.black),
+                          ),
+                          1: Text(
+                            'Stock Report',
+                            style: TextStyle(
+                                color: _currentSelection == 1 ? white : Colors.black),
+                          ),
+                          2: Text(
+                            'Profit Loss Report',
+                            style: TextStyle(
+                                color: _currentSelection == 2 ? white : Colors.black),
+                          ),
+                          3: Text(
+                            'Waste Report',
+                            style: TextStyle(
+                                color: _currentSelection == 3 ? white : Colors.black),
+                          ),
+                        },
+                        selectionIndex: _currentSelection,
+                        borderColor: Colors.grey,
+                        selectedColor: primaryColor,
+                        unselectedColor: Colors.white,
+                        borderRadius: 32.0,
+                        onSegmentTapped: (index)
+                        {
+                          if (index == 0 &&
+                              _reportController
+                                  .saleRepData.value.data!.isEmpty) {
+                            _reportController.getSaleReportDataList();
+                          } else if (index == 1 &&
+                              _reportController
+                                  .stockRepData.value.data!.isEmpty) {
+                            _reportController.getStockReportDataList();
+                          } else if (index == 2) {
+                            _reportController.getProfitLossReportList();
+                          } else if (index == 3 &&
+                              _reportController
+                                  .wasteRepData.value.data!.isEmpty) {
+                            _reportController.getWasteReportDataList();
+                          }
+                          print(index);
+                          setState(() {
+                            _currentSelection=index;
+                            controller.index = _currentSelection;
+                          });
+                        }
+
+                    )
+                );
+              }
             ),
             Expanded(
                 flex: 1,
                 child:Container(
-                    margin: EdgeInsets.only(left:100),
+                    margin: const EdgeInsets.only(left:100),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Card(
+                        const Card(
                           elevation: 0.0,
                           child: SizedBox(
                               width:250,
@@ -244,131 +303,165 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     );
   }
 
-  saleReportDataTable() {
+  saleReportDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<ReportManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<ReportManagementController>
+          (id: "saleId",
+            builder: (controller) {
+              if (!controller.haveMoreAllSale && controller.saleRepData.value.data!.last.id != 0) {
+                controller.saleRepData.value.data!.add(SaleReport.Datum(id:0));
+              }
           return DataTable(
-              dataRowHeight: 70,
-              columns: [
-                // column to set the name
-                DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Invoice',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Customer Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Type',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Grand Total',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Date',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Action',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.saleRepData.value.data!
-                  .map(
-                    (item) => DataRow(
-                  cells: [
-                    DataCell(
-                      Text(
-                        '${item.id ?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                dataRowHeight: 70,
+                columns: [
+                  // column to set the name
+                  DataColumn(
+                    label: Text(
+                      'SL NO',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Text(
-                        '${item.invoice ?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Invoice',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Text(
-                        '${item.customerName?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Customer Name',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Text(
-                        '${item.type ?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Type',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Text(
-                        '${item.grandTotal ?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Grand Total',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Text(
-                        '${item.date ?? ""}',
-                        style: TextStyle(color: primaryText),
-                      ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Date',
+                      style: TextStyle(color: textSecondary),
                     ),
-                    DataCell(
-                      Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                          color: Color(0xffE1FDE8),
-                          borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Action',
+                      style: TextStyle(color: textSecondary),
+                    ),
+                  ),
+                ],
+                rows: controller.saleRepData.value.data!
+                    .map(
+                      (item) {
+                        if(item.id== 0 && !controller.haveMoreAllSale){
+                          return const DataRow(cells: [
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(Text('No Data')),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }else if(item== _reportController.saleRepData.value.data!.last && !controller.isLoadingAllSale && controller.haveMoreAllSale){
+                          return const DataRow(cells: [
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator()),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }
+                        return DataRow(
+                    cells: [
+                      DataCell(
+                        Text(
+                          '${item.id ?? ""}',
+                          style: TextStyle(color: primaryText),
                         ),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Image.asset(
-                            "assets/hide.png",
-                            height: 15,
-                            width: 15,
-                            color: Color(0xff00A600),
+                      ),
+                      DataCell(
+                        Text(
+                          '${item.invoice ?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${item.customerName?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${item.type ?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${item.grandTotal ?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '${item.date ?? ""}',
+                          style: TextStyle(color: primaryText),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(
+                            color: Color(0xffE1FDE8),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Image.asset(
+                              "assets/hide.png",
+                              height: 15,
+                              width: 15,
+                              color: Color(0xff00A600),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-                  .toList());
+                      )
+                    ],
+                  );
+                     },
+                ).toList());
         }),
       ),
     );
   }
 
-  stockReportDataTable() {
+  stockReportDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<ReportManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<ReportManagementController>(
+            id: 'stockId',
+            builder: (controller) {
+              if(!controller.haveMoreStockReport && controller.stockRepData.value.data!.last.id !=0){
+                controller.stockRepData.value.data!.add(StockReport.Datum(id: 0));
+              }
           return DataTable(
               dataRowHeight: 70,
               columns: [
@@ -418,7 +511,29 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
               ],
               rows: controller.stockRepData.value.data!
                   .map(
-                    (item) => DataRow(
+                    (item) {
+                      if(item.id== 0 && !controller.haveMoreStockReport){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(Text('No Data')),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }else if(item== controller.stockRepData.value.data!.last && !controller.isLoadingStockReport && controller.haveMoreStockReport){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }
+                      return DataRow(
                   cells: [
                     DataCell(
                       Text(
@@ -434,36 +549,36 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                     ),
                     DataCell(
                       Text(
-                        '${item.ingredient.name?? ""}',
+                        '${item.ingredient?.name?? ""}',
                         style: TextStyle(color: primaryText),
                       ),
                     ),
                     DataCell(
                       Text(
-                        '${item.ingredient.code?? ""}',
+                        '${item.ingredient?.code?? ""}',
                         style: TextStyle(color: primaryText),
                       ),
                     ),
                     DataCell(
                       Text(
-                        '${item.ingredient.alertQty?? ""}',
+                        '${item.ingredient?.alertQty?? ""}',
                         style: TextStyle(color: primaryText),
                       ),
                     ),
                     DataCell(
                       Text(
-                        '${item.ingredient.category.name ?? ""}',
+                        '${item.ingredient?.category.name ?? ""}',
                         style: TextStyle(color: primaryText),
                       ),
                     ),
                     DataCell(
                       Text(
-                        '${item.ingredient.unit?.name ?? ""}',
+                        '${item.ingredient?.unit?.name ?? ""}',
                         style: TextStyle(color: primaryText),
                       ),
                     ),
                   ],
-                ),
+                );},
               )
                   .toList());
         }),
@@ -471,7 +586,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     );
   }
 
-  profitLossReportDataTable() {
+  profitLossReportDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
@@ -541,11 +656,17 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     );
   }
 
-  wasteReportDataTable() {
+  wasteReportDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<ReportManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<ReportManagementController>(
+            id:'wasteId',
+            builder: (controller) {
+              if(!controller.haveMoreWasteReport && controller.wasteRepData.value.data!.last.id !=0){
+                controller.wasteRepData.value.data!.add(WasteReport.Datum(id: 0));
+              }
           return DataTable(
               dataRowHeight: 70,
               columns: [
@@ -595,7 +716,30 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
               ],
               rows: controller.wasteRepData.value.data!
                   .map(
-                    (item) => DataRow(
+                    (item) {
+                      if(item.id== 0 && !controller.haveMoreWasteReport){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(Text('No Data')),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }else if(item== controller.wasteRepData.value.data!.last && !controller.isLoadingWasteReport && controller.haveMoreWasteReport){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }
+
+                      return DataRow(
                   cells: [
                     DataCell(
                       Text(
@@ -643,7 +787,8 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ],
-                ),
+                );
+                      },
               )
                   .toList());
         }),

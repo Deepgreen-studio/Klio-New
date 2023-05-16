@@ -33,20 +33,20 @@ class SaleReportListModel {
 }
 
 class Datum {
-  int id;
-  String invoice;
-  String customerName;
-  String type;
-  String grandTotal;
-  DateTime date;
+  int? id;
+  String? invoice;
+  String? customerName;
+  String? type;
+  String? grandTotal;
+  DateTime? date;
 
   Datum({
-    required this.id,
-    required this.invoice,
-    required this.customerName,
-    required this.type,
-    required this.grandTotal,
-    required this.date,
+     this.id,
+     this.invoice,
+     this.customerName,
+     this.type,
+     this.grandTotal,
+     this.date,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -64,23 +64,15 @@ class Datum {
     "customer_name": customerName,
     "type": type,
     "grand_total": grandTotal,
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "date": "${date?.year.toString().padLeft(4, '0')}-${date?.month.toString().padLeft(2, '0')}-${date?.day.toString().padLeft(2, '0')}",
   };
 }
-
-enum CustomerName { MELISSA_GARNER, USER, KEVIN_KELLYL }
-
-final customerNameValues = EnumValues({
-  "Kevin Kellyl ": CustomerName.KEVIN_KELLYL,
-  "Melissa Garner ": CustomerName.MELISSA_GARNER,
-  "User ": CustomerName.USER
-});
 
 class Links {
   String first;
   String last;
   dynamic prev;
-  String next;
+  String? next;
 
   Links({
     required this.first,

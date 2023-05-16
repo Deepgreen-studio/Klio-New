@@ -636,7 +636,6 @@ class _OrdersManagementState extends State<OrdersManagement>
   DataTable dataTable(OrdersManagementController controller, List<Datum> data,
       Datum lastItem, bool haveMoreData, bool isLoading) {
     if (!haveMoreData && data.last.id != 0) {
-
       data.add(Datum(id: 0));
     }
 

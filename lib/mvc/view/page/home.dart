@@ -34,14 +34,14 @@ class Home extends StatefulWidget {
 
 List pageList = [
   0,
-  Dashboard(),
-  FoodManagement(),
-  OrdersManagement(),
-  PurchaseManagement(),
-  IngredientManagement(),
-  TransactionManagement(),
-  CustomerManagement(),
-  Reports(),
+  const Dashboard(),
+  const FoodManagement(),
+  const OrdersManagement(),
+  const PurchaseManagement(),
+  const IngredientManagement(),
+  const TransactionManagement(),
+  const CustomerManagement(),
+  const Reports(),
   Settings()
 ];
 
@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Padding(
                           padding:
-                              EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
+                              const EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
                                         fit: BoxFit.fitHeight,
                                         color: primaryColor)),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Expanded(
                                 flex: 2,
                                 child: Column(
@@ -185,7 +185,7 @@ class _HomeState extends State<Home> {
                                                         BorderSide.none),
                                                 contentPadding:
                                                     EdgeInsets.zero))),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     topBarIconBtn(
                                         Image.asset('assets/reload.png',
                                             color: primaryColor),
@@ -197,7 +197,7 @@ class _HomeState extends State<Home> {
                                       Utils.hidePopup();
                                       Utils.hidePopup();
                                     }),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     Stack(
                                       children: [
                                         topBarIconBtn(
@@ -227,14 +227,14 @@ class _HomeState extends State<Home> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
-                                              padding: EdgeInsets.all(1),
+                                              padding: const EdgeInsets.all(1),
                                               child: Obx(() {
                                                 return Text(
                                                   homeController.onlineOrder
                                                       .value.data!.length
                                                       .toString(),
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontSize: fontVerySmall,
                                                       color: Colors.white),
                                                 );
@@ -242,7 +242,7 @@ class _HomeState extends State<Home> {
                                             ))
                                       ],
                                     ),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     topBarIconBtn(
                                         Image.asset('assets/moon.png',
                                             color: primaryColor),
@@ -258,9 +258,9 @@ class _HomeState extends State<Home> {
                                       Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  Home(refresh: false)));
+                                                  const Home(refresh: false)));
                                     }),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     topBarIconBtn(
                                         Image.asset('assets/filter-alt.png',
                                             color: primaryText),
@@ -273,7 +273,7 @@ class _HomeState extends State<Home> {
                                           : gridImage = true;
                                       setState(() {});
                                     }),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     topBarIconBtn(
                                         Image.asset('assets/logout.png',
                                             color: white),
@@ -288,7 +288,7 @@ class _HomeState extends State<Home> {
                                             .saveValue('token', '');
                                         await SharedPref()
                                             .saveValue('loginType', '');
-                                        Get.off(Login());
+                                        Get.off(const Login());
                                       });
                                     }),
                                   ],
@@ -306,14 +306,14 @@ class _HomeState extends State<Home> {
                                       Container(
                                         width: double.infinity,
                                         height: 40,
-                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
                                             15, 0, 15, 5),
                                         child: Row(
                                           children: [
                                             MaterialButton(
                                                 elevation: 0,
                                                 height: 60,
-                                                padding: EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                     horizontal: 25),
                                                 color: selectedCategory == -1
                                                     ? primaryColor
@@ -343,7 +343,7 @@ class _HomeState extends State<Home> {
                                                               : primaryText,
                                                       fontSize: fontMedium),
                                                 )),
-                                            SizedBox(width: 15),
+                                            const SizedBox(width: 15),
                                             Expanded(
                                               child: Obx(() {
                                                 return ListView.builder(
@@ -361,12 +361,12 @@ class _HomeState extends State<Home> {
                                                           int index) {
                                                     return Padding(
                                                       padding:
-                                                          EdgeInsetsDirectional
+                                                          const EdgeInsetsDirectional
                                                               .fromSTEB(
                                                                   0, 0, 15, 0),
                                                       child: MaterialButton(
                                                           elevation: 0,
-                                                          padding: EdgeInsets
+                                                          padding: const EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
                                                                       25),
@@ -436,7 +436,7 @@ class _HomeState extends State<Home> {
                                         child: Obx(() {
                                           return GridView.builder(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
+                                                const EdgeInsetsDirectional.fromSTEB(
                                                     15, 10, 15, 10),
                                             gridDelegate:
                                                 SliverGridDelegateWithFixedCrossAxisCount(
@@ -476,7 +476,7 @@ class _HomeState extends State<Home> {
                                                   },
                                                   child: Padding(
                                                     padding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                             horizontal: 10,
                                                             vertical: 10),
                                                     child: Row(
@@ -510,8 +510,8 @@ class _HomeState extends State<Home> {
                                                                   ),
                                                                 ),
                                                               )
-                                                            : SizedBox(),
-                                                        SizedBox(
+                                                            : const SizedBox(),
+                                                        const SizedBox(
                                                           width: 6,
                                                         ),
                                                         Expanded(
@@ -539,12 +539,12 @@ class _HomeState extends State<Home> {
                                                                     width: 3,
                                                                     height: 50,
                                                                     decoration:
-                                                                        BoxDecoration(
+                                                                        const BoxDecoration(
                                                                       color:
                                                                           primaryColor,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 5,
                                                                   ),
                                                                   Expanded(
@@ -576,13 +576,13 @@ class _HomeState extends State<Home> {
                                                                     ),
                                                                   ),
                                                                   gridImage
-                                                                      ? SizedBox()
+                                                                      ? const SizedBox()
                                                                       : Text(
                                                                           homeController
                                                                               .filteredMenu[index]
                                                                               .price
                                                                               .toString(),
-                                                                          style: TextStyle(
+                                                                          style: const TextStyle(
                                                                               fontSize: fontMediumExtra,
                                                                               color: primaryColor,
                                                                               fontWeight: FontWeight.bold),
@@ -609,7 +609,7 @@ class _HomeState extends State<Home> {
                                                                           Image.network(item
                                                                               .image
                                                                               .toString()),
-                                                                          Color(
+                                                                          const Color(
                                                                               0xff00C4D9),
                                                                           0,
                                                                           6,
@@ -635,7 +635,7 @@ class _HomeState extends State<Home> {
                                         width: double.infinity,
                                         height: 150,
                                         padding:
-                                            EdgeInsets.fromLTRB(15, 10, 15, 5),
+                                            const EdgeInsets.fromLTRB(15, 10, 15, 5),
                                         decoration: BoxDecoration(
                                           color: secondaryBackground,
                                         ),
@@ -673,7 +673,7 @@ class _HomeState extends State<Home> {
                                                           side: homeController
                                                                       .selectedOrder ==
                                                                   index
-                                                              ? BorderSide(
+                                                              ? const BorderSide(
                                                                   width: 2,
                                                                   color:
                                                                       primaryColor)
@@ -769,7 +769,7 @@ class _HomeState extends State<Home> {
                                                         50,
                                                         400);
                                                   }),
-                                                  SizedBox(width: 8),
+                                                  const SizedBox(width: 8),
                                                   bottomIconTextBtn(
                                                       'assets/circle-error.png',
                                                       'Cancel Order',
@@ -796,7 +796,7 @@ class _HomeState extends State<Home> {
                                                           "Order canceled successfully");
                                                     });
                                                   }),
-                                                  SizedBox(width: 8),
+                                                  const SizedBox(width: 8),
                                                   bottomIconTextBtn(
                                                       'assets/edit-alt.png',
                                                       'Edit Order',
@@ -863,7 +863,7 @@ class _HomeState extends State<Home> {
                                                       Utils.hidePopup();
                                                     });
                                                   }),
-                                                  SizedBox(width: 8),
+                                                  const SizedBox(width: 8),
                                                   bottomIconTextBtn(
                                                       'assets/delivery.png',
                                                       'Kitchen Status',
@@ -919,7 +919,7 @@ class _HomeState extends State<Home> {
                               width: 15,
                               padding: EdgeInsets.zero,
                               margin: EdgeInsets.zero,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(100),
                                     bottomLeft: Radius.circular(100)),
@@ -929,13 +929,13 @@ class _HomeState extends State<Home> {
                                   onPressed: () {
                                     scaffoldKey.currentState!.openEndDrawer();
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.arrow_back_ios,
                                     color: white,
                                   ),
-                                  padding: EdgeInsets.all(12)),
+                                  padding: const EdgeInsets.all(12)),
                             )
-                      : SizedBox();
+                      : const SizedBox();
                 }),
               ],
             ),

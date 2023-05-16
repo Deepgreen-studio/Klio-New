@@ -33,22 +33,22 @@ class WasteReportListModel {
 }
 
 class Datum {
-  int id;
-  String personName;
-  String referenceNo;
-  DateTime date;
-  String note;
-  String addedBy;
-  String totalLoss;
+  int? id;
+  String? personName;
+  String? referenceNo;
+  DateTime? date;
+  String? note;
+  String? addedBy;
+  String? totalLoss;
 
   Datum({
-    required this.id,
-    required this.personName,
-    required this.referenceNo,
-    required this.date,
-    required this.note,
-    required this.addedBy,
-    required this.totalLoss,
+     this.id,
+     this.personName,
+     this.referenceNo,
+     this.date,
+     this.note,
+     this.addedBy,
+     this.totalLoss,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -65,7 +65,7 @@ class Datum {
     "id": id,
     "person_name": personName,
     "reference_no": referenceNo,
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "date": "${date?.year.toString().padLeft(4, '0')}-${date?.month.toString().padLeft(2, '0')}-${date?.day.toString().padLeft(2, '0')}",
     "note": note,
     "added_by": addedBy,
     "total_loss": totalLoss,
