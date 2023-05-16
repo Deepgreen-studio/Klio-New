@@ -5,7 +5,6 @@ import '../../../constant/color.dart';
 import '../../../constant/value.dart';
 import '../../controller/orders_management_controller.dart';
 import '../../model/all_orders_model.dart';
-import '../dialog/custom_dialog.dart';
 
 class OrdersManagement extends StatefulWidget {
   const OrdersManagement({Key? key}) : super(key: key);
@@ -32,6 +31,28 @@ class _OrdersManagementState extends State<OrdersManagement>
 
     scrollController = ScrollController();
 
+    controller.addListener(() {
+      _currentSelection = controller.index;
+      _ordersManagementController.update(['changeTabBar']);
+
+      print(_currentSelection);
+      print(_ordersManagementController.allSuccessData.value.data!.isNotEmpty);
+      print("-intttttttttttttttttttttttttttttttttttttttttttt");
+
+      if(_currentSelection == 1 && _ordersManagementController.allSuccessData.value.data!.isEmpty){
+        print("*****************************************");
+        _ordersManagementController.getSuccessData();
+      }else if(_currentSelection == 2 && _ordersManagementController.allProcessingData.value.data!.isEmpty){
+        _ordersManagementController.getProcessingData();
+      }else if(_currentSelection == 3 && _ordersManagementController.allPendingData.value.data!.isEmpty){
+        _ordersManagementController.getPendingData();
+      }else if(_currentSelection == 4 && _ordersManagementController.allCancelData.value.data!.isEmpty){
+        _ordersManagementController.getCancelData();
+      }
+
+    });
+
+
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent * 0.95) {
@@ -43,15 +64,12 @@ class _OrdersManagementState extends State<OrdersManagement>
           _ordersManagementController.getSuccessData();
         } else if (_currentSelection == 2 &&
             !_ordersManagementController.isLoadingProcessingOrder) {
-          print("======+++++++++++++++++++++++++++++++++++++++++");
           _ordersManagementController.getProcessingData();
         } else if (_currentSelection == 3 &&
             !_ordersManagementController.isLoadingPendingOrder) {
-          print("======+++++++++++++++++++++++++++++++++++++++++");
           _ordersManagementController.getPendingData();
         } else if (_currentSelection == 4 &&
             !_ordersManagementController.isLoadingCancelOrder) {
-          print("======+++++++++++++++++++++++++++++++++++++++++");
           _ordersManagementController.getCancelData();
         }
       }
@@ -236,7 +254,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: Row(
                   children: [
                     OutlinedButton.icon(
@@ -255,7 +273,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         //     addIngrediant(1), 30, 400);
                       },
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: primaryColor),
+                        side: const BorderSide(width: 1.0, color: primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -319,73 +337,78 @@ class _OrdersManagementState extends State<OrdersManagement>
         padding: EdgeInsets.all(15.0),
         child: Row(
           children: [
-            Expanded(
-              flex: 1,
-              child: MaterialSegmentedControl(
-                children: {
-                  0: Text(
-                    'All Orders',
-                    style: TextStyle(
-                        color: _currentSelection == 0 ? white : Colors.black),
+            GetBuilder<OrdersManagementController>(
+              id: "changeTabBar",
+              builder: (context) {
+                return Expanded(
+                  flex: 1,
+                  child: MaterialSegmentedControl(
+                    children: {
+                      0: Text(
+                        'All Orders',
+                        style: TextStyle(
+                            color: _currentSelection == 0 ? white : Colors.black),
+                      ),
+                      1: Text(
+                        'Success Orders',
+                        style: TextStyle(
+                            color: _currentSelection == 1 ? white : Colors.black),
+                      ),
+                      2: Text(
+                        'Processing Orders',
+                        style: TextStyle(
+                            color: _currentSelection == 2 ? white : Colors.black),
+                      ),
+                      3: Text(
+                        'Pending Order',
+                        style: TextStyle(
+                            color: _currentSelection == 3 ? white : Colors.black),
+                      ),
+                      4: Text(
+                        'Cancel Orders',
+                        style: TextStyle(
+                            color: _currentSelection == 4 ? white : Colors.black),
+                      ),
+                    },
+                    selectionIndex: _currentSelection,
+                    borderColor: Colors.grey,
+                    selectedColor: primaryColor,
+                    unselectedColor: Colors.white,
+                    borderRadius: 32.0,
+                    // disabledChildren: [
+                    //   6,
+                    // ],
+                    onSegmentTapped: (index) {
+                      if (index == 0 &&
+                          _ordersManagementController
+                              .allOrdersData.value.data!.isEmpty) {
+                        _ordersManagementController.getOrdersData();
+                      } else if (index == 1 &&
+                          _ordersManagementController
+                              .allSuccessData.value.data!.isEmpty) {
+                        _ordersManagementController.getSuccessData();
+                      } else if (index == 2 &&
+                          _ordersManagementController
+                              .allProcessingData.value.data!.isEmpty) {
+                        _ordersManagementController.getProcessingData();
+                      } else if (index == 3 &&
+                          _ordersManagementController
+                              .allPendingData.value.data!.isEmpty) {
+                        _ordersManagementController.getPendingData();
+                      } else if (index == 4 &&
+                          _ordersManagementController
+                              .allCancelData.value.data!.isEmpty) {
+                        _ordersManagementController.getCancelData();
+                      }
+                      print("${index}indexxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                      setState(() {
+                        _currentSelection = index;
+                        controller.index = _currentSelection;
+                      });
+                    },
                   ),
-                  1: Text(
-                    'Success Orders',
-                    style: TextStyle(
-                        color: _currentSelection == 1 ? white : Colors.black),
-                  ),
-                  2: Text(
-                    'Processing Orders',
-                    style: TextStyle(
-                        color: _currentSelection == 2 ? white : Colors.black),
-                  ),
-                  3: Text(
-                    'Pending Order',
-                    style: TextStyle(
-                        color: _currentSelection == 3 ? white : Colors.black),
-                  ),
-                  4: Text(
-                    'Cancel Orders',
-                    style: TextStyle(
-                        color: _currentSelection == 4 ? white : Colors.black),
-                  ),
-                },
-                selectionIndex: _currentSelection,
-                borderColor: Colors.grey,
-                selectedColor: primaryColor,
-                unselectedColor: Colors.white,
-                borderRadius: 32.0,
-                // disabledChildren: [
-                //   6,
-                // ],
-                onSegmentTapped: (index) {
-                  if (index == 0 &&
-                      _ordersManagementController
-                          .allOrdersData.value.data!.isEmpty) {
-                    _ordersManagementController.getOrdersData();
-                  } else if (index == 1 &&
-                      _ordersManagementController
-                          .allSuccessData.value.data!.isEmpty) {
-                    _ordersManagementController.getSuccessData();
-                  } else if (index == 2 &&
-                      _ordersManagementController
-                          .allProcessingData.value.data!.isEmpty) {
-                    _ordersManagementController.getProcessingData();
-                  } else if (index == 3 &&
-                      _ordersManagementController
-                          .allPendingData.value.data!.isEmpty) {
-                    _ordersManagementController.getPendingData();
-                  } else if (index == 4 &&
-                      _ordersManagementController
-                          .allCancelData.value.data!.isEmpty) {
-                    _ordersManagementController.getCancelData();
-                  }
-                  print("${index}indexxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                  setState(() {
-                    _currentSelection = index;
-                    controller.index = _currentSelection;
-                  });
-                },
-              ),
+                );
+              }
             ),
             Expanded(
                 flex: 1,
@@ -443,7 +466,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                               "Show :",
                               style: TextStyle(color: textSecondary),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Container(
@@ -455,7 +478,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                   borderRadius: BorderRadius.circular(25.0),
                                   border: Border.all(color: Colors.black12)),
                               child: DropdownButton<int>(
-                                hint: Text(
+                                hint: const Text(
                                   '1',
                                   style: TextStyle(color: black),
                                 ),
@@ -477,8 +500,8 @@ class _OrdersManagementState extends State<OrdersManagement>
                                 },
                               ),
                             ),
-                            SizedBox(
-                              width: 10,
+                            const SizedBox(
+                              width: 10
                             ),
                             Text(
                               "Entries",
@@ -666,9 +689,7 @@ class _OrdersManagementState extends State<OrdersManagement>
         ],
         rows: data.map(
           (item) {
-            print(!isLoading);
-            print(item == lastItem);
-            print("//////////////////////////////////////////");
+
             if (item.id == 0 && !haveMoreData) {
               return const DataRow(cells: [
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),

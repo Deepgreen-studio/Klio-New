@@ -83,6 +83,22 @@ class IngredientController extends GetxController with ErrorController {
   TextEditingController(text: 'Update Address');
 
 
+
+  int ingredientPageNumber = 1;
+  int categoryPageNumber = 1;
+  int unitPageNumber = 1;
+  int supplierPageNumber = 1;
+
+
+  bool isLoading = false;
+
+
+  bool haveMoreIngredient = true;
+  bool haveMoreCategory = true;
+  bool haveMoreUnit = true;
+  bool haveMoreSupplier = true;
+
+
   ///
   ///
 
@@ -150,12 +166,30 @@ class IngredientController extends GetxController with ErrorController {
   };
 
   Future<void> getIngredientDataList({dynamic id = ''}) async {
+    if (!haveMoreIngredient) {
+      return;
+    }
+    isLoading = true;
     String endPoint = id == '' ? 'master/ingredient' : 'master/ingredient/$id';
     var response = await ApiClient()
-        .get(endPoint, header: Utils.apiHeader)
+        .get("$endPoint?page=$ingredientPageNumber", header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientData.value = ingredinetListModelFromJson(response);
-    update();
+
+    var temp = ingredinetListModelFromJson(response);
+    List<Ingrediant> ingredient = temp.data!;
+
+    ingredientData.value.data?.addAll(ingredient);
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreIngredient = false;
+    }
+    ingredientPageNumber++;
+    isLoading = false;
+    update(['ingredientTab']);
   }
 
   void deleteIngredientDataList({id = ''}) async {
@@ -178,16 +212,36 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   Future<void> getIngredientCategory({dynamic id = ''}) async {
+
+    if (!haveMoreCategory) {
+      return;
+    }
+    isLoading = true;
+
     String endPoint = id == ''
-        ? 'master/ingredient-category'
+        ? 'master/ingredient-category?page=$categoryPageNumber'
         : 'master/ingredient-category/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientCategoryData.value = ingredineCategoryModelFromJson(response);
-    update();
-    debugPrint(
-        "checkIngredientCategory${ingredientCategoryData.value.data[0].id}");
+
+    var temp = ingredineCategoryModelFromJson(response);
+    List<IngrediantCategory> ingredientCategory = temp.data;
+
+    ingredientCategoryData.value.data.addAll(ingredientCategory);
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreCategory = false;
+    }
+
+    categoryPageNumber++;
+    isLoading = false;
+    update(["categoryTab"]);
+
   }
 
   void deleteIngredientCategory({id = ''}) async {
@@ -201,14 +255,38 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   Future<void> getIngredientUnit({dynamic id = ''}) async {
+    if (!haveMoreUnit) {
+      return;
+    }
+    isLoading = true;
+
     String endPoint =
-    id == '' ? 'master/ingredient-unit' : 'master/ingredient-unit/$id';
+    id == '' ? 'master/ingredient-unit?page=$unitPageNumber' : 'master/ingredient-unit/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientUnitData.value = ingredineUnitModelFromJson(response);
+
+
+    var temp = ingredineUnitModelFromJson(response);
+    List<IngrediantUnit> ingredientUnit= temp.data;
+
+    ingredientUnitData.value.data.addAll(ingredientUnit);
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreUnit = false;
+    }
+
+    unitPageNumber++;
+    isLoading = false;
+    update(["unitTab"]);
+
+    /*ingredientUnitData.value = ingredineUnitModelFromJson(response);
     update();
-    debugPrint("checkIngredientUnit${ingredientUnitData.value.data[0].id}");
+    debugPrint("checkIngredientUnit${ingredientUnitData.value.data[0].id}");*/
   }
 
   void deleteIngredientUnit({id = ''}) async {
@@ -222,14 +300,39 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   Future<void> getIngredientSupplier({dynamic id = ''}) async {
+    if (!haveMoreSupplier) {
+      return;
+    }
+    isLoading = true;
+
     String endPoint = id == '' ? 'master/supplier' : 'master/supplier/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
+
+
+    var temp = ingredineSupplierModelFromJson(response);
+    List<Datum> ingredientUnit= temp.data;
+
+    ingredientSupplierData.value.data.addAll(ingredientUnit);
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreSupplier = false;
+    }
+
+    supplierPageNumber++;
+    isLoading = false;
+    update(["supplierTab"]);
+
+
+  /*  ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
     update();
     debugPrint(
-        "checkIngredinetSupplierData${ingredientSupplierData.value.data[0].id}");
+        "checkIngredinetSupplierData${ingredientSupplierData.value.data[0].id}");*/
   }
 
   Future<void> getSupplierSingleDetails({dynamic id = ''})async{

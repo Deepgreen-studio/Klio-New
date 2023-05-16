@@ -61,7 +61,7 @@ class _DashboardState extends State<Dashboard> {
                     itemSubTitle: "Ordered Items",
                     color: blue,
                     itemNumber: homeController
-                        .dashData.value.data!.pendingOrders
+                        .dashData.value.data?.pendingOrders
                         .toString(),
                   ),
                 ),
@@ -85,7 +85,7 @@ class _DashboardState extends State<Dashboard> {
                       itemSubTitle: "Parcel Send",
                       color: green,
                       itemNumber: homeController
-                          .dashData.value.data!.successOrders
+                          .dashData.value.data?.successOrders
                           .toString()),
                 ),
               ),
@@ -108,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
                       itemSubTitle: "Deleted Orders",
                       color: red,
                       itemNumber: homeController
-                          .dashData.value.data!.cancelOrders
+                          .dashData.value.data?.cancelOrders
                           .toString()),
                 ),
               ),
@@ -141,7 +141,7 @@ class _DashboardState extends State<Dashboard> {
                       itemSubTitle: "Weekly total orders",
                       color: green,
                       itemNumber: homeController
-                          .dashData.value.data!.weeklyOrders
+                          .dashData.value.data?.weeklyOrders
                           .toString(),
                     )),
               ),
@@ -164,7 +164,7 @@ class _DashboardState extends State<Dashboard> {
                       itemSubTitle: "Monthly total orders",
                       color: green,
                       itemNumber: homeController
-                          .dashData.value.data!.monthlyOrders
+                          .dashData.value.data?.monthlyOrders
                           .toString()),
                 ),
               ),
@@ -187,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
                       itemSubTitle: "Yearly total orders",
                       color: green,
                       itemNumber: homeController
-                          .dashData.value.data!.yearlyOrders
+                          .dashData.value.data?.yearlyOrders
                           .toString()),
                 ),
               ),
@@ -409,10 +409,10 @@ class _DashboardState extends State<Dashboard> {
 
   Widget cardSingleItem(
       {String? image,
-      String? itemTitle,
-      String? itemSubTitle,
-      String? itemNumber,
-      Color? color}) {
+        String? itemTitle,
+        String? itemSubTitle,
+        String? itemNumber,
+        Color? color}) {
     return Row(
       children: [
         Expanded(
@@ -501,7 +501,7 @@ class _DashboardState extends State<Dashboard> {
                                         label: Text(
                                           "Name",
                                           style:
-                                              TextStyle(color: textSecondary),
+                                          TextStyle(color: textSecondary),
                                         ),
                                       ),
                                       DataColumn(
@@ -525,7 +525,7 @@ class _DashboardState extends State<Dashboard> {
                                           DataCell(Text(
                                             item.name.toString(),
                                             style:
-                                                TextStyle(color: primaryText),
+                                            TextStyle(color: primaryText),
                                           )),
                                           DataCell(Text(
                                               item.totalOrdered.toString(),
@@ -537,8 +537,8 @@ class _DashboardState extends State<Dashboard> {
                                           DataCell(Container(
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Text(
                                                     item.totalSoldPrice
@@ -611,11 +611,11 @@ class _DashboardState extends State<Dashboard> {
                                   DataColumn(
                                       label: Text("User Name",
                                           style:
-                                              TextStyle(color: textSecondary))),
+                                          TextStyle(color: textSecondary))),
                                   DataColumn(
                                       label: Text("Online Orders",
                                           style:
-                                              TextStyle(color: textSecondary))),
+                                          TextStyle(color: textSecondary))),
                                   DataColumn(
                                     label: Text("Status",
                                         style: TextStyle(color: textSecondary)),
@@ -626,7 +626,7 @@ class _DashboardState extends State<Dashboard> {
                                     DataCell(Container(
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           SizedBox(
                                             height: 3,
@@ -712,7 +712,7 @@ class _DashboardState extends State<Dashboard> {
                                   filled: true,
                                   fillColor: Colors.white10,
                                   contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                                  EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                                   prefixIcon: Icon(
                                     Icons.search,
                                     size: 18,
@@ -723,7 +723,7 @@ class _DashboardState extends State<Dashboard> {
                                         color: Colors.blueAccent,
                                       ),
                                       borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                      BorderRadius.circular(10.0)),
                                 )),
                           ),
                         ),
@@ -792,10 +792,10 @@ class _DashboardState extends State<Dashboard> {
                                   color: item.status == 'cancel'
                                       ? red
                                       : item.status == 'served'
-                                          ? green
-                                          : blue,
+                                      ? green
+                                      : blue,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
+                                  BorderRadius.all(Radius.circular(20))),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,

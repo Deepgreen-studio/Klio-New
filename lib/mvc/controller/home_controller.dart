@@ -50,6 +50,7 @@ class HomeController extends GetxController with ErrorController {
   RxString customerName = ''.obs;
   Rx<MenuData> menuData = MenuData().obs;
   RxList cardList = [].obs;
+
   // RxDouble variantPrice = 0.0.obs;
   RxDouble discount = 0.0.obs;
   RxString discType = 'In Flat Amount'.obs;
@@ -113,6 +114,7 @@ class HomeController extends GetxController with ErrorController {
         .catchError(handleApiError);
     dashData.value = dashDataFromJson(response);
     Utils.hidePopup();
+
   }
 
   Future<void> getMenuByKeyword({String keyword = ''}) async {
@@ -131,7 +133,6 @@ class HomeController extends GetxController with ErrorController {
     var response = await ApiClient()
         .get('pos/customer', header: Utils.apiHeader)
         .catchError(handleApiError);
-
 
     customers.value = customerFromJson(response);
     customers.value.data?.add(cus.Datum(id: 0, name: "None"));
@@ -177,7 +178,6 @@ class HomeController extends GetxController with ErrorController {
   }
 
   Future<void> getTables() async {
-
     print("=========================");
     var response = await ApiClient()
         .get('pos/table', header: Utils.apiHeader)
