@@ -125,7 +125,7 @@ class HomeController extends GetxController with ErrorController {
         .get(endPoint, header: Utils.apiHeader, query: qParams);
     // .catchError(handleApiError);
     print(response);
-    menus.value = await menuFromJson(response);
+    menus.value = menuFromJson(response);
     filteredMenu.value = Utils.filterCategory(menus.value, -1)!;
   }
 
