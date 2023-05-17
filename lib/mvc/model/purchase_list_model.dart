@@ -26,36 +26,36 @@ class PurchaseListModel {
 
 class Datum {
   Datum({
-    required this.id,
-    required this.supplierId,
+     this.id,
+     this.supplierId,
     this.bankId,
-    required this.referenceNo,
-    required this.totalAmount,
-    required this.shippingCharge,
-    required this.discountAmount,
-    required this.paidAmount,
-    required this.status,
-    required this.date,
-    required this.paymentType,
+     this.referenceNo,
+     this.totalAmount,
+     this.shippingCharge,
+     this.discountAmount,
+     this.paidAmount,
+     this.status,
+     this.date,
+     this.paymentType,
     this.details,
-    required this.supplier,
-    required this.bank,
+     this.supplier,
+     this.bank,
   });
 
-  int id;
-  int supplierId;
+  int? id;
+  int? supplierId;
   dynamic bankId;
-  String referenceNo;
-  String totalAmount;
-  String shippingCharge;
-  String discountAmount;
-  String paidAmount;
-  int status;
-  DateTime date;
-  String paymentType;
+  String? referenceNo;
+  String? totalAmount;
+  String? shippingCharge;
+  String? discountAmount;
+  String? paidAmount;
+  int? status;
+  DateTime? date;
+  String? paymentType;
   dynamic details;
-  Bank supplier;
-  Bank bank;
+  Bank? supplier;
+  Bank? bank;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
@@ -84,11 +84,11 @@ class Datum {
     "discount_amount": discountAmount,
     "paid_amount": paidAmount,
     "status": status,
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "date": "${date?.year.toString().padLeft(4, '0')}-${date?.month.toString().padLeft(2, '0')}-${date?.day.toString().padLeft(2, '0')}",
     "payment_type": paymentType,
     "details": details,
-    "supplier": supplier.toJson(),
-    "bank": bank.toJson(),
+    "supplier": supplier?.toJson(),
+    "bank": bank?.toJson(),
   };
 }
 

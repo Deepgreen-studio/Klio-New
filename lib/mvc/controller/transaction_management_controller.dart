@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:klio_staff/constant/value.dart';
 import 'package:klio_staff/mvc/controller/error_controller.dart';
 import 'package:klio_staff/mvc/model/bank_list_data_model.dart';
+import 'package:klio_staff/mvc/model/bank_list_data_model.dart' as Bank ;
 import 'package:klio_staff/mvc/model/transaction_list_data_model.dart';
+import 'package:klio_staff/mvc/model/transaction_list_data_model.dart' as Transaction;
 import 'package:klio_staff/service/api/api_client.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
@@ -21,6 +22,15 @@ class TransactionsController extends GetxController with ErrorController{
   Rx<TransactionListModel> transactionListData = TransactionListModel(data: []).obs;
   File? signatureStoreImage;
 
+  ///Api data fetch varriable
+  int bankPageNumber = 1;
+  int transitionPageNumber = 1;
+
+  bool isLoadingBank = false;
+  bool isLoadingTransition = false;
+
+  bool haveMoreBank = true;
+  bool haveMoreTransition = true;
 
   ///upload bank data
   final uploadBankKey = GlobalKey<FormState>();
@@ -74,14 +84,30 @@ class TransactionsController extends GetxController with ErrorController{
   }
 
   Future<void> bankListDataList({dynamic id = ''})async{
-    String endPoint = id == '' ? 'finance/bank' : 'finance/bank/$id';
+    if(!haveMoreBank){
+      return;
+    }
+    isLoadingBank =true;
+    String endPoint = 'finance/bank?page$bankPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-   // debugPrint("checkBankList$response");
-    bankListData.value = bankListModelFromJson(response);
-    update();
-    debugPrint("checkBankList${bankListData.value.data[0].name}");
+    var temp = bankListModelFromJson(response);
+    List<Bank.Datum> datums= [];
+    for (Bank.Datum it in temp.data) {
+      datums.add(it);
+    }
+    bankListData.value.data.addAll(datums);
+    bankPageNumber++;
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreBank = false;
+    }
+    isLoadingBank = false;
+    update(['bankId']);
+
   }
 
   void addNewBank(
@@ -135,14 +161,30 @@ class TransactionsController extends GetxController with ErrorController{
   }
 
   Future<void> transactionDataList({dynamic id = ''}) async{
-    String endPoint = id == '' ? 'finance/bank-transaction' : 'finance/bank-transaction/$id';
+    if(!haveMoreTransition){
+      return;
+    }
+    isLoadingTransition =true;
+    String endPoint = 'finance/bank-transaction?page=$transitionPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-   // debugPrint("checkTransactionList${response}");
-    transactionListData.value = transactionListModelFromJson(response);
-    update();
-    debugPrint("checkTransactionList${transactionListData.value.data[0].id}");
+    var temp = transactionListModelFromJson(response);
+    List<Transaction.Datum> datums= [];
+    for (Transaction.Datum it in temp.data) {
+      datums.add(it);
+    }
+    transactionListData.value.data.addAll(datums);
+    transitionPageNumber++;
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreTransition = false;
+    }
+    isLoadingTransition = false;
+    update(['transId']);
+
   }
 
   dynamic _processResponse(http.Response response) {

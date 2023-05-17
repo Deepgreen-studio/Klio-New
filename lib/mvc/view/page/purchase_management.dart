@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:klio_staff/constant/color.dart';
 import 'package:klio_staff/constant/value.dart';
-import 'package:klio_staff/mvc/controller/Ingredient_management_controller.dart';
 import 'package:klio_staff/mvc/controller/purchase_management_controller.dart';
-import 'package:klio_staff/mvc/controller/transaction_management_controller.dart';
+import 'package:klio_staff/mvc/model/purchase_list_model.dart';
+import 'package:klio_staff/mvc/model/expense_list_model.dart' as Expense;
+import 'package:klio_staff/mvc/model/expense_category_model.dart' as ExpCategory;
+
 import 'package:klio_staff/mvc/view/dialog/custom_dialog.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -23,21 +24,41 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     with SingleTickerProviderStateMixin {
   PurchaseManagementController purchaseCtrl =
       Get.put(PurchaseManagementController());
-  IngredientController _ingredientController = Get.put(IngredientController());
-  TransactionsController _transactionsController =
-      Get.put(TransactionsController());
   int _currentSelection = 0;
   late TabController controller;
-  var ingreItemId;
-  String dateText = 'Choose a date';
-
-  var totalPrice;
+  late ScrollController scrollController;
 
   @override
   void initState() {
     // TODO: implement initState
     controller = TabController(vsync: this, length: 3);
+
+    controller.addListener((){
+      _currentSelection = controller.index;
+      purchaseCtrl.update(['changeCustomTabBar']);
+    });
+
+    scrollController= ScrollController();
+
+    scrollController.addListener(() {
+      if(scrollController.position.pixels >=
+      scrollController.position.maxScrollExtent *0.95){
+        if(_currentSelection==0 && !purchaseCtrl.isLoadingPurchase){
+          purchaseCtrl.getPurchaseDataList();
+        }else if(_currentSelection==1 && !purchaseCtrl.isLoadingExpence){
+          purchaseCtrl.getExpenseDataList();
+        } else if(_currentSelection==2 && !purchaseCtrl.isLoadingExpenceCategory){
+          purchaseCtrl.getExpenseCategoryList();
+        }
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,7 +115,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                     //     addNewPurchaseForm(), 100, 260);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -134,7 +155,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         context, "Add New Expence", addNewExpence(), 100, 300);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -174,7 +195,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         addNewExpenseCategory(), 100, 400);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -194,47 +215,60 @@ class _PurchaseManagementState extends State<PurchaseManagement>
       padding: const EdgeInsets.all(15.0),
       child: Row(
         children: [
-          Expanded(
-            flex: 1,
-            child: MaterialSegmentedControl(
-              children: {
-                0: Text(
-                  'Purchase List',
-                  style: TextStyle(
-                      color: _currentSelection == 0 ? white : textSecondary),
+          GetBuilder<PurchaseManagementController>(
+              id: 'changeCustomTabBar',
+              builder: (context) {
+                return Expanded(
+                flex: 1,
+                child: MaterialSegmentedControl(
+                  children: {
+                    0: Text(
+                      'Purchase List',
+                      style: TextStyle(
+                          color: _currentSelection == 0 ? white : textSecondary),
+                    ),
+                    1: Text(
+                      'Expense',
+                      style: TextStyle(
+                          color: _currentSelection == 1 ? white : textSecondary),
+                    ),
+                    2: Text(
+                      'Expense Category',
+                      style: TextStyle(
+                          color: _currentSelection == 2 ? white : textSecondary),
+                    ),
+                  },
+                  selectionIndex: _currentSelection,
+                  borderColor: Colors.grey,
+                  selectedColor: primaryColor,
+                  unselectedColor: Colors.white,
+                  borderRadius: 32.0,
+                  disabledChildren: [
+                    6,
+                  ],
+                  onSegmentChosen: (index) {
+
+                    if(index==0 && purchaseCtrl.purchaseData.value.data.isEmpty){
+                      purchaseCtrl.getPurchaseDataList();
+                    } else if(index ==1 && purchaseCtrl.expenseData.value.data.isEmpty){
+                      purchaseCtrl.getExpenseDataList();
+                    }else if(index==2 && purchaseCtrl.expenseCategoryData.value.data.isEmpty){
+                      purchaseCtrl.getExpenseCategoryList();
+                    }
+                    print(index);
+                    setState(() {
+                      _currentSelection = index;
+                      controller.index = _currentSelection;
+                    });
+                  },
                 ),
-                1: Text(
-                  'Expense',
-                  style: TextStyle(
-                      color: _currentSelection == 1 ? white : textSecondary),
-                ),
-                2: Text(
-                  'Expense Category',
-                  style: TextStyle(
-                      color: _currentSelection == 2 ? white : textSecondary),
-                ),
-              },
-              selectionIndex: _currentSelection,
-              borderColor: Colors.grey,
-              selectedColor: primaryColor,
-              unselectedColor: Colors.white,
-              borderRadius: 32.0,
-              disabledChildren: [
-                6,
-              ],
-              onSegmentChosen: (index) {
-                print(index);
-                setState(() {
-                  _currentSelection = index;
-                  controller.index = _currentSelection;
-                });
-              },
-            ),
+              );
+            }
           ),
           Expanded(
               flex: 1,
               child: Container(
-                margin: EdgeInsets.only(left: 100),
+                margin: const EdgeInsets.only(left: 100),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -244,7 +278,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           width: 250,
                           height: 30,
                           child: TextField(
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: fontSmall,
                                 color: Colors.blueAccent,
                               ),
@@ -252,8 +286,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                 filled: true,
                                 fillColor: Colors.white10,
                                 contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                                prefixIcon: Icon(
+                                const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                                prefixIcon: const Icon(
                                   Icons.search,
                                   size: 18,
                                 ),
@@ -261,22 +295,22 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                 hintStyle: TextStyle(
                                     fontSize: fontVerySmall,
                                     color: textSecondary),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
-                                disabledBorder: OutlineInputBorder(
+                                disabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
-                                enabledBorder: OutlineInputBorder(
+                                enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
-                                errorBorder: OutlineInputBorder(
+                                errorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
-                                focusedBorder: OutlineInputBorder(
+                                focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
-                                focusedErrorBorder: OutlineInputBorder(
+                                focusedErrorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1, color: Colors.transparent)),
                               ))),
@@ -288,7 +322,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             "Show :",
                             style: TextStyle(color: textSecondary),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Container(
@@ -304,9 +338,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                 style: TextStyle(color: textSecondary),
                               ),
                               dropdownColor: white,
-                              icon: Icon(Icons.keyboard_arrow_down),
+                              icon: const Icon(Icons.keyboard_arrow_down),
                               iconSize: 15,
-                              underline: SizedBox(),
+                              underline: const SizedBox(),
                               items: <int>[1, 2, 3, 4].map((int value) {
                                 return DropdownMenuItem<int>(
                                   value: value,
@@ -316,7 +350,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               onChanged: (int? newVal) {},
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Text(
@@ -338,7 +372,13 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<PurchaseManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<PurchaseManagementController>(
+            id: 'purchaseId',
+            builder: (controller) {
+              if (!controller.haveMorePurchase && controller.purchaseData.value.data.last.id != 0) {
+                controller.purchaseData.value.data.add(Datum(id:0));
+              }
           return DataTable(
               dataRowHeight: 70,
               columns: [
@@ -386,9 +426,31 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   ),
                 ),
               ],
-              rows: controller.purchaseData.value.data.reversed
+              rows: controller.purchaseData.value.data
                   .map(
-                    (item) => DataRow(
+                    (item) {
+                      if(item.id== 0 && !controller.haveMorePurchase){
+                        return DataRow(cells: [
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(Text('No Data', style: TextStyle(color: primaryText))),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }else if(item== controller.purchaseData.value.data.last && !controller.isLoadingPurchase && controller.haveMorePurchase){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }
+                      return DataRow(
                       cells: [
                         DataCell(
                           Text(
@@ -410,7 +472,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         ),
                         DataCell(
                           Text(
-                            '${item.supplier.name ?? ""}',
+                            '${item.supplier?.name ?? ""}',
                             style: TextStyle(color: primaryText),
                           ),
                         ),
@@ -431,7 +493,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
-                              color: Color(0xffE1FDE8),
+                              color: const Color(0xffE1FDE8),
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                             child: GestureDetector(
@@ -447,13 +509,14 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                 "assets/hide.png",
                                 height: 15,
                                 width: 15,
-                                color: Color(0xff00A600),
+                                color: const Color(0xff00A600),
                               ),
                             ),
                           ),
                         )
                       ],
-                    ),
+                    );
+                   },
                   )
                   .toList());
         }),
@@ -465,7 +528,13 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<PurchaseManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<PurchaseManagementController>(
+            id: 'expenceId',
+            builder: (controller) {
+              if (!controller.haveMoreExpence && controller.expenseData.value.data.last.id != 0) {
+                controller.expenseData.value.data.add(Expense.Datum(id:0));
+              }
           return DataTable(
               // dataRowHeight: 70,
               columnSpacing: 50,
@@ -520,165 +589,194 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   ),
                 ),
               ],
-              rows: controller.expenseData.value.data.reversed
+              rows: controller.expenseData.value.data
                   .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
+                    (item) {
+                      if(item.id== 0 && !controller.haveMoreExpence){
+                        return  DataRow(cells: [
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }else if(item== controller.expenseData.value.data.last && !controller.isLoadingExpence && controller.haveMoreExpence){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.category.name ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              item.category?.name ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.person.name ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              item.person?.name ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.amount ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              item.amount ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.date ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              '${item.date ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.note ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              item.note ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.status ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              '${item.status ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE1FDE8),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    purchaseCtrl
-                                        .getSingleExpenseData(id: item.id)
-                                        .then((value) {
-                                      showCustomDialog(
-                                          context,
-                                          "Show Expense Details",
-                                          viewExpenseDetails(),
-                                          100,
-                                          400);
-                                    });
-                                  },
-                                  child: Image.asset(
-                                    "assets/hide.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xff00A600),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffE1FDE8),
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffFEF4E1),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    purchaseCtrl
-                                        .getSingleExpenseData(id: item.id)
-                                        .then((value) {
-                                      purchaseCtrl.updateExpenceResPersonList
-                                          .add(purchaseCtrl.singleExpenseData
-                                              .value.data!.person.id);
-                                      purchaseCtrl.updateExpenceCatList.add(
-                                          purchaseCtrl.singleExpenseData.value
-                                              .data!.category.id);
+                                  child: GestureDetector(
+                                    onTap: () {
                                       purchaseCtrl
-                                              .updateExpenceAmountCtlr.text =
-                                          purchaseCtrl.singleExpenseData.value
-                                              .data!.amount;
-                                      purchaseCtrl.updateExpenceNoteCtlr.text =
-                                          purchaseCtrl.singleExpenseData.value
-                                              .data!.note;
-                                      purchaseCtrl.dateCtlr.value = purchaseCtrl
-                                          .singleExpenseData.value.data!.date
-                                          .toString();
+                                          .getSingleExpenseData(id: item.id)
+                                          .then((value) {
+                                        showCustomDialog(
+                                            context,
+                                            "Show Expense Details",
+                                            viewExpenseDetails(),
+                                            100,
+                                            400);
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/hide.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xff00A600),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFEF4E1),
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      purchaseCtrl
+                                          .getSingleExpenseData(id: item.id)
+                                          .then((value) {
+                                        purchaseCtrl.updateExpenceResPersonList
+                                            .add(purchaseCtrl.singleExpenseData
+                                            .value.data!.person.id);
+                                        purchaseCtrl.updateExpenceCatList.add(
+                                            purchaseCtrl.singleExpenseData.value
+                                                .data!.category.id);
+                                        purchaseCtrl
+                                            .updateExpenceAmountCtlr.text =
+                                            purchaseCtrl.singleExpenseData.value
+                                                .data!.amount;
+                                        purchaseCtrl.updateExpenceNoteCtlr
+                                            .text =
+                                            purchaseCtrl.singleExpenseData.value
+                                                .data!.note;
+                                        purchaseCtrl.dateCtlr.value =
+                                            purchaseCtrl
+                                                .singleExpenseData.value.data!
+                                                .date
+                                                .toString();
 
-                                      showCustomDialog(
-                                          context,
-                                          "Update Expence",
-                                          updateExpenceForm(item.id),
-                                          100,
-                                          300);
-                                    });
-                                  },
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
+                                        showCustomDialog(
+                                            context,
+                                            "Update Expence",
+                                            updateExpenceForm(item.id),
+                                            100,
+                                            300);
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED7402),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffFFE7E6),
-                                  borderRadius: BorderRadius.circular(25.0),
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showWarningDialog(
-                                        "Do you want to delete this item?",
-                                        onAccept: () {
-                                      purchaseCtrl.deleteExpense(id: item.id);
-                                    });
-                                  },
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFFE7E6),
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showWarningDialog(
+                                          "Do you want to delete this item?",
+                                          onAccept: () {
+                                            purchaseCtrl.deleteExpense(
+                                                id: item.id);
+                                          });
+                                    },
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED0206),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
                   )
                   .toList());
         }),
@@ -690,7 +788,13 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<PurchaseManagementController>(builder: (controller) {
+        controller: scrollController,
+        child: GetBuilder<PurchaseManagementController>(
+            id:'expCategoryId',
+            builder: (controller) {
+              if (!controller.haveMoreExpenceCategory && controller.expenseCategoryData.value.data.last.id != 0) {
+                controller.expenseCategoryData.value.data.add(ExpCategory.Datum(id:0));
+              }
           return DataTable(
               dataRowHeight: 70,
               columnSpacing: 50,
@@ -721,56 +825,73 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   ),
                 ),
               ],
-              rows: controller.expenseCategoryData.value.data.reversed
+              rows: controller.expenseCategoryData.value.data
                   .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.status ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: Color(0xffFFE7E6),
-                              borderRadius: BorderRadius.circular(25.0),
+                    (item) {
+                      if(item.id== 0 && !controller.haveMoreExpenceCategory){
+                        return  DataRow(cells: [
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }else if(item== controller.expenseCategoryData.value.data.last && !controller.isLoadingExpenceCategory && controller.haveMoreExpenceCategory){
+                        return const DataRow(cells: [
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
+                          DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                        ]);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
-                            child: GestureDetector(
-                              onTap: () {
-                                showWarningDialog(
-                                    "Do you want to delete this item?",
-                                    onAccept: () {
-                                  purchaseCtrl.deleteExpenseCategory(
-                                      id: item.id);
-                                });
-                              },
-                              child: Image.asset(
-                                "assets/delete.png",
-                                height: 15,
-                                width: 15,
-                                color: Color(0xffED0206),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.status ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffFFE7E6),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showWarningDialog(
+                                      "Do you want to delete this item?",
+                                      onAccept: () {
+                                        purchaseCtrl.deleteExpenseCategory(
+                                            id: item.id);
+                                      });
+                                },
+                                child: Image.asset(
+                                  "assets/delete.png",
+                                  height: 15,
+                                  width: 15,
+                                  color: const Color(0xffED0206),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
+                          )
+                        ],
+                      );
+                    },
                   )
                   .toList());
         }),
@@ -780,11 +901,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
 
 
 
-
-
   Widget viewPurchaseData() {
     return Container(
-      padding: EdgeInsets.only(left: 30, right: 30),
+      padding: const EdgeInsets.only(left: 30, right: 30),
       child: ListView(
         children: [
           SizedBox(
@@ -816,7 +935,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -848,7 +967,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -879,7 +998,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -909,7 +1028,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -939,7 +1058,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -970,7 +1089,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -1001,7 +1120,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -1031,7 +1150,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -1061,7 +1180,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -1091,7 +1210,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SizedBox(
             height: 40,
             child: Row(
@@ -1122,7 +1241,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -1132,7 +1251,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
-        padding: EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30),
         child: Form(
           key: purchaseCtrl.uploadExpenceFormKey,
           child: ListView(children: [
@@ -1158,8 +1277,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         },
                         options: controller.expenseData.value.data.map((e) {
                           return ValueItem(
-                            label: e.person.name,
-                            value: e.person.id.toString(),
+                            label: e.person!.name,
+                            value: e.person!.id.toString(),
                           );
                         }).toList(),
                         hint: 'Select Person',
@@ -1170,7 +1289,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         selectedOptionIcon: const Icon(Icons.check_circle),
                         inputDecoration: BoxDecoration(
                           color: secondaryBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
                             color: primaryBackground,
                           ),
@@ -1178,7 +1297,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       );
                     },
                   )),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                   flex: 1,
                   child: GetBuilder<PurchaseManagementController>(
@@ -1199,7 +1318,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         options:
                             controller.expenseCategoryData.value.data.map((e) {
                           return ValueItem(
-                            label: e.name,
+                            label: e.name.toString(),
                             value: e.id.toString(),
                           );
                         }).toList(),
@@ -1211,7 +1330,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         selectedOptionIcon: const Icon(Icons.check_circle),
                         inputDecoration: BoxDecoration(
                           color: secondaryBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
                             color: primaryBackground,
                           ),
@@ -1220,7 +1339,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                     },
                   )),
             ]),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             textRow("Amount", "Date"),
             Row(
               children: [
@@ -1243,7 +1362,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             hintText: "Enter Amount")),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   flex: 1,
                   child: SizedBox(
@@ -1254,10 +1373,10 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           controller.getChooseDate(context);
                         },
                         child: Container(
-                          padding: EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            borderRadius: const BorderRadius.all(Radius.circular(6)),
                             border: Border.all(
                               color: textSecondary,
                             ),
@@ -1266,7 +1385,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(controller.dateCtlr.value),
-                              Icon(Icons.calendar_month)
+                              const Icon(Icons.calendar_month)
                             ],
                           ),
                         ),
@@ -1276,7 +1395,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             textRow("Note", ""),
             SizedBox(
               child: TextFormField(
@@ -1293,7 +1412,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           fontSize: fontVerySmall, color: primaryText),
                       hintText: "Enter...")),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
               height: 40,
               width: 50,
@@ -1314,7 +1433,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                 },
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
           ]),
         ));
   }
@@ -1323,7 +1442,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
-        padding: EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30),
         child: Form(
           key: purchaseCtrl.updateExpenceFormKey,
           child: ListView(children: [
@@ -1349,8 +1468,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         },
                         options: controller.expenseData.value.data.map((e) {
                           return ValueItem(
-                            label: e.person.name,
-                            value: e.person.id.toString(),
+                            label: e.person!.name,
+                            value: e.person!.id.toString(),
                           );
                         }).toList(),
                         selectedOptions:
@@ -1359,18 +1478,18 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             label: purchaseCtrl.expenseData.value.data
                                 .firstWhere((element) => element.id == itemId)
                                 .person
-                                .name,
+                                !.name,
                             value: purchaseCtrl.expenseData.value.data
                                 .firstWhere((element) => element.id == itemId)
                                 .person
-                                .id
+                                !.id
                                 .toString(),
                           );
                         }).toList(),
                         hint: purchaseCtrl.expenseData.value.data
                             .firstWhere((element) => element.id == itemId)
                             .person
-                            .name,
+                            !.name,
                         hintColor: primaryText,
                         selectionType: SelectionType.single,
                         chipConfig: const ChipConfig(wrapType: WrapType.wrap),
@@ -1378,7 +1497,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         selectedOptionIcon: const Icon(Icons.check_circle),
                         inputDecoration: BoxDecoration(
                           color: secondaryBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
                             color: primaryBackground,
                           ),
@@ -1386,7 +1505,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       );
                     },
                   )),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                   flex: 1,
                   child: GetBuilder<PurchaseManagementController>(
@@ -1412,7 +1531,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                     orElse: () {
                               return purchaseCtrl
                                   .expenseCategoryData.value.data.first;
-                            }).name,
+                            }).name.toString(),
                             value: purchaseCtrl.expenseCategoryData.value.data
                                 .firstWhere((element) => element.id == itemId,
                                     orElse: () {
@@ -1426,7 +1545,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         options:
                             controller.expenseCategoryData.value.data.map((e) {
                           return ValueItem(
-                            label: e.name,
+                            label: e.name.toString(),
                             value: e.id.toString(),
                           );
                         }).toList(),
@@ -1435,7 +1554,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                 orElse: () {
                           return purchaseCtrl
                               .expenseCategoryData.value.data.first;
-                        }).name,
+                        }).name.toString(),
                         hintColor: primaryText,
                         selectionType: SelectionType.single,
                         chipConfig: const ChipConfig(wrapType: WrapType.wrap),
@@ -1443,7 +1562,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         selectedOptionIcon: const Icon(Icons.check_circle),
                         inputDecoration: BoxDecoration(
                           color: secondaryBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
                             color: primaryBackground,
                           ),
@@ -1452,7 +1571,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                     },
                   )),
             ]),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             textRow("Amount", "Date"),
             Row(
               children: [
@@ -1475,7 +1594,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             hintText: "Enter Amount")),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   flex: 1,
                   child: SizedBox(
@@ -1486,10 +1605,10 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           controller.getChooseDate(context);
                         },
                         child: Container(
-                          padding: EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             color: textSecondary,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            borderRadius: const BorderRadius.all(Radius.circular(6)),
                             border: Border.all(
                               color: textSecondary,
                             ),
@@ -1498,7 +1617,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(controller.dateCtlr.value),
-                              Icon(Icons.calendar_month)
+                              const Icon(Icons.calendar_month)
                             ],
                           ),
                         ),
@@ -1508,7 +1627,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             textRow("Note", ""),
             SizedBox(
               child: TextFormField(
@@ -1525,7 +1644,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           fontSize: fontVerySmall, color: primaryText),
                       hintText: "Enter...")),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
               height: 40,
               width: 50,
@@ -1545,14 +1664,14 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                 },
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
           ]),
         ));
   }
 
   Widget addNewExpenseCategory() {
     return Container(
-        padding: EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30),
         child: ListView(children: [
           textRow('Name', 'Status'),
           textFieldRow(
@@ -1565,7 +1684,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
             textInputType1: TextInputType.text,
             textInputType2: TextInputType.number,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             height: 40,
             width: 50,
@@ -1586,7 +1705,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
 
   Widget viewExpenseDetails() {
     return Container(
-        padding: EdgeInsets.only(left: 40, right: 40),
+        padding: const EdgeInsets.only(left: 40, right: 40),
         child: ListView(children: [
           SizedBox(
             height: 60,

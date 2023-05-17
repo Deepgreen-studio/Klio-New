@@ -39,7 +39,6 @@ class _IngredientManagementState extends State<IngredientManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       _ingredientController.update(['changeCustomTabBar']);
-
     });
 
     scrollController.addListener(() {
@@ -97,7 +96,7 @@ class _IngredientManagementState extends State<IngredientManagement>
           const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
-        const DataCell(Text('No Data')),
+         DataCell(Text('No Data',style: TextStyle(color: primaryText))),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         if (rowNumber == 8 || rowNumber == 7 || rowNumber == 5)
           const DataCell(CircularProgressIndicator(color: Colors.transparent)),
@@ -1055,8 +1054,6 @@ class _IngredientManagementState extends State<IngredientManagement>
           GetBuilder<IngredientController>(
               id: "changeCustomTabBar",
               builder: (context) {
-                print(
-                    "update=========================================updating ");
                 return Expanded(
                   flex: 1,
                   child: MaterialSegmentedControl(

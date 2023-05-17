@@ -72,17 +72,16 @@ class ReportManagementController extends GetxController with ErrorController{
     for (SaleReport.Datum it in temp.data!) {
       datums.add(it);
     }
-
     saleRepData.value.data?.addAll(datums);
     saleRepData.value.meta = temp.meta;
     allSalePageNumber++;
     if (saleRepData.value.meta!.total <= saleRepData.value.meta!.to) {
       haveMoreAllSale = false;
     }
-
     isLoadingAllSale = false;
     update(['saleId']);
   }
+
 
   Future<void> getStockReportDataList({dynamic id = ''})async{
     if (!haveMoreStockReport) {

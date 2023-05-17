@@ -8,6 +8,9 @@ import 'package:klio_staff/mvc/controller/transaction_management_controller.dart
 import 'package:klio_staff/mvc/view/dialog/custom_dialog.dart';
 import 'package:klio_staff/mvc/view/widget/custom_widget.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
+import 'package:klio_staff/mvc/model/bank_list_data_model.dart' as Bank;
+import 'package:klio_staff/mvc/model/transaction_list_data_model.dart' as Transaction;
+
 
 class TransactionManagement extends StatefulWidget {
   const TransactionManagement({Key? key}) : super(key: key);
@@ -17,14 +20,39 @@ class TransactionManagement extends StatefulWidget {
 }
 
 class _TransactionManagementState extends State<TransactionManagement>with SingleTickerProviderStateMixin {
-  TransactionsController _transactionsController=Get.put(TransactionsController());
+  TransactionsController _transactionsController = Get.put(TransactionsController());
   int _currentSelection = 0;
   late TabController controller;
+  late ScrollController scrollController;
+
   @override
   void initState() {
     // TODO: implement initState
     controller = TabController(vsync: this, length: 2);
+    controller.addListener((){
+      _currentSelection = controller.index;
+      _transactionsController.update(['changeCustomTabBar']);
+    });
+    scrollController= ScrollController();
+
+    scrollController.addListener(() {
+      if(scrollController.position.pixels>=
+      scrollController.position.maxScrollExtent * 0.95){
+        if(_currentSelection==0 && !_transactionsController.isLoadingBank){
+          _transactionsController.bankListDataList();
+        }else if(_currentSelection==1 && !_transactionsController.isLoadingTransition){
+          _transactionsController.transactionDataList();
+        }
+      }
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,7 +108,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                           newBankForm(), 100, 300);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -93,7 +121,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
       }
       else{
         return Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -118,7 +146,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                   ),
                   onPressed: () => print("it's pressed"),
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -133,12 +161,167 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
     );
   }
 
+  Widget customTapbarHeader(TabController controller) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        children: [
+          GetBuilder<TransactionsController>(
+            id: 'changeCustomTabBar',
+            builder: (context) {
+              return Expanded(
+                flex: 1,
+                child: MaterialSegmentedControl(
+                  children: {
+                    0: Text(
+                      'Bank List',
+                      style: TextStyle(
+                          color: _currentSelection == 0 ? white : textSecondary),
+                    ),
+                    1: Text(
+                      'Bank Transactions',
+                      style: TextStyle(
+                          color: _currentSelection == 1 ? white : textSecondary),
+                    ),
+                  },
+                  selectionIndex: _currentSelection,
+                  borderColor: Colors.grey,
+                  selectedColor: primaryColor,
+                  unselectedColor: Colors.white,
+                  borderRadius: 32.0,
+                  disabledChildren: [
+                    6,
+                  ],
+                  onSegmentChosen: (index) {
+                    if(index==0 && _transactionsController.bankListData.value.data.isEmpty){
+                      _transactionsController.bankListDataList();
+                    } else if(index ==1 && _transactionsController.transactionListData.value.data.isEmpty){
+                      _transactionsController.transactionDataList();
+                    }
+                    print(index);
+                    setState(() {
+                      _currentSelection = index;
+                      controller.index = _currentSelection;
+                    });
+                  },
+                ),
+              );
+            }
+          ),
+          Expanded(
+              flex: 1,
+              child: Container(
+                margin: const EdgeInsets.only(left: 100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Card(
+                      elevation: 0.0,
+                      child: SizedBox(
+                          width: 250,
+                          height: 30,
+                          child: TextField(
+                              style: const TextStyle(
+                                fontSize: fontSmall,
+                                color: Colors.blueAccent,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white10,
+                                contentPadding:
+                                const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  size: 18,
+                                ),
+                                hintText: "Search Item",
+                                hintStyle: TextStyle(
+                                    fontSize: fontVerySmall,
+                                    color: textSecondary),
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                disabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                errorBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.transparent)),
+                              ))),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Text(
+                            "Show :",
+                            style: TextStyle(color: textSecondary),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            height: 30,
+                            padding: const EdgeInsets.only(left: 15, right: 15),
+                            decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(color: Colors.black12)),
+                            child: DropdownButton<int>(
+                              hint: Text(
+                                '1',
+                                style: TextStyle(color: textSecondary),
+                              ),
+                              dropdownColor: white,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              iconSize: 15,
+                              underline: const SizedBox(),
+                              items: <int>[1, 2, 3, 4].map((int value) {
+                                return DropdownMenuItem<int>(
+                                  value: value,
+                                  child: Text(value.toString()),
+                                );
+                              }).toList(),
+                              onChanged: (int? newVal) {},
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Entries",
+                            style: TextStyle(color: textSecondary),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
   Widget bankListDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
+        controller: scrollController,
         child: GetBuilder<TransactionsController>(
+          id: 'bankId',
           builder: (controller) {
+            if (!controller.haveMoreBank && controller.bankListData.value.data.last.id != 0) {
+              controller.bankListData.value.data.add(Bank.Datum(id:0));
+            }
             return DataTable(
                 dataRowHeight: 70,
                 columns: [
@@ -152,9 +335,31 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                   DataColumn(label: Text('Action',style: TextStyle(color:textSecondary),),),
                 ],
 
-                rows: controller.bankListData.value.data.reversed
+                rows: controller.bankListData.value.data
                     .map(
-                      (item) => DataRow(
+                      (item) {
+                        if(item.id== 0 && !controller.haveMoreBank){
+                          return  DataRow(cells: [
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }else if(item== controller.bankListData.value.data.last && !controller.isLoadingBank && controller.haveMoreBank){
+                          return const DataRow(cells: [
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator()),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }
+                        return DataRow(
                     cells: [
                       DataCell(
                         Text('${item.id ?? ""}',style: TextStyle(color: primaryText),),
@@ -184,24 +389,24 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-                                color: Color(0xffFEF4E1),
+                                color: const Color(0xffFEF4E1),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                               child: Image.asset(
                                 "assets/edit-alt.png",
                                 height: 15,
                                 width: 15,
-                                color: Color(0xffED7402),
+                                color: const Color(0xffED7402),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Container(
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-                                color: Color(0xffFFE7E6),
+                                color: const Color(0xffFFE7E6),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                               child: GestureDetector(
@@ -216,26 +421,33 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                                   "assets/delete.png",
                                   height: 15,
                                   width: 15,
-                                  color: Color(0xffED0206),
+                                  color: const Color(0xffED0206),
                                 ),
                               ),
                             ),
                           ],
                         ),)
                     ],
-                  ),
+                  );
+                    },
                 ).toList());
           }
         ),
       ),
     );
   }
+
   Widget bankTransactionsDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
+        controller: scrollController,
         child: GetBuilder<TransactionsController>(
+            id: 'transId',
           builder: (controller) {
+            if (!controller.haveMoreTransition && controller.transactionListData.value.data.last.id != 0) {
+              controller.transactionListData.value.data.add(Transaction.Datum(id:0));
+            }
             return DataTable(
                 columnSpacing: 50,
                 columns: [
@@ -248,66 +460,93 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                   DataColumn(label: Text('Action',style: TextStyle(color:textSecondary),),),
                 ],
 
-                rows: controller.transactionListData.value.data.reversed
+                rows: controller.transactionListData.value.data
                     .map(
-                      (item) => DataRow(
-                    cells: [
-                      DataCell(
-                        Text('${item.id ?? ""}',style: TextStyle(color: primaryText),),
-                      ),
-                      DataCell(
-                        Text('${item.bank.name?? ""}',style: TextStyle(color: primaryText),),
-                      ),
-                      DataCell(
-                        Text('${item.date ?? ""}',style: TextStyle(color: primaryText),),
-                      ),
-                      DataCell(
-                        Text('${item.withdrawDepositeId ?? ""}',style: TextStyle(color: primaryText),),
-                      ),
-                      DataCell(
-                        Text('${item.amount ?? ""}',style: TextStyle(color: primaryText),),
-                      ),
-                      DataCell(
-                        Row(
-                          // mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                color: Color(0xffFEF4E1),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: Image.asset(
-                                "assets/edit-alt.png",
-                                height: 15,
-                                width: 15,
-                                color: Color(0xffED7402),
-                              ),
+                      (item) {
+                        if(item.id== 0 && !controller.haveMoreTransition){
+                          return  DataRow(cells: [
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }else if(item== controller.transactionListData.value.data.last && !controller.isLoadingTransition && controller.haveMoreTransition){
+                          return const DataRow(cells: [
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator()),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                            DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                          ]);
+                        }
+
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text('${item.id ?? ""}',
+                                style: TextStyle(color: primaryText),),
                             ),
-                            SizedBox(
-                              width: 10,
+                            DataCell(
+                              Text(item.bank?.name ?? "",
+                                style: TextStyle(color: primaryText),),
                             ),
-                            Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                color: Color(0xffFFE7E6),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: Image.asset(
-                                "assets/delete.png",
-                                height: 15,
-                                width: 15,
-                                color: Color(0xffED0206),
-                              ),
+                            DataCell(
+                              Text(item.date ?? "",
+                                style: TextStyle(color: primaryText),),
                             ),
+                            DataCell(
+                              Text(item.withdrawDepositeId ?? "",
+                                style: TextStyle(color: primaryText),),
+                            ),
+                            DataCell(
+                              Text(item.amount ?? "",
+                                style: TextStyle(color: primaryText),),
+                            ),
+                            DataCell(
+                              Row(
+                                // mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED7402),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED0206),
+                                    ),
+                                  ),
+                                ],
+                              ),)
                           ],
-                        ),)
-                    ],
-                  ),
+                        );
+                      },
                 )
                     .toList());
           }
@@ -317,149 +556,10 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
   }
 
 
-  Widget customTapbarHeader(TabController controller) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: MaterialSegmentedControl(
-              children: {
-                0: Text(
-                  'Bank List',
-                  style: TextStyle(
-                      color: _currentSelection == 0 ? white : textSecondary),
-                ),
-                1: Text(
-                  'Bank Transactions',
-                  style: TextStyle(
-                      color: _currentSelection == 1 ? white : textSecondary),
-                ),
-              },
-              selectionIndex: _currentSelection,
-              borderColor: Colors.grey,
-              selectedColor: primaryColor,
-              unselectedColor: Colors.white,
-              borderRadius: 32.0,
-              disabledChildren: [
-                6,
-              ],
-              onSegmentChosen: (index) {
-                print(index);
-                setState(() {
-                  _currentSelection = index;
-                  controller.index = _currentSelection;
-                });
-              },
-            ),
-          ),
-          Expanded(
-              flex: 1,
-              child: Container(
-                margin: EdgeInsets.only(left: 100),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Card(
-                      elevation: 0.0,
-                      child: SizedBox(
-                          width: 250,
-                          height: 30,
-                          child: TextField(
-                              style: TextStyle(
-                                fontSize: fontSmall,
-                                color: Colors.blueAccent,
-                              ),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white10,
-                                contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  size: 18,
-                                ),
-                                hintText: "Search Item",
-                                hintStyle: TextStyle(
-                                    fontSize: fontVerySmall,
-                                    color: textSecondary),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                              ))),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Show :",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            height: 30,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(color: Colors.black12)),
-                            child: DropdownButton<int>(
-                              hint: Text(
-                                '1',
-                                style: TextStyle(color: textSecondary),
-                              ),
-                              dropdownColor: white,
-                              icon: Icon(Icons.keyboard_arrow_down),
-                              iconSize: 15,
-                              underline: SizedBox(),
-                              items: <int>[1, 2, 3, 4].map((int value) {
-                                return DropdownMenuItem<int>(
-                                  value: value,
-                                  child: Text(value.toString()),
-                                );
-                              }).toList(),
-                              onChanged: (int? newVal) {},
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Entries",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )),
-        ],
-      ),
-    );
-  }
 
   Widget newBankForm() {
     return Container(
-      padding: EdgeInsets.all(25.0),
+      padding: const EdgeInsets.all(25.0),
       child: Form(
         key: _transactionsController.uploadBankKey,
         child: ListView(
@@ -487,7 +587,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                   ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                   Expanded(
                   child: SizedBox(
                   height:52,
@@ -510,7 +610,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                 )
               ],
             ),
-            SizedBox(height:10),
+            const SizedBox(height:10),
             textRow('Account Number', 'Branch Name'),
             Row(
               children: [
@@ -534,7 +634,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: SizedBox(
                     height:52,
@@ -557,7 +657,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                 )
               ],
             ),
-            SizedBox(height:10),
+            const SizedBox(height:10),
             textRow('Balance', 'Signature'),
             Row(
               children: [
@@ -581,7 +681,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                     flex: 1,
                     child: SizedBox(
@@ -612,7 +712,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                     )),
               ],
             ),
-            SizedBox(height:20),
+            const SizedBox(height:20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

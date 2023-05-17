@@ -26,14 +26,14 @@ class ExpenseCategoryModel {
 
 class Datum {
   Datum({
-    required this.id,
-    required this.name,
-    required this.status,
+     this.id,
+     this.name,
+     this.status,
   });
 
-  int id;
-  String name;
-  int status;
+  int? id;
+  String? name;
+  int? status;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],

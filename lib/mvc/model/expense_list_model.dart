@@ -26,21 +26,21 @@ class ExpenseDataList {
 
 class Datum {
   Datum({
-    required this.id,
-    required this.person,
-    required this.category,
-    required this.date,
-    required this.amount,
-    required this.note,
+     this.id,
+     this.person,
+     this.category,
+     this.date,
+     this.amount,
+     this.note,
     this.status,
   });
 
-  int id;
-  Category person;
-  Category category;
-  DateTime date;
-  String amount;
-  String note;
+  int? id;
+  Category? person;
+  Category? category;
+  DateTime? date;
+  String? amount;
+  String? note;
   dynamic status;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -55,9 +55,9 @@ class Datum {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "person": person.toJson(),
-    "category": category.toJson(),
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "person": person?.toJson(),
+    "category": category?.toJson(),
+    "date": "${date?.year.toString().padLeft(4, '0')}-${date?.month.toString().padLeft(2, '0')}-${date?.day.toString().padLeft(2, '0')}",
     "amount": amount,
     "note": note,
     "status": status,

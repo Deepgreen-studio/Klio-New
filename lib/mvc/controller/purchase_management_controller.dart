@@ -7,11 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:klio_staff/constant/value.dart';
 import 'package:klio_staff/mvc/controller/error_controller.dart';
 import 'package:klio_staff/mvc/model/expense_category_model.dart';
+import 'package:klio_staff/mvc/model/expense_category_model.dart' as ExpCategory;
 import 'package:klio_staff/mvc/model/expense_list_model.dart';
+import 'package:klio_staff/mvc/model/expense_list_model.dart' as Expense;
 import 'package:klio_staff/mvc/model/purchase_list_model.dart';
+import 'package:klio_staff/mvc/model/purchase_list_model.dart' as Purchase;
 import 'package:klio_staff/mvc/model/single_expense_data.dart';
 import 'package:klio_staff/mvc/model/single_purchase_data.dart';
-import 'package:klio_staff/mvc/model/waste_list_model.dart';
 import 'package:klio_staff/service/api/api_client.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
@@ -20,11 +22,23 @@ import 'package:klio_staff/utils/utils.dart';
 class PurchaseManagementController extends GetxController with ErrorController{
   Rx<PurchaseListModel> purchaseData = PurchaseListModel(data: []).obs;
   Rx<ExpenseDataList> expenseData = ExpenseDataList(data: []).obs;
-  Rx<WasteListModel> wasteData = WasteListModel(data:[]).obs;
   Rx<ExpenseCategoryModel> expenseCategoryData = ExpenseCategoryModel(data: []).obs;
+
   Rx<SinglePurchaseData> singlePurchaseData = SinglePurchaseData().obs;
   Rx<SingleExpenseData> singleExpenseData = SingleExpenseData().obs;
 
+  ///Api data fetch varriable
+  int purchasePageNumber = 1;
+  int expencePageNumber = 1;
+  int expenceCategoryPageNumber = 1;
+
+  bool isLoadingPurchase = false;
+  bool isLoadingExpence = false;
+  bool isLoadingExpenceCategory = false;
+
+  bool haveMorePurchase = true;
+  bool haveMoreExpence = true;
+  bool haveMoreExpenceCategory = true;
 
   ///Purchase Management
   Rx<TextEditingController> expenseCategoryNameCtlr = TextEditingController().obs;
@@ -100,13 +114,30 @@ class PurchaseManagementController extends GetxController with ErrorController{
 
 
   Future<void> getPurchaseDataList({dynamic id = ''})async{
-    String endPoint = id == '' ? 'finance/purchase' : 'finance/purchase/$id';
+    if(!haveMorePurchase){
+      return;
+    }
+    isLoadingPurchase =true;
+    String endPoint = 'finance/purchase?page=$purchasePageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    purchaseData.value = purchaseListModelFromJson(response);
-    update();
-    debugPrint("checkPurchaseData${purchaseData.value.data[0].id}");
+    var temp = purchaseListModelFromJson(response);
+    List<Purchase.Datum> datums= [];
+    for (Purchase.Datum it in temp.data) {
+      datums.add(it);
+    }
+    purchaseData.value.data.addAll(datums);
+    purchasePageNumber++;
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMorePurchase = false;
+    }
+    isLoadingPurchase = false;
+    update(['purchaseId']);
+
   }
 
   Future<void> getSinglePurchaseData({dynamic id = ''})async{
@@ -134,13 +165,30 @@ class PurchaseManagementController extends GetxController with ErrorController{
 
 
   Future<void> getExpenseDataList({dynamic id = ''})async{
-    String endPoint = id == '' ? 'finance/expense' : 'finance/expense/$id';
+    if(!haveMoreExpence){
+      return;
+    }
+    isLoadingExpence =true;
+    String endPoint = 'finance/expense?page=$expencePageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    expenseData.value = expenseDataListFromJson(response);
-    update();
-    debugPrint("checkExpenseData${expenseData.value.data[0].id}");
+    var temp = expenseDataListFromJson(response);
+    List<Expense.Datum> datums= [];
+    for (Expense.Datum it in temp.data) {
+      datums.add(it);
+    }
+    expenseData.value.data.addAll(datums);
+    expencePageNumber++;
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreExpence = false;
+    }
+    isLoadingExpence = false;
+    update(['expenseId']);
+
   }
 
   Future<void> addExpence(
@@ -218,13 +266,30 @@ class PurchaseManagementController extends GetxController with ErrorController{
   }
 
   Future<void> getExpenseCategoryList({dynamic id = ''})async{
-    String endPoint = id == '' ? 'finance/expense-category' : 'finance/expense-category/$id';
+    if (!haveMoreExpenceCategory) {
+      return;
+    }
+    isLoadingExpenceCategory=true;
+    String endPoint = 'finance/expense-category?page=$expenceCategoryPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    expenseCategoryData.value= expenseCategoryModelFromJson(response);
-    update();
-    debugPrint("checkExpenseCategoryData${expenseCategoryData.value.data[0].id}");
+    var temp= expenseCategoryModelFromJson(response);
+    List<ExpCategory.Datum> datums= [];
+    for (ExpCategory.Datum it in temp.data) {
+      datums.add(it);
+    }
+    expenseCategoryData.value.data.addAll(datums);
+    expenceCategoryPageNumber++;
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreExpenceCategory = false;
+    }
+    isLoadingExpenceCategory = false;
+    update(['expCategoryId']);
+
   }
 
 

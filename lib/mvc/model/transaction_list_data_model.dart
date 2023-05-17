@@ -27,21 +27,21 @@ class TransactionListModel {
 class Datum {
   Datum({
     this.id,
-    required this.withdrawDepositeId,
-    required this.amount,
-    required this.type,
-    required this.decsription,
-    required this.date,
-    required this.bank,
+     this.withdrawDepositeId,
+     this.amount,
+     this.type,
+     this.decsription,
+     this.date,
+     this.bank,
   });
 
   dynamic id;
-  String withdrawDepositeId;
-  String amount;
-  String type;
-  String decsription;
-  String date;
-  Bank bank;
+  String? withdrawDepositeId;
+  String? amount;
+  String? type;
+  String? decsription;
+  String? date;
+  Bank? bank;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"]==null?"":json["id"],
@@ -60,7 +60,7 @@ class Datum {
     "type": type,
     "decsription": decsription,
     "date": date,
-    "bank": bank.toJson(),
+    "bank": bank?.toJson(),
   };
 }
 

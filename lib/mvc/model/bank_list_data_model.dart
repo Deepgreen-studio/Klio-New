@@ -26,22 +26,22 @@ class BankListModel {
 
 class Datum {
   Datum({
-    required this.id,
-    required this.name,
-    required this.accountName,
-    required this.accountNumber,
-    required this.branchName,
-    required this.balance,
-    required this.signatureImage,
+     this.id,
+     this.name,
+     this.accountName,
+     this.accountNumber,
+     this.branchName,
+     this.balance,
+     this.signatureImage,
   });
 
-  int id;
-  String name;
-  String accountName;
-  String accountNumber;
-  String branchName;
-  String balance;
-  String signatureImage;
+  int? id;
+  String? name;
+  String? accountName;
+  String? accountNumber;
+  String? branchName;
+  String? balance;
+  String? signatureImage;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
