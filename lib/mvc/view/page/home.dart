@@ -53,9 +53,12 @@ class _HomeState extends State<Home> {
   bool gridImage = true;
   FoodManagementController foodCtlr = Get.put(FoodManagementController());
 
+
+
   @override
   void initState() {
     super.initState();
+
     applyThem(darkMode);
     if (widget.refresh) {
       homeController.loadHomeData();
@@ -160,6 +163,7 @@ class _HomeState extends State<Home> {
           Expanded(
             flex: 3,
             child: Obx(() {
+              print("********************************************* 123321");
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.zero,
@@ -312,7 +316,9 @@ class _HomeState extends State<Home> {
   Expanded buildMenuItems(Size size) {
     return Expanded(
       child: Obx(() {
+
         return GridView.builder(
+
           padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: size.width > size.height ? 3 : 2,

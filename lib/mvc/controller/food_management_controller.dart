@@ -142,7 +142,19 @@ class FoodManagementController extends GetxController with ErrorController {
    List<SinlgeVariantData> updateSelectedVariant=[];
   List<int> updateSelectVariantMenuItem=[];
 
+  bool isLoading = false;
 
+  bool haveMoreMenuItem = true;
+  bool haveMoreMealCategory= true;
+  bool haveMoreAllergy= true;
+  bool haveMoreAddons = true;
+  bool haveMoreVariants = true;
+
+  int menuPageNumber = 1;
+  int categoryPageNumber = 1;
+  int allergyPageNumber = 1;
+  int addonsPageNumber = 1;
+  int variantPageNumber = 1;
 
   @override
   Future<void> onInit() async {
@@ -195,12 +207,50 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getFoodDataList({dynamic id = ''}) async {
+
+    if (!haveMoreMenuItem) {
+      return;
+    }
+    isLoading = true;
+    /*var response = await ApiClient()
+        .get('pos/category', header: Utils.apiHeader)
+        .catchError(handleApiError);*/
+
+    String endPoint = id == '' ? 'food/menu?page=$menuPageNumber' : 'food/menu/$id';
+
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+
+    var temp = foodMenuManagementFromJson(response);
+    List<FoodMenuManagementDatum> datums = temp.data ?? [];
+
+
+    menusData.value.data?.addAll(datums);
+
+    menuPageNumber++;
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreMenuItem = false;
+    }
+
+    isLoading = false;
+
+    update(["menuDataTable"]);
+
+/*
     String endPoint = id == '' ? 'food/menu' : 'food/menu/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     menusData.value = foodMenuManagementFromJson(response);
     update();
+
+    */
   }
 
   Future<void> getFoodMealPeriod({dynamic id = ''}) async {
@@ -215,41 +265,150 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getFoodMenuCategory({dynamic id = ''}) async {
-    String endPoint = id == '' ? 'food/category' : 'food/category/$id';
+
+    if (!haveMoreMealCategory) {
+      return;
+    }
+    isLoading = true;
+
+
+    String endPoint = id == '' ? 'food/category?page=$categoryPageNumber' : 'food/category/$id';
+
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodMenuCategory.value = foodMenuCategoryFromJson(response);
-    update();
+
+    var temp = foodMenuCategoryFromJson(response);
+    List<MenuCategory> datums = temp.data ?? [];
+
+
+    foodMenuCategory.value.data?.addAll(datums);
+
+    categoryPageNumber++;
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreMealCategory = false;
+    }
+
+    isLoading = false;
+
+    update(["categoryDataTable"]);
+
+
   }
 
   Future<void> getFoodMenuAllergy({dynamic id = ''}) async {
-    String endPoint = id == '' ? 'food/allergy' : 'food/allergy/$id';
+
+    if (!haveMoreAllergy) {
+      return;
+    }
+    isLoading = true;
+
+
+    String endPoint = id == '' ? 'food/allergy?page=$allergyPageNumber' : 'food/allergy/$id';
+
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodMenuAllergy.value = foodMenuAllergyFromJson(response);
-    update();
+
+    var temp = foodMenuAllergyFromJson(response);
+    List<Allergy> datums = temp.data ?? [];
+
+
+    foodMenuAllergy.value.data?.addAll(datums);
+
+    allergyPageNumber++;
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreAllergy = false;
+    }
+
+    isLoading = false;
+
+    update(["allergyDataTable"]);
+
+
   }
 
   Future<void> getFoodMenuAddons({dynamic id = ''}) async {
-    String endPoint = id == '' ? 'food/addon' : 'food/addon/$id';
+
+    if (!haveMoreAddons) {
+      return;
+    }
+    isLoading = true;
+    /*var response = await ApiClient()
+        .get('pos/category', header: Utils.apiHeader)
+        .catchError(handleApiError);*/
+
+    String endPoint = id == '' ? 'food/addon?page=$addonsPageNumber' : 'food/addon/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodAddons.value = foodMenuAddonsFromJson(response);
-    update();
+
+    var temp = foodMenuAddonsFromJson(response);
+    List<MenuAddon> datums = temp.data ?? [];
+
+
+    foodAddons.value.data?.addAll(datums);
+
+    addonsPageNumber++;
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreAddons = false;
+    }
+
+    isLoading = false;
+
+    update(["addonsDataTable"]);
+
+
   }
 
   Future<void> getFoodMenuVariants({dynamic id = ''}) async {
-    String endPoint = id == '' ? 'food/variant' : 'food/variant/$id';
+
+    if (!haveMoreVariants) {
+      return;
+    }
+    isLoading = true;
+
+    String endPoint = id == '' ? 'food/variant?page=$variantPageNumber' : 'food/variant/$id';
+
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    //  debugPrint("checkFoodVariants$response");
-    foodVariants.value = foodMenuVariantsFromJson(response);
-    update();
-    // debugPrint("checkFoodVariants${foodVariants.value}");
+
+    var temp = foodMenuVariantsFromJson(response);
+    List<Variant> datums = temp.data ?? [];
+
+
+    foodVariants.value.data?.addAll(datums);
+
+    variantPageNumber++;
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+    if (total <= to) {
+      haveMoreVariants = false;
+    }
+
+    isLoading = false;
+
+    update(["variantDataTable"]);
+
   }
 
 

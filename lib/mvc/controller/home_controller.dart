@@ -42,7 +42,7 @@ class HomeController extends GetxController with ErrorController {
   Rx<TextEditingController> controllerAddress =
       TextEditingController(text: '').obs;
   RxBool withoutTable = false.obs;
-  int orderTypeNumber = 0;
+  int orderTypeNumber = 1;
   Rx<DashData> dashData = DashData().obs;
 
   // temp variables
@@ -152,6 +152,7 @@ class HomeController extends GetxController with ErrorController {
         .catchError(handleApiError);
     if (response == null) return;
     orders.value = ordersFromJson(response);
+    orders.refresh();
   }
 
   Future<void> cancelOrder(int id) async {
@@ -213,7 +214,9 @@ class HomeController extends GetxController with ErrorController {
     Utils.showSnackBar("Customer added successfully");
   }
 
-  void addUpdateOrder() {
+  Future<void> addUpdateOrder() async {
+
+
     if (orderTypeNumber == 1 && withoutTable.isFalse) {
       Utils.showSnackBar("No table selected for new order");
       return;
@@ -247,15 +250,15 @@ class HomeController extends GetxController with ErrorController {
             {"id": i.id, "person": int.parse(i.person.toString())}
       ]
     });
-    print(body);
+
     var response;
     if (isUpdate.value) {
-      response = ApiClient()
+      response = await ApiClient()
           .put('pos/order/${order.value.data!.id!.toInt()}', body,
               header: Utils.apiHeader)
           .catchError(handleApiError);
     } else {
-      response = ApiClient()
+      response = await ApiClient()
           .post('pos/order', body, header: Utils.apiHeader)
           .catchError(handleApiError);
     }
@@ -266,7 +269,7 @@ class HomeController extends GetxController with ErrorController {
     withoutTable.value = false;
 
     getOrders();
-    orders.refresh();
+
     Utils.hidePopup();
     Utils.showSnackBar("Order added successfully");
   }

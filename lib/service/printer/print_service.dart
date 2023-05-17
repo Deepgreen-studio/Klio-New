@@ -298,7 +298,8 @@ class DefaultPrinter {
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Discount",
-              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
+              '${homeController.settings.value.data![11].value}' +
+                  homeController.order.value.data!.discount.toString(),
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Vat",
@@ -309,7 +310,8 @@ class DefaultPrinter {
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Service",
-              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.serviceCharge.toString(),
+              '${homeController.settings.value.data![11].value}' +
+                  homeController.order.value.data!.serviceCharge.toString(),
               MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Give Amount",
@@ -326,7 +328,8 @@ class DefaultPrinter {
               "Payment Method", method, MainAxisAlignment.spaceBetween),
           textMixer2Pw(
               "Delivery Charge",
-              '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.deliveryCharge.toString(),
+              '${homeController.settings.value.data![11].value}' +
+                  homeController.order.value.data!.deliveryCharge.toString(),
               MainAxisAlignment.spaceBetween),
           pw.Divider(thickness: 0.1, height: 0.1),
           pw.SizedBox(height: 10),
@@ -378,7 +381,7 @@ class SumniPrinter {
     await SunmiPrinter.printText('Order Summary');
 
     await SunmiPrinter.setFontSize(SunmiFontSize.MD);
-    await SunmiPrinter.printText('SL - Name - V. Name - Qty - Total');
+    await SunmiPrinter.printText('SL -  Name -   V. Name  -  Qty  -  Total');
     // await SunmiPrinter.printRow(cols: [
     //   ColumnMaker(text: 'SL', width: 1, align: SunmiPrintAlign.LEFT),
     //   ColumnMaker(text: 'Name', width: 3, align: SunmiPrintAlign.LEFT),
@@ -402,11 +405,12 @@ class SumniPrinter {
       //   ColumnMaker(text: '${item.price!}', width: 2, align: SunmiPrintAlign.LEFT),
       // ]);
       await SunmiPrinter.printText(
-          '${(i+1).toString()} - ${item.food!.name} - ${item.variant!.name} - ${item.quantity!} - ${item.totalPrice!}');
+          '${(i + 1).toString()} - ${item.food!.name} - ${item.variant!.name} - ${item.quantity!} - ${item.totalPrice!}');
       for (AddonsDatum addons in homeController
           .order.value.data!.orderDetails!.data![i].addons!.data!
           .toList()) {
-        await SunmiPrinter.printText('  ${addons.name}  ${addons.quantity}x${addons.price}');
+        await SunmiPrinter.printText(
+            '  ${addons.name}  ${addons.quantity}x${addons.price}');
       }
     }
 
@@ -428,11 +432,19 @@ class SumniPrinter {
     await SunmiPrinter.line();
 
     await SunmiPrinter.printText(
-        'Grand Total: ${homeController.order.value.data!.grandTotal}');
+        'Grand Total: ${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}');
     await SunmiPrinter.printText(
-        'Give Amount: ${homeController.giveAmount.value}');
-    await SunmiPrinter.printText(
-        'Due: ${(homeController.giveAmount.value - double.parse(homeController.order.value.data!.grandTotal!)).toStringAsFixed(2)}');
+        'Give Amount: ${homeController.settings.value.data![11].value}${homeController.giveAmount.value}');
+    if (double.parse(homeController.order.value.data!.grandTotal!) >
+        homeController.giveAmount.value) {
+      await SunmiPrinter.printText(
+          'Due: ${(double.parse(homeController.order.value.data!.grandTotal!) - homeController.giveAmount.value).toStringAsFixed(2)}');
+    }
+    if (int.parse(homeController.order.value.data!.grandTotal!) <=
+        homeController.giveAmount.value) {
+      await SunmiPrinter.printText(
+          'Change: ${(homeController.giveAmount.value - double.parse(homeController.order.value.data!.grandTotal!)).toStringAsFixed(2)}');
+    }
 
     await SunmiPrinter.lineWrap(2);
     await SunmiPrinter.setFontSize(SunmiFontSize.MD);

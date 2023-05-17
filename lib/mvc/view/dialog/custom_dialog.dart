@@ -616,7 +616,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                                       primaryColor,
                                       0,
                                       2,
-                                      16, onPressed: () {
+                                      23, onPressed: () {
                                     homeController.menuData.value.addons!
                                             .data![index].quantity =
                                         Utils.incrementDecrement(
@@ -650,7 +650,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                                       primaryColor,
                                       0,
                                       2,
-                                      16, onPressed: () {
+                                      23, onPressed: () {
                                     homeController.menuData.value.addons!
                                             .data![index].quantity =
                                         Utils.incrementDecrement(
@@ -694,9 +694,28 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                 minWidth: 160,
                 // padding: EdgeInsets.all(20),
                 onPressed: () {
-                  homeController.cardList.add(homeController.menuData.value);
+                  int a = -1;
+
+                  for (int i = 0; i < homeController.cardList.length; i++) {
+                    if(homeController.cardList[i].name == homeController.menuData.value.name){
+                      a = i;
+                      break;
+                    }
+                  }
+
+                  print(a);
+
+                  print("----------------------------------- aaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+                  if (a < 0) {
+                    homeController.cardList.add(homeController.menuData.value);
+                  } else {
+                    homeController.cardList[a].quantity++;
+                  }
+
                   Utils.hidePopup();
                   Utils.hidePopup();
+                  homeController.cardList.refresh();
                   CustomerDisplay.cartPrint(homeController);
                   // print(homeController.menuData.value.toJson());
                   // print(homeController.menuData.value.qty);
@@ -999,8 +1018,8 @@ Widget tableBody(BuildContext context, bool showOnly) {
         ),
       ),
       !showOnly
-          ? SizedBox()
-          : SizedBox(
+          ? const SizedBox()
+          : const SizedBox(
               height: 10,
             ),
       showOnly
@@ -1427,7 +1446,8 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Discount: ',
-                    '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
+                    '${homeController.settings.value.data![11].value}' +
+                        homeController.order.value.data!.discount.toString(),
                     MainAxisAlignment.end)),
           ],
         ),
@@ -1483,8 +1503,7 @@ Widget finalizeOrder(BuildContext context) {
         SizedBox(height: 20),
         Center(
           child: Text(
-            'Reward: ${homeController.settings.value.data![21].value}, 1R = ${homeController.settings.value.data![11].value}${homeController.settings.value.data![23].value}, You get ${homeController.settings.value.data![11].value}${double.parse(homeController.settings.value.data![21].value!) *
-                double.parse(homeController.settings.value.data![23].value!)}',
+            'Reward: ${homeController.settings.value.data![21].value}, 1R = ${homeController.settings.value.data![11].value}${homeController.settings.value.data![23].value}, You get ${homeController.settings.value.data![11].value}${double.parse(homeController.settings.value.data![21].value!) * double.parse(homeController.settings.value.data![23].value!)}',
             style: TextStyle(fontSize: fontSmall, color: primaryText),
           ),
         ),
@@ -1906,7 +1925,8 @@ Widget orderInvoice(BuildContext context, String method) {
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Discount",
-                    '${homeController.settings.value.data![11].value}' + homeController.order.value.data!.discount.toString(),
+                    '${homeController.settings.value.data![11].value}' +
+                        homeController.order.value.data!.discount.toString(),
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Vat",

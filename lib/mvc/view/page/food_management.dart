@@ -36,10 +36,29 @@ class _FoodManagementState extends State<FoodManagement>
 
   Variant? selectedValue;
   List<String> selected = [];
+  late ScrollController scrollController;
 
   @override
   void initState() {
     // TODO: implement initState
+    scrollController = ScrollController();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent * 0.95) {
+        if (_currentSelection == 0 && !foodCtlr.isLoading) {
+          foodCtlr.getFoodDataList();
+        } else if (_currentSelection == 2 && !foodCtlr.isLoading) {
+          foodCtlr.getFoodMenuCategory();
+        } else if (_currentSelection == 3 && !foodCtlr.isLoading) {
+          foodCtlr.getFoodMenuAllergy();
+        } else if (_currentSelection == 4 && !foodCtlr.isLoading) {
+          foodCtlr.getFoodMenuAddons();
+        } else if (_currentSelection == 5 && !foodCtlr.isLoading) {
+          foodCtlr.getFoodMenuVariants();
+        }
+      }
+    });
     controller = TabController(vsync: this, length: 6);
     super.initState();
   }
@@ -47,231 +66,276 @@ class _FoodManagementState extends State<FoodManagement>
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: Container(
-      height: double.infinity,
-      width: double.infinity,
-      child: Column(
-        children: [
-          itemTitleHeader(),
-          customTapbarHeader(controller),
-          Expanded(
-            child: TabBarView(controller: controller, children: [
-              menuDataTable(context),
-              MealPeriodDataTable(context),
-              FoodCategoryDataTable(context),
-              FoodAllergyDataTable(context),
-              FoodAddonsDataTable(context),
-              FoodVariantsDataTable(context),
-            ]),
-          )
-        ],
+      child: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: Column(
+          children: [
+            itemTitleHeader(),
+            customTapbarHeader(controller),
+            Expanded(
+              child: TabBarView(controller: controller, children: [
+                menuDataTable(context),
+                MealPeriodDataTable(context),
+                FoodCategoryDataTable(context),
+                FoodAllergyDataTable(context),
+                FoodAddonsDataTable(context),
+                FoodVariantsDataTable(context),
+              ]),
+            )
+          ],
+        ),
       ),
-    ));
+    );
+  }
+
+  DataRow buildLoadingAndNoData(bool showLoading, int rowNumber) {
+    if (!showLoading) {
+      return DataRow(cells: [
+        if (rowNumber == 6)
+          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        if (rowNumber == 6 || rowNumber == 5)
+          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(Text('No Data')),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        //if (rowNumber == 8 || rowNumber == 7 || rowNumber == 5)
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+      ]);
+    } else {
+      return DataRow(cells: [
+        if (rowNumber == 6)
+          const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(CircularProgressIndicator()),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+        const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+      ]);
+    }
   }
 
   Widget menuDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<FoodManagementController>(builder: (controller) {
-          return DataTable(
-              dataRowHeight: 70,
-              columns: [
-                // column to set the name
-                DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Price',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Vat (%)',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Image',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Image',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.menusData.value.data!.reversed
-                  .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.price ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.taxVat ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                item.image!,
-                              ),
-                              //    image: NetworkImage('https://picsum.photos/250?image=9',),
-                              fit: BoxFit.fill,
+        controller: scrollController,
+        child: GetBuilder<FoodManagementController>(
+            id: "menuDataTable",
+            builder: (controller) {
+              List<FoodMenuManagementDatum> data =
+                  controller.menusData.value.data ?? [];
+              if (!controller.haveMoreMenuItem && data.last.id != 0) {
+                data.add(FoodMenuManagementDatum(id: 0));
+              }
+              return DataTable(
+                  dataRowHeight: 70,
+                  columns: [
+                    // column to set the name
+                    DataColumn(
+                      label: Text(
+                        'SL NO',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Price',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Vat (%)',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Image',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Image',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                  ],
+                  rows: data.map(
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreMenuItem) {
+                        return buildLoadingAndNoData(false, 6);
+                      } else if (item ==
+                              controller.menusData.value.data!.last &&
+                          !controller.isLoading &&
+                          controller.haveMoreMenuItem) {
+                        return buildLoadingAndNoData(true, 6);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
                           ),
-                        )),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  foodCtlr
-                                      .getSingleMenuDetails(id: item.id)
-                                      .then((value) {
-                                    showCustomDialog(context, "Menu Details",
-                                        viewMenuDetails(), 100, 400);
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffE1FDE8),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/hide.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xff00A600),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  foodCtlr
-                                      .getSingleMenuDetails(id: item.id)
-                                      .then((value) {
-                                    foodCtlr.nameUpdateTextCtlr.text = foodCtlr
-                                        .foodSingleItemDetails
-                                        .value
-                                        .data!
-                                        .name!;
-                                    foodCtlr.varinetUpdatePricEditingCtlr.text =
-                                        foodCtlr.foodSingleItemDetails.value
-                                            .data!.price!;
-                                    foodCtlr.caloriesUpdateEditingCtlr.text = foodCtlr
-                                        .foodSingleItemDetails
-                                        .value
-                                        .data!
-                                        .calories!;
-                                    foodCtlr.descriptionUpdateEditingCtlr.text =
-                                        foodCtlr.foodSingleItemDetails.value
-                                            .data!.description!;
-                                    foodCtlr.vatUpdateEditingCtlr.text = foodCtlr
-                                        .foodSingleItemDetails
-                                        .value
-                                        .data!
-                                        .taxVat!;
-                                    foodCtlr.processTimeUpdateEditingCtlr.text =
-                                        foodCtlr.foodSingleItemDetails.value
-                                            .data!.processingTime!;
-                                    showCustomDialogResponsive(context, "Update menu",
-                                    updateMenuForm( item.id), 300, 400);
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  showWarningDialog("Are you sure to delete?", onAccept: (){
-                                    foodCtlr.deleteMenu(id: item.id);
-                                    Get.back();
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          DataCell(
+                            Text(
+                              item.name ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  )
-                  .toList());
-        }),
+                          DataCell(
+                            Text(
+                              item.price ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              item.taxVat ?? "",
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  item.image!,
+                                ),
+                                //    image: NetworkImage('https://picsum.photos/250?image=9',),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSingleMenuDetails(id: item.id)
+                                        .then((value) {
+                                      showCustomDialog(context, "Menu Details",
+                                          viewMenuDetails(), 100, 400);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffE1FDE8),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/hide.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xff00A600),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSingleMenuDetails(id: item.id)
+                                        .then((value) {
+                                      foodCtlr.nameUpdateTextCtlr.text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.name!;
+                                      foodCtlr.varinetUpdatePricEditingCtlr
+                                              .text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.price!;
+                                      foodCtlr.caloriesUpdateEditingCtlr.text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.calories!;
+                                      foodCtlr.descriptionUpdateEditingCtlr
+                                              .text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.description!;
+                                      foodCtlr.vatUpdateEditingCtlr.text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.taxVat!;
+                                      foodCtlr.processTimeUpdateEditingCtlr
+                                              .text =
+                                          foodCtlr.foodSingleItemDetails.value
+                                              .data!.processingTime!;
+                                      showCustomDialogResponsive(
+                                          context,
+                                          "Update menu",
+                                          updateMenuForm(item.id),
+                                          300,
+                                          400);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED7402),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWarningDialog("Are you sure to delete?",
+                                        onAccept: () {
+                                      foodCtlr.deleteMenu(id: item.id);
+                                      Get.back();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED0206),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
+            }),
       ),
     );
   }
@@ -348,14 +412,15 @@ class _FoodManagementState extends State<FoodManagement>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   foodCtlr
                                       .getSinleMelaPeriodDetails(id: item.id)
                                       .then((value) {
                                     foodCtlr.mealPeriodUpdateTextCtlr.text =
-                                    foodCtlr.singleMealPeriodDetails.value
-                                        .data!.name!;
-                                    print(foodCtlr.mealPeriodUpdateTextCtlr.text);
+                                        foodCtlr.singleMealPeriodDetails.value
+                                            .data!.name!;
+                                    print(
+                                        foodCtlr.mealPeriodUpdateTextCtlr.text);
                                     showCustomDialogResponsive(
                                         context,
                                         'Update Meal Period',
@@ -383,8 +448,10 @@ class _FoodManagementState extends State<FoodManagement>
                                 width: 10,
                               ),
                               GestureDetector(
-                                onTap: (){
-                                  showWarningDialog("Are you sure to delete this?",onAccept: (){
+                                onTap: () {
+                                  showWarningDialog(
+                                      "Are you sure to delete this?",
+                                      onAccept: () {
                                     foodCtlr.deleteMealPeriod(id: item.id);
                                     Get.back();
                                   });
@@ -420,149 +487,170 @@ class _FoodManagementState extends State<FoodManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<FoodManagementController>(builder: (controller) {
-          return DataTable(
-              dataRowHeight: 70,
-              columnSpacing: 50,
-              columns: [
-                // column to set the name
-                DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Image',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'is Drinks',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Action',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.foodMenuCategory.value.data!.reversed
-                  .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                item.image!,
-                              ),
-                              fit: BoxFit.fill,
+        controller: scrollController,
+        child: GetBuilder<FoodManagementController>(
+            id: "categoryDataTable",
+            builder: (controller) {
+              List<MenuCategory> data =
+                  controller.foodMenuCategory.value.data ?? [];
+              if (!controller.haveMoreMealCategory && data.last.id != 0) {
+                data.add(MenuCategory(id: 0));
+              }
+              return DataTable(
+                  dataRowHeight: 70,
+                  columnSpacing: 50,
+                  columns: [
+                    // column to set the name
+                    DataColumn(
+                      label: Text(
+                        'SL NO',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Image',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'is Drinks',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Action',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                  ],
+                  rows: data.map(
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreMealCategory) {
+                        return buildLoadingAndNoData(false, 5);
+                      } else if (item ==
+                          controller
+                              .foodMenuCategory.value.data?.last &&
+                          !controller.isLoading &&
+                          controller.haveMoreMealCategory) {
+                        return buildLoadingAndNoData(true, 5);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
                           ),
-                        )),
-                        DataCell(
-                          Text(
-                            '${item.isDrinks ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              '${item.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap:(){
-                                  foodCtlr
-                                      .getSinleMealCategoryDetails(id: item.id)
-                                      .then((value) {
-                                    foodCtlr.mealCategoryUpdateTextCtlr.text = foodCtlr.singleMealCategoryDetails.value
-                                        .data!.name!;
-                                    print('mealPeriod CategoryDetails${foodCtlr.mealCategoryUpdateTextCtlr.text}');
-                                    showCustomDialogResponsive(
-                                        context,
-                                        'Update Meal Category',
-                                        addMenuCategoryUpdateForm(item.id),
-                                        200,
-                                        300);
-                                   });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
+                          DataCell(Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  item.image!,
+                                ),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )),
+                          DataCell(
+                            Text(
+                              '${item.isDrinks ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSinleMealCategoryDetails(
+                                            id: item.id)
+                                        .then((value) {
+                                      foodCtlr.mealCategoryUpdateTextCtlr.text =
+                                          foodCtlr.singleMealCategoryDetails
+                                              .value.data!.name!;
+                                      print(
+                                          'mealPeriod CategoryDetails${foodCtlr.mealCategoryUpdateTextCtlr.text}');
+                                      showCustomDialogResponsive(
+                                          context,
+                                          'Update Meal Category',
+                                          addMenuCategoryUpdateForm(item.id),
+                                          200,
+                                          300);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED7402),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  showWarningDialog("Are you sure to delete?", onAccept: (){
-                                    foodCtlr.deleteMealCategory(id:item.id);
-                                    Get.back();
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWarningDialog("Are you sure to delete?",
+                                        onAccept: () {
+                                      foodCtlr.deleteMealCategory(id: item.id);
+                                      Get.back();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED0206),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                  .toList());
-        }),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
+            }),
       ),
     );
   }
@@ -571,133 +659,153 @@ class _FoodManagementState extends State<FoodManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<FoodManagementController>(builder: (controller) {
-          return DataTable(
-              dataRowHeight: 70,
-              columnSpacing: 50,
-              columns: [
-                // column to set the name
-                DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Icon',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Action',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.foodMenuAllergy.value.data!.reversed
-                  .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                item.image!,
-                              ),
-                              fit: BoxFit.fill,
+        controller: scrollController,
+        child: GetBuilder<FoodManagementController>(
+            id: "allergyDataTable",
+            builder: (controller) {
+              List<Allergy> data = controller.foodMenuAllergy.value.data ?? [];
+              if (!controller.haveMoreAllergy && data.last.id != 0) {
+                data.add(Allergy(id: 0));
+              }
+              return DataTable(
+                  dataRowHeight: 70,
+                  columnSpacing: 50,
+                  columns: [
+                    // column to set the name
+                    DataColumn(
+                      label: Text(
+                        'SL NO',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Icon',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Action',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                  ],
+                  rows: data.map(
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreAllergy) {
+                        return buildLoadingAndNoData(false, 4);
+                      } else if (item ==
+                              controller.foodMenuAllergy.value.data?.last &&
+                          !controller.isLoading &&
+                          controller.haveMoreAllergy) {
+                        return buildLoadingAndNoData(true, 4);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
                           ),
-                        )),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap:(){
-                                  foodCtlr.getSinleMealAllergyDetails(id: item.id).then((value) {
-                                    foodCtlr.mealAllergyUpdateTextCtlr.text=foodCtlr.singleMealAllergyDetails.value.data!.name!;
-                                    showCustomDialogResponsive(
-                                        context,
-                                        'Update Meal Allergy',
-                                        addMenuAllergyUpdateForm(item.id),
-                                        200,
-                                        300);
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  showWarningDialog("Are you sure to delete?",onAccept: (){
-                                    foodCtlr.deleteMealAllergy(id: item.id);
-                                    Get.back();
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          DataCell(
+                            Text(
+                              '${item.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  )
-                  .toList());
-        }),
+                          DataCell(Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  item.image!,
+                                ),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSinleMealAllergyDetails(id: item.id)
+                                        .then((value) {
+                                      foodCtlr.mealAllergyUpdateTextCtlr.text =
+                                          foodCtlr.singleMealAllergyDetails
+                                              .value.data!.name!;
+                                      showCustomDialogResponsive(
+                                          context,
+                                          'Update Meal Allergy',
+                                          addMenuAllergyUpdateForm(item.id),
+                                          200,
+                                          300);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED7402),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWarningDialog("Are you sure to delete?",
+                                        onAccept: () {
+                                      foodCtlr.deleteMealAllergy(id: item.id);
+                                      Get.back();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED0206),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
+            }),
       ),
     );
   }
@@ -706,162 +814,192 @@ class _FoodManagementState extends State<FoodManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<FoodManagementController>(builder: (controller) {
-          return DataTable(
-              dataRowHeight: 80,
-              // columnSpacing: 120,
-              horizontalMargin: 15,
-              columns: [
-                DataColumn(
-                  label: Text(
-                    'SL.No',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Price',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Image',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Details',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Action',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.foodAddons.value.data!.reversed
-                  .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.price ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                item.image!,
-                              ),
-                              fit: BoxFit.fill,
+        controller: scrollController,
+        child: GetBuilder<FoodManagementController>(
+            id: "addonsDataTable",
+            builder: (controller) {
+              List<MenuAddon> data = controller.foodAddons.value.data ?? [];
+              if (!controller.haveMoreAddons && data.last.id != 0) {
+                data.add(MenuAddon(id: 0));
+              }
+              return DataTable(
+                  dataRowHeight: 80,
+                  // columnSpacing: 120,
+                  horizontalMargin: 15,
+                  columns: [
+                    DataColumn(
+                      label: Text(
+                        'SL.No',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Price',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Image',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Details',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Action',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                  ],
+                  rows: data.map(
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreAddons) {
+                        return buildLoadingAndNoData(false, 6);
+                      } else if (item ==
+                              controller.foodAddons.value.data?.last &&
+                          !controller.isLoading &&
+                          controller.haveMoreAddons) {
+                        return buildLoadingAndNoData(true, 6);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
                           ),
-                        )),
-                        DataCell(
-                          Text(
-                            '${item.details ?? ""}',
-                            style: TextStyle(color: primaryText),
+                          DataCell(
+                            Text(
+                              '${item.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap:(){
-                                  foodCtlr.getSinleMealAdddonsDetails(id: item.id).then((value) {
-                                    foodCtlr.udpateMealAddonsNameTextCtlr.text=foodCtlr.singleMealAddonsDetails.value.data!.name!;
-                                    foodCtlr.updateMealAddonsPriceTextCtlr.text=foodCtlr.singleMealAddonsDetails.value.data!.price!;
-                                    foodCtlr.updateMealAddonsDetailsTextCtlr.text=foodCtlr.singleMealAddonsDetails.value.data!.details!;
-                                    print('checkAddonss${foodCtlr.udpateMealAddonsNameTextCtlr.text}');
-                                    print('checkAddonss${foodCtlr.updateMealAddonsPriceTextCtlr.text}');
-                                    print('checkAddonss${foodCtlr.updateMealAddonsDetailsTextCtlr.text}');
-                                    showCustomDialogResponsive(
-                                        context,
-                                        'Update Meal Addons',
-                                        upateMenuAddonsForm(item.id),
-                                        200,
-                                        300);
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
+                          DataCell(
+                            Text(
+                              '${item.price ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  item.image!,
+                                ),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )),
+                          DataCell(
+                            Text(
+                              '${item.details ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSinleMealAdddonsDetails(id: item.id)
+                                        .then((value) {
+                                      foodCtlr.udpateMealAddonsNameTextCtlr
+                                              .text =
+                                          foodCtlr.singleMealAddonsDetails.value
+                                              .data!.name!;
+                                      foodCtlr.updateMealAddonsPriceTextCtlr
+                                              .text =
+                                          foodCtlr.singleMealAddonsDetails.value
+                                              .data!.price!;
+                                      foodCtlr.updateMealAddonsDetailsTextCtlr
+                                              .text =
+                                          foodCtlr.singleMealAddonsDetails.value
+                                              .data!.details!;
+                                      print(
+                                          'checkAddonss${foodCtlr.udpateMealAddonsNameTextCtlr.text}');
+                                      print(
+                                          'checkAddonss${foodCtlr.updateMealAddonsPriceTextCtlr.text}');
+                                      print(
+                                          'checkAddonss${foodCtlr.updateMealAddonsDetailsTextCtlr.text}');
+                                      showCustomDialogResponsive(
+                                          context,
+                                          'Update Meal Addons',
+                                          upateMenuAddonsForm(item.id),
+                                          200,
+                                          300);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED7402),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap:(){
-                                  showWarningDialog("Are you sure to delete?", onAccept: (){
-                                    foodCtlr. deleteMealAddons(id: item.id);
-                                    Get.back();
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWarningDialog("Are you sure to delete?",
+                                        onAccept: () {
+                                      foodCtlr.deleteMealAddons(id: item.id);
+                                      Get.back();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED0206),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                  .toList());
-        }),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
+            }),
       ),
     );
   }
@@ -870,135 +1008,166 @@ class _FoodManagementState extends State<FoodManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-        child: GetBuilder<FoodManagementController>(builder: (controller) {
-          return DataTable(
-              dataRowHeight: 70,
-              columnSpacing: 50,
-              columns: [
-                // column to set the name
-                DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Menu Name',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Price',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Action',
-                    style: TextStyle(color: textSecondary),
-                  ),
-                ),
-              ],
-              rows: controller.foodVariants.value.data!.reversed
-                  .map(
-                    (item) => DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            '${item.id ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.food!.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.name ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            '${item.price ?? ""}',
-                            style: TextStyle(color: primaryText),
-                          ),
-                        ),
-                        DataCell(
-                          Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap:(){
-                                  foodCtlr.getSinleVariantDetails(id: item.id,).then((value) {
-                                    foodCtlr.updateMealVariantsNameTextCtlr.text= foodCtlr.singleVariantDetails.value.data!.name!;
-                                    foodCtlr.updateMealVariantsPriceTextCtlr.text= foodCtlr.singleVariantDetails.value.data!.price!.toString();
-                                    showCustomDialog(context, 'Update Menu Variants',
-                                        updateMenuVariantForm(item.id), 200, 600);
-                                  });
+        controller: scrollController,
+        child: GetBuilder<FoodManagementController>(
+            id: "variantDataTable",
+            builder: (controller) {
+              List<Variant> data = controller.foodVariants.value.data ?? [];
+              if (!controller.haveMoreVariants && data.last.id != 0) {
+                data.add(Variant(id: 0));
+              }
 
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED7402),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap:(){
-                                  showWarningDialog("Are you sure to delete?", onAccept: (){
-                                    foodCtlr.deleteVariant(id: item.id);
-                                    Get.back();
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: Color(0xffED0206),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+              return DataTable(
+                  dataRowHeight: 70,
+                  columnSpacing: 50,
+                  columns: [
+                    // column to set the name
+                    DataColumn(
+                      label: Text(
+                        'SL NO',
+                        style: TextStyle(color: textSecondary),
+                      ),
                     ),
-                  )
-                  .toList());
-        }),
+                    DataColumn(
+                      label: Text(
+                        'Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Menu Name',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Price',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Action',
+                        style: TextStyle(color: textSecondary),
+                      ),
+                    ),
+                  ],
+                  rows: data.map(
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreVariants) {
+                        return buildLoadingAndNoData(false, 5);
+                      } else if (item ==
+                              controller.foodVariants.value.data?.last &&
+                          !controller.isLoading &&
+                          controller.haveMoreVariants) {
+                        return buildLoadingAndNoData(true, 5);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.food!.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.name ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.price ?? ""}',
+                              style: TextStyle(color: primaryText),
+                            ),
+                          ),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    foodCtlr
+                                        .getSinleVariantDetails(
+                                      id: item.id,
+                                    )
+                                        .then((value) {
+                                      foodCtlr.updateMealVariantsNameTextCtlr
+                                              .text =
+                                          foodCtlr.singleVariantDetails.value
+                                              .data!.name!;
+                                      foodCtlr.updateMealVariantsPriceTextCtlr
+                                              .text =
+                                          foodCtlr.singleVariantDetails.value
+                                              .data!.price!
+                                              .toString();
+                                      showCustomDialog(
+                                          context,
+                                          'Update Menu Variants',
+                                          updateMenuVariantForm(item.id),
+                                          200,
+                                          600);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFEF4E1),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED7402),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWarningDialog("Are you sure to delete?",
+                                        onAccept: () {
+                                      foodCtlr.deleteVariant(id: item.id);
+                                      Get.back();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFFE7E6),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: Color(0xffED0206),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
+            }),
       ),
     );
   }
@@ -1034,8 +1203,8 @@ class _FoodManagementState extends State<FoodManagement>
                         ),
                       ),
                       onPressed: () {
-                        showCustomDialog(
-                            context, "Add New menu", addNewMenuForm(foodCtlr), 30, 400);
+                        showCustomDialog(context, "Add New menu",
+                            addNewMenuForm(foodCtlr), 30, 400);
                       },
                       style: ElevatedButton.styleFrom(
                         side: BorderSide(width: 1.0, color: primaryColor),
@@ -1112,8 +1281,7 @@ class _FoodManagementState extends State<FoodManagement>
             ],
           ),
         );
-      }
-      else if (_currentSelection == 2) {
+      } else if (_currentSelection == 2) {
         return Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
@@ -1154,8 +1322,7 @@ class _FoodManagementState extends State<FoodManagement>
             ],
           ),
         );
-      }
-      else if (_currentSelection == 3) {
+      } else if (_currentSelection == 3) {
         return Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
@@ -1809,6 +1976,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget updateMenuForm(dynamic itemId) {
     return Container(
       height: Size.infinite.height,
@@ -1851,43 +2019,43 @@ class _FoodManagementState extends State<FoodManagement>
                         },
                         child: GetBuilder<FoodManagementController>(
                             builder: (context) {
-                              return Text(
-                                foodCtlr.menuUpdateImage == null
-                                    ? 'No file chosen'
-                                    : basename(foodCtlr.menuUpdateImage!.path
+                          return Text(
+                            foodCtlr.menuUpdateImage == null
+                                ? 'No file chosen'
+                                : basename(foodCtlr.menuUpdateImage!.path
                                     .split(Platform.pathSeparator.tr)
                                     .last),
-                                style: TextStyle(
-                                    color: textSecondary, fontSize: fontSmall),
-                              );
-                            }),
+                            style: TextStyle(
+                                color: textSecondary, fontSize: fontSmall),
+                          );
+                        }),
                       )
-                    // child: normalButton('No file chosen', primaryColor, primaryColor),
-                  )),
+                      // child: normalButton('No file chosen', primaryColor, primaryColor),
+                      )),
               SizedBox(width: 20),
               Expanded(
                 flex: 1,
                 child: SizedBox(
                   //  height: 45,
                   child: TextFormField(
-                      onChanged: (text) async {},
-                      controller: foodCtlr.caloriesUpdateEditingCtlr,
-                      onEditingComplete: () async {},
-                      keyboardType: TextInputType.number,
-                      maxLines: 1,
-                      validator: foodCtlr.textValidator,
-                      style:
-                      TextStyle(fontSize: fontSmall, color: textSecondary),
-                      decoration: InputDecoration(
-                        hintText: "Enter Calories",
-                        fillColor: secondaryBackground,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        hintStyle: TextStyle(
-                            fontSize: fontVerySmall, color: textSecondary,
-                        ),
+                    onChanged: (text) async {},
+                    controller: foodCtlr.caloriesUpdateEditingCtlr,
+                    onEditingComplete: () async {},
+                    keyboardType: TextInputType.number,
+                    maxLines: 1,
+                    validator: foodCtlr.textValidator,
+                    style: TextStyle(fontSize: fontSmall, color: textSecondary),
+                    decoration: InputDecoration(
+                      hintText: "Enter Calories",
+                      fillColor: secondaryBackground,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
                       ),
+                      hintStyle: TextStyle(
+                        fontSize: fontVerySmall,
+                        color: textSecondary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -1902,88 +2070,88 @@ class _FoodManagementState extends State<FoodManagement>
                   flex: 1,
                   child: GetBuilder<FoodManagementController>(
                       builder: (controller) {
-                        return MultiSelectDropDown(
-                          backgroundColor: secondaryBackground,
-                          optionsBackgroundColor: secondaryBackground,
-                          selectedOptionTextColor: primaryText,
-                          selectedOptionBackgroundColor: primaryColor,
-                          optionTextStyle:
+                    return MultiSelectDropDown(
+                      backgroundColor: secondaryBackground,
+                      optionsBackgroundColor: secondaryBackground,
+                      selectedOptionTextColor: primaryText,
+                      selectedOptionBackgroundColor: primaryColor,
+                      optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
-                          onOptionSelected: (List<ValueItem> selectedOptions) {
-                            foodCtlr.updateMealPeriodIdList = selectedOptions
-                                .map((ValueItem e) => int.parse(e.value!))
-                                .toList();
-                          },
-                          // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                          //   return ValueItem(
-                          //     label:e.name!,
-                          //     value: e.id.toString(),
-                          //   );
-                          // }).toList(),
-                          options: controller.mealPeriod.value.data!.map((Meal e) {
-                            return ValueItem(
-                              label: e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          hint: 'Select Meal Period',
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          inputDecoration: BoxDecoration(
-                            color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(
-                              color: primaryBackground,
-                            ),
-                          ),
+                      onOptionSelected: (List<ValueItem> selectedOptions) {
+                        foodCtlr.updateMealPeriodIdList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                      },
+                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                      //   return ValueItem(
+                      //     label:e.name!,
+                      //     value: e.id.toString(),
+                      //   );
+                      // }).toList(),
+                      options: controller.mealPeriod.value.data!.map((Meal e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
                         );
-                      })),
+                      }).toList(),
+                      hint: 'Select Meal Period',
+                      selectionType: SelectionType.multi,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      dropdownHeight: 300,
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      inputDecoration: BoxDecoration(
+                        color: secondaryBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                          color: primaryBackground,
+                        ),
+                      ),
+                    );
+                  })),
               SizedBox(width: 20),
               Expanded(
                   flex: 1,
                   child: GetBuilder<FoodManagementController>(
                       builder: (controller) {
-                        return MultiSelectDropDown(
-                          backgroundColor: secondaryBackground,
-                          optionsBackgroundColor: secondaryBackground,
-                          selectedOptionTextColor: primaryText,
-                          selectedOptionBackgroundColor: primaryColor,
-                          optionTextStyle:
+                    return MultiSelectDropDown(
+                      backgroundColor: secondaryBackground,
+                      optionsBackgroundColor: secondaryBackground,
+                      selectedOptionTextColor: primaryText,
+                      selectedOptionBackgroundColor: primaryColor,
+                      optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
-                          onOptionSelected: (List<ValueItem> selectedOptions) {
-                            foodCtlr.updateMenuCategoryIdList = selectedOptions
-                                .map((ValueItem e) => int.parse(e.value!))
-                                .toList();
-                          },
-                          // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                          //   return ValueItem(
-                          //     label:e.name!,
-                          //     value: e.id.toString(),
-                          //   );
-                          // }).toList(),
-                          options: controller.foodMenuCategory.value.data!
-                              .map((MenuCategory e) {
-                            return ValueItem(
-                              label: e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          hint: 'Select Menu Category',
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          inputDecoration: BoxDecoration(
-                            color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(
-                              color: primaryBackground,
-                            ),
-                          ),
+                      onOptionSelected: (List<ValueItem> selectedOptions) {
+                        foodCtlr.updateMenuCategoryIdList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                      },
+                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                      //   return ValueItem(
+                      //     label:e.name!,
+                      //     value: e.id.toString(),
+                      //   );
+                      // }).toList(),
+                      options: controller.foodMenuCategory.value.data!
+                          .map((MenuCategory e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
                         );
-                      })),
+                      }).toList(),
+                      hint: 'Select Menu Category',
+                      selectionType: SelectionType.multi,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      dropdownHeight: 300,
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      inputDecoration: BoxDecoration(
+                        color: secondaryBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                          color: primaryBackground,
+                        ),
+                      ),
+                    );
+                  })),
             ],
           ),
           SizedBox(height: 10),
@@ -1995,89 +2163,91 @@ class _FoodManagementState extends State<FoodManagement>
                   flex: 1,
                   child: GetBuilder<FoodManagementController>(
                       builder: (controller) {
-                        return MultiSelectDropDown(
-                          backgroundColor: secondaryBackground,
-                          optionsBackgroundColor: secondaryBackground,
-                          selectedOptionTextColor: primaryText,
-                          selectedOptionBackgroundColor: primaryColor,
-                          optionTextStyle:
+                    return MultiSelectDropDown(
+                      backgroundColor: secondaryBackground,
+                      optionsBackgroundColor: secondaryBackground,
+                      selectedOptionTextColor: primaryText,
+                      selectedOptionBackgroundColor: primaryColor,
+                      optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
-                          onOptionSelected: (List<ValueItem> selectedOptions) {
-                            foodCtlr.updateMenuAddonsIdList = selectedOptions
-                                .map((ValueItem e) => int.parse(e.value!))
-                                .toList();
-                          },
-                          selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                            return ValueItem(
-                              label:e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          options:
-                          controller.foodAddons.value.data!.map((MenuAddon e) {
-                            return ValueItem(
-                              label: e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          hint: 'Select Menu Addons',
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          inputDecoration: BoxDecoration(
-                            color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(
-                              color: primaryBackground,
-                            ),
-                          ),
+                      onOptionSelected: (List<ValueItem> selectedOptions) {
+                        foodCtlr.updateMenuAddonsIdList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                      },
+                      selectedOptions: foodCtlr
+                          .foodSingleItemDetails.value.data!.addons!.data!
+                          .map((MenuAddon e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
                         );
-                      })),
+                      }).toList(),
+                      options:
+                          controller.foodAddons.value.data!.map((MenuAddon e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
+                        );
+                      }).toList(),
+                      hint: 'Select Menu Addons',
+                      selectionType: SelectionType.multi,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      dropdownHeight: 300,
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      inputDecoration: BoxDecoration(
+                        color: secondaryBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                          color: primaryBackground,
+                        ),
+                      ),
+                    );
+                  })),
               SizedBox(width: 20),
               Expanded(
                   flex: 1,
                   child: GetBuilder<FoodManagementController>(
                       builder: (controller) {
-                        return MultiSelectDropDown(
-                          backgroundColor: secondaryBackground,
-                          optionsBackgroundColor: secondaryBackground,
-                          selectedOptionTextColor: primaryText,
-                          selectedOptionBackgroundColor: primaryColor,
-                          optionTextStyle:
+                    return MultiSelectDropDown(
+                      backgroundColor: secondaryBackground,
+                      optionsBackgroundColor: secondaryBackground,
+                      selectedOptionTextColor: primaryText,
+                      selectedOptionBackgroundColor: primaryColor,
+                      optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
-                          onOptionSelected: (List<ValueItem> selectedOptions) {
-                            foodCtlr.updateMenuAllergyIdList = selectedOptions
-                                .map((ValueItem e) => int.parse(e.value!))
-                                .toList();
-                          },
-                          // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                          //   return ValueItem(
-                          //     label:e.name!,
-                          //     value: e.id.toString(),
-                          //   );
-                          // }).toList(),
-                          options: controller.foodMenuAllergy.value.data!
-                              .map((Allergy e) {
-                            return ValueItem(
-                              label: e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          hint: 'Select Menu Allergies',
-                          selectionType: SelectionType.multi,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          inputDecoration: BoxDecoration(
-                            color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(
-                              color: primaryBackground,
-                            ),
-                          ),
+                      onOptionSelected: (List<ValueItem> selectedOptions) {
+                        foodCtlr.updateMenuAllergyIdList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                      },
+                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                      //   return ValueItem(
+                      //     label:e.name!,
+                      //     value: e.id.toString(),
+                      //   );
+                      // }).toList(),
+                      options: controller.foodMenuAllergy.value.data!
+                          .map((Allergy e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
                         );
-                      })),
+                      }).toList(),
+                      hint: 'Select Menu Allergies',
+                      selectionType: SelectionType.multi,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      dropdownHeight: 300,
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      inputDecoration: BoxDecoration(
+                        color: secondaryBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                          color: primaryBackground,
+                        ),
+                      ),
+                    );
+                  })),
             ],
           ),
           textRow('Select Menu Ingredient', ' '),
@@ -2089,44 +2259,45 @@ class _FoodManagementState extends State<FoodManagement>
                   flex: 1,
                   child: GetBuilder<FoodManagementController>(
                       builder: (controller) {
-                        return MultiSelectDropDown(
-                          backgroundColor: secondaryBackground,
-                          optionsBackgroundColor: secondaryBackground,
-                          selectedOptionTextColor: primaryText,
-                          selectedOptionBackgroundColor: primaryColor,
-                          optionTextStyle:
+                    return MultiSelectDropDown(
+                      backgroundColor: secondaryBackground,
+                      optionsBackgroundColor: secondaryBackground,
+                      selectedOptionTextColor: primaryText,
+                      selectedOptionBackgroundColor: primaryColor,
+                      optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
-                          onOptionSelected: (List<ValueItem> selectedOptions) {
-                            foodCtlr.updateMenuIngredientIdList = selectedOptions
-                                .map((ValueItem e) => int.parse(e.value!))
-                                .toList();
-                          },
-                          selectedOptions: foodCtlr.updateMealIngrediantSelectMeal.map((SingleMenuDetailsData e) {
-                            return ValueItem(
-                              label:e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          options: controller.ingredientData.value.data!
-                              .map((Ingrediant e) {
-                            return ValueItem(
-                              label: e.name!,
-                              value: e.id.toString(),
-                            );
-                          }).toList(),
-                          selectionType: SelectionType.single,
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          dropdownHeight: 300,
-                          selectedOptionIcon: const Icon(Icons.check_circle),
-                          inputDecoration: BoxDecoration(
-                            color: secondaryBackground,
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(
-                              color: primaryBackground,
-                            ),
-                          ),
+                      onOptionSelected: (List<ValueItem> selectedOptions) {
+                        foodCtlr.updateMenuIngredientIdList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                      },
+                      selectedOptions: foodCtlr.updateMealIngrediantSelectMeal
+                          .map((SingleMenuDetailsData e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
                         );
-                      })),
+                      }).toList(),
+                      options: controller.ingredientData.value.data!
+                          .map((Ingrediant e) {
+                        return ValueItem(
+                          label: e.name!,
+                          value: e.id.toString(),
+                        );
+                      }).toList(),
+                      selectionType: SelectionType.single,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      dropdownHeight: 300,
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      inputDecoration: BoxDecoration(
+                        color: secondaryBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                          color: primaryBackground,
+                        ),
+                      ),
+                    );
+                  })),
               SizedBox(width: 20),
             ],
           ),
@@ -2147,7 +2318,7 @@ class _FoodManagementState extends State<FoodManagement>
                   borderRadius: BorderRadius.circular(6),
                 ),
                 hintStyle:
-                TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                    TextStyle(fontSize: fontVerySmall, color: textSecondary),
               )),
           SizedBox(height: 10),
           Row(
@@ -2177,7 +2348,6 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
-
 
   Widget addMealPeriodForm() {
     return Container(
@@ -2228,8 +2398,7 @@ class _FoodManagementState extends State<FoodManagement>
                       );
                     }),
                     onPressed: () async {
-                      foodCtlr.mealPeriodStoreImage =
-                          await foodCtlr.getImage();
+                      foodCtlr.mealPeriodStoreImage = await foodCtlr.getImage();
                     },
                     style: ElevatedButton.styleFrom(
                       primary: primaryBackground,
@@ -2271,6 +2440,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget updateMealPeriodForm(dynamic itemId) {
     return Container(
       margin: EdgeInsets.all(20),
@@ -2435,6 +2605,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget addMenuCategoryUpdateForm(dynamic itemId) {
     return Container(
       margin: EdgeInsets.all(20),
@@ -2458,7 +2629,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             Container(
               height: 40,
@@ -2473,13 +2644,14 @@ class _FoodManagementState extends State<FoodManagement>
                     foodCtlr.mealCategoryUpdateStoreImage == null
                         ? "Upload Image"
                         : foodCtlr.mealCategoryUpdateStoreImage!.path
-                        .split(Platform.pathSeparator)
-                        .last,
+                            .split(Platform.pathSeparator)
+                            .last,
                     style: TextStyle(color: textSecondary, fontSize: fontSmall),
                   );
                 }),
                 onPressed: () async {
-                  foodCtlr.mealCategoryUpdateStoreImage = await foodCtlr.getImage();
+                  foodCtlr.mealCategoryUpdateStoreImage =
+                      await foodCtlr.getImage();
                 },
                 style: ElevatedButton.styleFrom(
                   primary: primaryBackground,
@@ -2494,11 +2666,11 @@ class _FoodManagementState extends State<FoodManagement>
                 height: 40,
                 width: 200,
                 child:
-                normalButton('Submit', primaryColor, white, onPressed: () {
+                    normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.updateMealCategoryKey.currentState!.validate()) {
                     foodCtlr.updateMealCategory(
-                        foodCtlr.mealCategoryUpdateTextCtlr.text,
-                        id:itemId,
+                      foodCtlr.mealCategoryUpdateTextCtlr.text,
+                      id: itemId,
                     );
                   }
                 })),
@@ -2578,6 +2750,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget addMenuAllergyUpdateForm(dynamic itemId) {
     return Container(
       margin: EdgeInsets.all(20),
@@ -2601,7 +2774,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             Container(
               height: 40,
@@ -2616,8 +2789,8 @@ class _FoodManagementState extends State<FoodManagement>
                     foodCtlr.mealAllergyUpdateImage == null
                         ? "Upload Image"
                         : foodCtlr.mealAllergyUpdateImage!.path
-                        .split(Platform.pathSeparator)
-                        .last,
+                            .split(Platform.pathSeparator)
+                            .last,
                     style: TextStyle(color: textSecondary, fontSize: fontSmall),
                   );
                 }),
@@ -2637,11 +2810,11 @@ class _FoodManagementState extends State<FoodManagement>
                 height: 40,
                 width: 200,
                 child:
-                normalButton('Submit', primaryColor, white, onPressed: () {
+                    normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.updateMealAllergyKey.currentState!.validate()) {
                     foodCtlr.updateMealAllergy(
-                        foodCtlr.mealAllergyUpdateTextCtlr.text,
-                        id:itemId,
+                      foodCtlr.mealAllergyUpdateTextCtlr.text,
+                      id: itemId,
                     );
                   }
                 })),
@@ -2757,6 +2930,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget upateMenuAddonsForm(dynamic itemId) {
     return Container(
       margin: EdgeInsets.all(40),
@@ -2779,7 +2953,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             TextFormField(
                 controller: foodCtlr.updateMealAddonsPriceTextCtlr,
@@ -2795,7 +2969,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             TextFormField(
                 controller: foodCtlr.updateMealAddonsDetailsTextCtlr,
@@ -2813,7 +2987,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             Container(
               height: 40,
@@ -2828,13 +3002,14 @@ class _FoodManagementState extends State<FoodManagement>
                     foodCtlr.updateMealAddonsStoreImage == null
                         ? "Upload Image"
                         : foodCtlr.updateMealAddonsStoreImage!.path
-                        .split(Platform.pathSeparator)
-                        .last,
+                            .split(Platform.pathSeparator)
+                            .last,
                     style: TextStyle(color: textSecondary, fontSize: fontSmall),
                   );
                 }),
                 onPressed: () async {
-                  foodCtlr.updateMealAddonsStoreImage = await foodCtlr.getImage();
+                  foodCtlr.updateMealAddonsStoreImage =
+                      await foodCtlr.getImage();
                 },
                 style: ElevatedButton.styleFrom(
                   primary: primaryBackground,
@@ -2849,12 +3024,12 @@ class _FoodManagementState extends State<FoodManagement>
                 height: 40,
                 width: 200,
                 child:
-                normalButton('Submit', primaryColor, white, onPressed: () {
+                    normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.updateMealAddonsKey.currentState!.validate()) {
                     foodCtlr.updateMealAddons(
-                        foodCtlr.udpateMealAddonsNameTextCtlr.text,
-                        foodCtlr.updateMealAddonsPriceTextCtlr.text,
-                        foodCtlr.updateMealAddonsDetailsTextCtlr.text,
+                      foodCtlr.udpateMealAddonsNameTextCtlr.text,
+                      foodCtlr.updateMealAddonsPriceTextCtlr.text,
+                      foodCtlr.updateMealAddonsDetailsTextCtlr.text,
                       id: itemId,
                     );
                   }
@@ -2892,8 +3067,8 @@ class _FoodManagementState extends State<FoodManagement>
                 //   );
                 // }).toList(),
                 hint: 'Menu Item Select',
-                options:
-                    controller.menusData.value.data!.map((FoodMenuManagementDatum e) {
+                options: controller.menusData.value.data!
+                    .map((FoodMenuManagementDatum e) {
                   return ValueItem(
                     label: e.name!,
                     value: e.id.toString(),
@@ -2961,6 +3136,7 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
   Widget updateMenuVariantForm(dynamic itemId) {
     return Container(
       margin: EdgeInsets.all(20),
@@ -2981,15 +3157,15 @@ class _FoodManagementState extends State<FoodManagement>
                       .map((ValueItem e) => int.parse(e.value!))
                       .toList();
                 },
-                selectedOptions: foodCtlr.updateSelectedVariant.map((SinlgeVariantData e) {
+                selectedOptions:
+                    foodCtlr.updateSelectedVariant.map((SinlgeVariantData e) {
                   return ValueItem(
-                    label:e.name!,
+                    label: e.name!,
                     value: e.id.toString(),
                   );
                 }).toList(),
                 hint: 'Menu Item Select',
-                options:
-                controller.foodVariants.value.data!.map((Variant e) {
+                options: controller.foodVariants.value.data!.map((Variant e) {
                   return ValueItem(
                     label: e.name!,
                     value: e.id.toString(),
@@ -3022,7 +3198,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             TextFormField(
                 controller: foodCtlr.updateMealVariantsPriceTextCtlr,
@@ -3038,19 +3214,19 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   hintStyle:
-                  TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
             Container(
                 height: 40,
                 width: 200,
                 child:
-                normalButton('Submit', primaryColor, white, onPressed: () {
+                    normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.updateMealVariantsKey.currentState!.validate()) {
                     foodCtlr.updateVariant(
-                        foodCtlr.updateSelectVariantMenuItem[0],
-                        foodCtlr.updateMealVariantsNameTextCtlr.text,
-                        foodCtlr.updateMealVariantsPriceTextCtlr.text,
-                        id:itemId,
+                      foodCtlr.updateSelectVariantMenuItem[0],
+                      foodCtlr.updateMealVariantsNameTextCtlr.text,
+                      foodCtlr.updateMealVariantsPriceTextCtlr.text,
+                      id: itemId,
                     );
                   }
                 })),
@@ -3059,7 +3235,6 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
-
 
   Widget viewMenuDetails() {
     return Container(
@@ -3451,5 +3626,4 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
-
 }

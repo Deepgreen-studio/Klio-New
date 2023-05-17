@@ -301,6 +301,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                   ),
                   Expanded(
                     child: Obx(() {
+                      print("itemsssssssssssssssssssssssssssssss +++++++++++++++++++++++++++++++++++");
                       return ListView.builder(
                         padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                         itemCount: homeController.cardList.length,
@@ -640,7 +641,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                       showDiscountDialog(
                           'Add Discount in ${homeController.settings.value.data![11].value}',
                           controller, onAccept: () {
-                        if (homeController.cardList.length == 0) {
+                        if (homeController.cardList.isEmpty) {
                           Utils.showSnackBar('No cart item to discount');
                           return;
                         }
