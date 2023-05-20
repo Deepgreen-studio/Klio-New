@@ -300,141 +300,146 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     ],
                   ),
                   Expanded(
-                    child: Obx(() {
-                      print("itemsssssssssssssssssssssssssssssss +++++++++++++++++++++++++++++++++++");
-                      return ListView.builder(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                        itemCount: homeController.cardList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
+                    child:
+
+                       GetBuilder<HomeController>(
+                        id: "cardUpdate",
+                        builder: (context) {
+                          return ListView.builder(
+                            padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                            itemCount: homeController.cardList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    flex: 8,
-                                    child: Text(
-                                        homeController.cardList[index].name
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: fontSmall,
-                                            color: primaryText,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        topBarIconBtn(
-                                            Image.asset('assets/remove.png',
-                                                color: primaryText),
-                                            primaryBackground,
-                                            0,
-                                            2,
-                                            16, onPressed: () {
-                                          homeController
-                                                  .cardList[index].quantity =
-                                              Utils.incrementDecrement(
-                                                  false,
-                                                  homeController
-                                                      .cardList[index].quantity!
-                                                      .toInt());
-                                          homeController.cardList.refresh();
-                                        }),
-                                        SizedBox(width: 6),
-                                        Text(
-                                            homeController
-                                                .cardList[index].quantity
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Expanded(
+                                        flex: 8,
+                                        child: Text(
+                                            homeController.cardList[index].name
                                                 .toString(),
+                                            style: TextStyle(
+                                                fontSize: fontSmall,
+                                                color: primaryText,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            topBarIconBtn(
+                                                Image.asset('assets/remove.png',
+                                                    color: primaryText),
+                                                primaryBackground,
+                                                0,
+                                                2,
+                                                16, onPressed: () {
+                                              homeController
+                                                      .cardList[index].quantity =
+                                                  Utils.incrementDecrement(
+                                                      false,
+                                                      homeController
+                                                          .cardList[index].quantity!
+                                                          .toInt());
+                                              homeController.update(["cardUpdate"]);
+                                            }),
+                                            SizedBox(width: 6),
+                                            Text(
+                                                homeController
+                                                    .cardList[index].quantity
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: primaryText,
+                                                    fontSize: fontVerySmall)),
+                                            SizedBox(width: 6),
+                                            topBarIconBtn(
+                                                Image.asset('assets/add.png',
+                                                    color: primaryText),
+                                                primaryBackground,
+                                                0,
+                                                2,
+                                                16, onPressed: () {
+                                              homeController
+                                                      .cardList[index].quantity =
+                                                  Utils.incrementDecrement(
+                                                      true,
+                                                      homeController
+                                                          .cardList[index].quantity!
+                                                          .toInt());
+                                              homeController.update(["cardUpdate"]);
+                                            }),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                            Utils.findPriceByListId(
+                                                homeController.cardList[index]
+                                                    .variants!.data!,
+                                                homeController
+                                                    .cardList[index].variant!),
                                             style: TextStyle(
                                                 color: primaryText,
                                                 fontSize: fontVerySmall)),
-                                        SizedBox(width: 6),
-                                        topBarIconBtn(
-                                            Image.asset('assets/add.png',
-                                                color: primaryText),
-                                            primaryBackground,
-                                            0,
-                                            2,
-                                            16, onPressed: () {
-                                          homeController
-                                                  .cardList[index].quantity =
-                                              Utils.incrementDecrement(
-                                                  true,
-                                                  homeController
-                                                      .cardList[index].quantity!
-                                                      .toInt());
-                                          homeController.cardList.refresh();
-                                        }),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Text(
-                                        Utils.findPriceByListId(
-                                            homeController.cardList[index]
-                                                .variants!.data!,
-                                            homeController
-                                                .cardList[index].variant!),
-                                        style: TextStyle(
-                                            color: primaryText,
-                                            fontSize: fontVerySmall)),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Text(
-                                        "${homeController.settings.value.data![11].value}${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList.value[index].variants!.data!, homeController.cardList.value[index].variant!))).toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                            color: primaryText,
-                                            fontSize: fontVerySmall)),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      icon: Icon(
-                                        Icons.delete_forever_outlined,
-                                        color: Colors.redAccent,
-                                        size: 18,
                                       ),
-                                      onPressed: () {
-                                        homeController.cardList.removeAt(index);
-                                        homeController.cardList.refresh();
-                                      },
-                                    ),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                            "${homeController.settings.value.data![11].value}${(homeController.cardList[index].quantity! * double.parse(Utils.findPriceByListId(homeController.cardList[index].variants!.data!, homeController.cardList[index].variant!))).toStringAsFixed(2)}",
+                                            style: TextStyle(
+                                                color: primaryText,
+                                                fontSize: fontVerySmall)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          padding: EdgeInsets.zero,
+                                          icon: Icon(
+                                            Icons.delete_forever_outlined,
+                                            color: Colors.redAccent,
+                                            size: 18,
+                                          ),
+                                          onPressed: () {
+                                            homeController.cardList.removeAt(index);
+                                            homeController.update(["cardUpdate"]);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      for (AddonsDatum addons in homeController
+                                          .cardList[index].addons!.data!)
+                                        addons.isChecked == true
+                                            ? Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8, vertical: 4),
+                                                margin: EdgeInsets.only(right: 5),
+                                                decoration: BoxDecoration(
+                                                    color: alternate,
+                                                    borderRadius:
+                                                        BorderRadius.circular(10)),
+                                                child: Text(
+                                                    '${addons.name}  ${addons.quantity}x${addons.price}',
+                                                    style: TextStyle(
+                                                        fontSize: fontVerySmall,
+                                                        color: primaryText)))
+                                            : SizedBox(),
+                                    ],
                                   ),
                                 ],
-                              ),
-                              Row(
-                                children: [
-                                  for (AddonsDatum addons in homeController
-                                      .cardList[index].addons!.data!)
-                                    addons.isChecked == true
-                                        ? Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 4),
-                                            margin: EdgeInsets.only(right: 5),
-                                            decoration: BoxDecoration(
-                                                color: alternate,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Text(
-                                                '${addons.name}  ${addons.quantity}x${addons.price}',
-                                                style: TextStyle(
-                                                    fontSize: fontVerySmall,
-                                                    color: primaryText)))
-                                        : SizedBox(),
-                                ],
-                              ),
-                            ],
+                              );
+                            },
                           );
-                        },
-                      );
-                    }),
+                        }
+                      ),
+
                   ),
                 ],
               ),

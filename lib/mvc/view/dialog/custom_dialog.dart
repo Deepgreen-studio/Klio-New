@@ -338,6 +338,9 @@ Widget addCustomer(BuildContext context, bool isDetail,
 }
 
 Widget foodMenuBody(BuildContext context, MenuData data) {
+  if (homeController.cardList.isNotEmpty)
+    print(homeController.cardList[0].quantity);
+  print("----------------------============================= init");
   homeController.tables.value.data = [];
   homeController.menuData.value = data;
   homeController.menuData.value.quantity = 1;
@@ -356,6 +359,9 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
   // }
   unitPrice = double.parse(data.variants!.data!.first.price.toString());
   homeController.menuData.value.variant = data.variants!.data![0].id.toString();
+  if (homeController.cardList.isNotEmpty)
+    print(homeController.cardList[0].quantity);
+  print("----------------------============================= 1.2");
   return Padding(
     padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
     child: Row(
@@ -501,11 +507,11 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                                       .toInt());
                           homeController.menuData.refresh();
                         }),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(homeController.menuData.value.quantity.toString(),
                             style: TextStyle(
                                 color: primaryText, fontSize: fontMedium)),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         topBarIconBtn(
                             Image.asset('assets/add.png', color: white),
                             primaryColor,
@@ -574,119 +580,144 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
               ],
             ),
             const SizedBox(height: 10),
-            Expanded(child: Obx(() {
-              return ListView.builder(
-                  itemCount: homeController.menuData.value.addons!.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+            Expanded(
+              child: Obx(
+                () {
+                  if (homeController.cardList.isNotEmpty)
+                    print(homeController.cardList[0].quantity);
+                  print(
+                      "----------------------============================= 2");
+                  return ListView.builder(
+                      itemCount:
+                          homeController.menuData.value.addons!.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
                           children: [
-                            // Expanded(
-                            //     flex: 1,
-                            //     child: Padding(
-                            //         padding: const EdgeInsets.only(right: 60.0),
-                            //         child: Checkbox(
-                            //             value: homeController.menuData.value.addons!
-                            //                 .data![index].isChecked,
-                            //             onChanged: (checked) {
-                            //               // homeController.menuData.value.addons!
-                            //               //     .data![index].isChecked = checked!;
-                            //               // homeController.menuData.refresh();
-                            //             }))),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                  homeController
-                                      .menuData.value.addons!.data![index].name
-                                      .toString(),
-                                  style: TextStyle(
-                                      fontSize: fontSmall,
-                                      color: primaryText,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Row(
-                                children: [
-                                  topBarIconBtn(
-                                      Image.asset('assets/remove.png',
-                                          color: white),
-                                      primaryColor,
-                                      0,
-                                      2,
-                                      23, onPressed: () {
-                                    homeController.menuData.value.addons!
-                                            .data![index].quantity =
-                                        Utils.incrementDecrement(
-                                            false,
-                                            homeController.menuData.value
-                                                .addons!.data![index].quantity!
-                                                .toInt());
-                                    if (homeController.menuData.value.addons!
-                                            .data![index].quantity! >
-                                        0) {
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Expanded(
+                                //     flex: 1,
+                                //     child: Padding(
+                                //         padding: const EdgeInsets.only(right: 60.0),
+                                //         child: Checkbox(
+                                //             value: homeController.menuData.value.addons!
+                                //                 .data![index].isChecked,
+                                //             onChanged: (checked) {
+                                //               // homeController.menuData.value.addons!
+                                //               //     .data![index].isChecked = checked!;
+                                //               // homeController.menuData.refresh();
+                                //             }))),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
                                       homeController.menuData.value.addons!
-                                          .data![index].isChecked = true;
-                                    } else
-                                      homeController.menuData.value.addons!
-                                          .data![index].isChecked = false;
-                                    homeController.menuData.refresh();
-                                  }),
-                                  SizedBox(width: 8),
-                                  Text(
-                                      homeController.menuData.value.addons!
-                                          .data![index].quantity
+                                          .data![index].name
                                           .toString(),
                                       style: TextStyle(
-                                          color: primaryText,
                                           fontSize: fontSmall,
+                                          color: primaryText,
                                           fontWeight: FontWeight.bold)),
-                                  SizedBox(width: 8),
-                                  topBarIconBtn(
-                                      Image.asset('assets/add.png',
-                                          color: white),
-                                      primaryColor,
-                                      0,
-                                      2,
-                                      23, onPressed: () {
-                                    homeController.menuData.value.addons!
-                                            .data![index].quantity =
-                                        Utils.incrementDecrement(
-                                            true,
-                                            homeController.menuData.value
-                                                .addons!.data![index].quantity!
-                                                .toInt());
-                                    if (homeController.menuData.value.addons!
-                                            .data![index].quantity! >
-                                        0) {
-                                      homeController.menuData.value.addons!
-                                          .data![index].isChecked = true;
-                                    } else
-                                      homeController.menuData.value.addons!
-                                          .data![index].isChecked = false;
-                                    homeController.menuData.refresh();
-                                  }),
-                                ],
-                              ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Row(
+                                    children: [
+                                      topBarIconBtn(
+                                          Image.asset('assets/remove.png',
+                                              color: white),
+                                          primaryColor,
+                                          0,
+                                          2,
+                                          23, onPressed: () {
+                                        homeController.menuData.value.addons!
+                                                .data![index].quantity =
+                                            Utils.incrementDecrement(
+                                                false,
+                                                homeController
+                                                    .menuData
+                                                    .value
+                                                    .addons!
+                                                    .data![index]
+                                                    .quantity!
+                                                    .toInt());
+                                        if (homeController
+                                                .menuData
+                                                .value
+                                                .addons!
+                                                .data![index]
+                                                .quantity! >
+                                            0) {
+                                          homeController.menuData.value.addons!
+                                              .data![index].isChecked = true;
+                                        } else
+                                          homeController.menuData.value.addons!
+                                              .data![index].isChecked = false;
+                                        homeController.menuData.refresh();
+                                      }),
+                                      SizedBox(width: 8),
+                                      Text(
+                                          homeController.menuData.value.addons!
+                                              .data![index].quantity
+                                              .toString(),
+                                          style: TextStyle(
+                                              color: primaryText,
+                                              fontSize: fontSmall,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(width: 8),
+                                      topBarIconBtn(
+                                          Image.asset('assets/add.png',
+                                              color: white),
+                                          primaryColor,
+                                          0,
+                                          2,
+                                          23, onPressed: () {
+                                        homeController.menuData.value.addons!
+                                                .data![index].quantity =
+                                            Utils.incrementDecrement(
+                                                true,
+                                                homeController
+                                                    .menuData
+                                                    .value
+                                                    .addons!
+                                                    .data![index]
+                                                    .quantity!
+                                                    .toInt());
+                                        if (homeController
+                                                .menuData
+                                                .value
+                                                .addons!
+                                                .data![index]
+                                                .quantity! >
+                                            0) {
+                                          homeController.menuData.value.addons!
+                                              .data![index].isChecked = true;
+                                        } else
+                                          homeController.menuData.value.addons!
+                                              .data![index].isChecked = false;
+                                        homeController.menuData.refresh();
+                                      }),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                      "${homeController.settings.value.data![11].value}${homeController.menuData.value.addons!.data![index].quantity! * double.parse(homeController.menuData.value.addons!.data![index].price.toString())}",
+                                      style: TextStyle(
+                                          fontSize: fontSmall,
+                                          color: primaryText,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                  "${homeController.settings.value.data![11].value}${homeController.menuData.value.addons!.data![index].quantity! * double.parse(homeController.menuData.value.addons!.data![index].price.toString())}",
-                                  style: TextStyle(
-                                      fontSize: fontSmall,
-                                      color: primaryText,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                            const SizedBox(height: 10),
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                      ],
-                    );
-                  });
-            })),
+                        );
+                      });
+                },
+              ),
+            ),
             MaterialButton(
                 elevation: 0,
                 color: primaryColor,
@@ -697,25 +728,39 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                   int a = -1;
 
                   for (int i = 0; i < homeController.cardList.length; i++) {
-                    if(homeController.cardList[i].name == homeController.menuData.value.name){
+                    if (homeController.cardList[i].name ==
+                        homeController.menuData.value.name) {
                       a = i;
                       break;
                     }
                   }
 
-                  print(a);
-
-                  print("----------------------------------- aaaaaaaaaaaaaaaaaaaaaaaaaa");
-
                   if (a < 0) {
-                    homeController.cardList.add(homeController.menuData.value);
+                    homeController.cardList.add(MenuData(
+                      id: homeController.menuData.value.id,
+                      name: homeController.menuData.value.name,
+                      addons: homeController.menuData.value.addons,
+                      allergies: homeController.menuData.value.allergies,
+                      calorie: homeController.menuData.value.calorie,
+                      categories: homeController.menuData.value.categories,
+                      description: homeController.menuData.value.description,
+                      image: homeController.menuData.value.image,
+                      price: homeController.menuData.value.price,
+                      quantity: homeController.menuData.value.quantity,
+                      slug: homeController.menuData.value.slug,
+                      taxVat: homeController.menuData.value.taxVat,
+                      variant: homeController.menuData.value.variant,
+                      variants: homeController.menuData.value.variants,
+                    ));
                   } else {
-                    homeController.cardList[a].quantity++;
+                    homeController.cardList[a].quantity =
+                        homeController.menuData.value.quantity! +
+                            homeController.cardList[a].quantity!;
                   }
 
                   Utils.hidePopup();
                   Utils.hidePopup();
-                  homeController.cardList.refresh();
+                  homeController.update(["cardUpdate"]);
                   CustomerDisplay.cartPrint(homeController);
                   // print(homeController.menuData.value.toJson());
                   // print(homeController.menuData.value.qty);
@@ -1436,9 +1481,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Delivery Charge: ',
-                    '${homeController.settings.value.data![11].value}' +
-                        homeController.order.value.data!.deliveryCharge
-                            .toString(),
+                    '${homeController.settings.value.data![11].value}${homeController.order.value.data!.deliveryCharge}',
                     MainAxisAlignment.start)),
             Expanded(
                 flex: 1, child: textMixer('', '', MainAxisAlignment.center)),
@@ -1446,12 +1489,11 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Discount: ',
-                    '${homeController.settings.value.data![11].value}' +
-                        homeController.order.value.data!.discount.toString(),
+                    '${homeController.settings.value.data![11].value}${homeController.order.value.data!.discount}',
                     MainAxisAlignment.end)),
           ],
         ),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         Center(
           child: Text(
             'Grand Total: ${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}',
@@ -1461,7 +1503,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 color: textSecondary),
           ),
         ),
-        Expanded(child: SizedBox(height: 500)),
+        const Expanded(child: SizedBox(height: 500)),
         kitchen
             ? SizedBox()
             : Row(

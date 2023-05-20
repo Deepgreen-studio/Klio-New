@@ -49,7 +49,8 @@ class HomeController extends GetxController with ErrorController {
   RxList filteredMenu = [].obs;
   RxString customerName = ''.obs;
   Rx<MenuData> menuData = MenuData().obs;
-  RxList cardList = [].obs;
+  List<MenuData> cardList = [];
+
 
   // RxDouble variantPrice = 0.0.obs;
   RxDouble discount = 0.0.obs;
@@ -223,7 +224,7 @@ class HomeController extends GetxController with ErrorController {
     }
     Utils.showLoading();
     List<Map> items = [{}];
-    cardList.value.forEach((element) {
+    for (var element in cardList) {
       MenuData add = element;
       items.add(
         {
@@ -236,7 +237,7 @@ class HomeController extends GetxController with ErrorController {
           ],
         },
       );
-    });
+    }
     items.removeAt(0);
     var body = jsonEncode({
       "order_type": orderTypes.entries.elementAt(topBtnPosition.value - 1).key,
