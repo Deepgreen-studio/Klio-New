@@ -22,6 +22,7 @@ class _OrdersManagementState extends State<OrdersManagement>
   late TabController controller;
   int dropdownvalue = 1;
 
+  TextEditingController textController = TextEditingController();
   late ScrollController scrollController;
 
   @override
@@ -118,7 +119,7 @@ class _OrdersManagementState extends State<OrdersManagement>
               ),
             ),
             Container(
-              margin: EdgeInsets.only(right: 25),
+              margin: const EdgeInsets.only(right: 25),
               child: Row(
                 children: [
                   OutlinedButton.icon(
@@ -137,7 +138,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                       //     addIngrediant(1), 30, 400);
                     },
                     style: ElevatedButton.styleFrom(
-                      side: BorderSide(width: 1.0, color: primaryColor),
+                      side: const BorderSide(width: 1.0, color: primaryColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -151,7 +152,7 @@ class _OrdersManagementState extends State<OrdersManagement>
       );
     } else if (_currentSelection == 1) {
       return Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -163,7 +164,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: Row(
                   children: [
                     OutlinedButton.icon(
@@ -182,7 +183,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         //     addIngrediant(1), 30, 400);
                       },
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: primaryColor),
+                        side: const BorderSide(width: 1.0, color: primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -195,7 +196,7 @@ class _OrdersManagementState extends State<OrdersManagement>
           ));
     } else if (_currentSelection == 2) {
       return Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -207,7 +208,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: Row(
                   children: [
                     OutlinedButton.icon(
@@ -226,7 +227,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         //     addIngrediant(1), 30, 400);
                       },
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: primaryColor),
+                        side: const BorderSide(width: 1.0, color: primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -239,7 +240,7 @@ class _OrdersManagementState extends State<OrdersManagement>
           ));
     } else if (_currentSelection == 3) {
       return Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -283,7 +284,7 @@ class _OrdersManagementState extends State<OrdersManagement>
           ));
     } else if (_currentSelection == 4) {
       return Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -295,7 +296,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: Row(
                   children: [
                     OutlinedButton.icon(
@@ -314,7 +315,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         //     addIngrediant(1), 30, 400);
                       },
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: primaryColor),
+                        side: const BorderSide(width: 1.0, color: primaryColor),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -331,7 +332,7 @@ class _OrdersManagementState extends State<OrdersManagement>
 
   customTapBarHeader(TabController controller) {
     return Padding(
-        padding: EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(15.0),
         child: Row(
           children: [
             GetBuilder<OrdersManagementController>(
@@ -417,48 +418,55 @@ class _OrdersManagementState extends State<OrdersManagement>
                   );
                 }),
             Container(
-              margin: EdgeInsets.only(left: 100),
+              margin: const EdgeInsets.only(left: 100),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                    Card(
                     elevation: 0.0,
                     child: SizedBox(
                         width: 300,
                         height: 40,
                         child: TextField(
-                            style: TextStyle(
+                            onChanged: (text)async{},
+                            controller: textController,
+                            style: const TextStyle(
                               fontSize: fontSmall,
-                              color: primaryColor,
+                              color: black,
                             ),
-                            decoration: InputDecoration(
+                            decoration:  InputDecoration(
                               filled: true,
                               fillColor: Colors.white10,
                               contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                              prefixIcon: Icon(
+                                  const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                              prefixIcon: const Icon(
                                 Icons.search,
                                 size: 20,
                               ),
+                              suffixIcon: IconButton(
+                                  onPressed: (){
+                                    textController.text='';
+                                  },
+                                  icon: Icon(Icons.close, color: textSecondary)),
                               hintText: "Search Item",
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                   fontSize: fontSmall, color: black),
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
-                              disabledBorder: OutlineInputBorder(
+                              disabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
-                              enabledBorder: OutlineInputBorder(
+                              enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
-                              errorBorder: OutlineInputBorder(
+                              errorBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
-                              focusedBorder: OutlineInputBorder(
+                              focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
-                              focusedErrorBorder: OutlineInputBorder(
+                              focusedErrorBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       width: 1, color: Colors.transparent)),
                             ))),
@@ -690,17 +698,17 @@ class _OrdersManagementState extends State<OrdersManagement>
                 ),
                 DataCell(
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     decoration: BoxDecoration(
                         color: item.status == "success"
                             ? green
                             : item.status == "processing"
                                 ? primaryColor
                                 : red,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                        borderRadius: const BorderRadius.all(Radius.circular(5))),
                     child: Text(
                       '${item.status ?? ""}',
-                      style: TextStyle(color: white),
+                      style: const TextStyle(color: white),
                     ),
                   ),
                 ),
@@ -715,14 +723,14 @@ class _OrdersManagementState extends State<OrdersManagement>
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Color(0xffE1FDE8),
+                      color: const Color(0xffE1FDE8),
                       borderRadius: BorderRadius.circular(25.0),
                     ),
                     child: Image.asset(
                       "assets/hide.png",
                       height: 15,
                       width: 15,
-                      color: Color(0xff00A600),
+                      color: const Color(0xff00A600),
                     ),
                   ),
                 )

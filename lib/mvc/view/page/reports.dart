@@ -24,6 +24,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
   int _currentSelection = 0;
   late TabController controller;
   int dropdownvalue = 1;
+  TextEditingController textController = TextEditingController();
 
   late ScrollController scrollController;
 
@@ -204,50 +205,59 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                 margin: const EdgeInsets.only(left: 100),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const[
+                  children: [
                      Card(
                       elevation: 0.0,
                       child: SizedBox(
                           width: 300,
                           height: 40,
                           child: TextField(
-                              style: TextStyle(
+                              onChanged: (text)async{},
+                              controller: textController,
+                              style: const TextStyle(
                                 fontSize: fontSmall,
-                                color: primaryColor,
+                                color: black,
                               ),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white10,
                                 contentPadding:
-                                    EdgeInsets.fromLTRB(10, 3, 10, 0),
-                                prefixIcon: Icon(
+                                    const EdgeInsets.fromLTRB(10, 3, 10, 0),
+                                prefixIcon: const Icon(
                                   Icons.search,
                                   size: 20,
                                 ),
+                                suffixIcon: IconButton(onPressed: (){
+                                  textController.text= '';
+                                },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color:textSecondary,
+                                    )),
                                 hintText: "Search Item",
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                     fontSize: fontSmall, color: black),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),
-                                disabledBorder: OutlineInputBorder(
+                                disabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),
-                                enabledBorder: OutlineInputBorder(
+                                enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),
-                                errorBorder: OutlineInputBorder(
+                                errorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),
-                                focusedBorder: OutlineInputBorder(
+                                focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),
-                                focusedErrorBorder: OutlineInputBorder(
+                                focusedErrorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                         width: 1,
                                         color: Colors.transparent)),

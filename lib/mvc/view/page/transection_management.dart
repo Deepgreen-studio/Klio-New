@@ -193,7 +193,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                   selectedColor: primaryColor,
                   unselectedColor: Colors.white,
                   borderRadius: 32.0,
-                  disabledChildren: [
+                  disabledChildren: const [
                     6,
                   ],
                   onSegmentChosen: (index) {
@@ -231,7 +231,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                           textInputAction: TextInputAction.search,
                           style:  const TextStyle(
                             fontSize: fontSmall,
-                            color: Colors.blueAccent,
+                            color: Colors.black,
                           ),
 
                           decoration: InputDecoration(

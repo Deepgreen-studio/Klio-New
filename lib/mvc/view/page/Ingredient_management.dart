@@ -29,6 +29,7 @@ class _IngredientManagementState extends State<IngredientManagement>
   int _currentSelection = 0;
   late TabController controller;
   late ScrollController scrollController;
+  TextEditingController textController = TextEditingController();
 
   @override
   void initState() {
@@ -36,10 +37,10 @@ class _IngredientManagementState extends State<IngredientManagement>
     controller = TabController(vsync: this, length: 4);
     scrollController = ScrollController();
 
-    // controller.addListener(() {
-    //   _currentSelection = controller.index;
-    //   _ingredientController.update(['changeCustomTabBar']);
-    // });
+    controller.addListener(() {
+      _currentSelection = controller.index;
+      _ingredientController.update(['changeCustomTabBar']);
+    });
 
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
@@ -269,7 +270,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   height: 35,
                                   width: 35,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffFEF4E1),
+                                    color: const Color(0xffFEF4E1),
                                     borderRadius: BorderRadius.circular(25.0),
                                   ),
                                   child: GestureDetector(
@@ -327,18 +328,18 @@ class _IngredientManagementState extends State<IngredientManagement>
                                       "assets/edit-alt.png",
                                       height: 15,
                                       width: 15,
-                                      color: Color(0xffED7402),
+                                      color: const Color(0xffED7402),
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Container(
                                   height: 35,
                                   width: 35,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffFFE7E6),
+                                    color: const Color(0xffFFE7E6),
                                     borderRadius: BorderRadius.circular(25.0),
                                   ),
                                   child: GestureDetector(
@@ -356,7 +357,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                       "assets/delete.png",
                                       height: 15,
                                       width: 15,
-                                      color: Color(0xffED0206),
+                                      color: const Color(0xffED0206),
                                     ),
                                   ),
                                 ),
@@ -469,7 +470,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   "assets/delete.png",
                                   height: 15,
                                   width: 15,
-                                  color: Color(0xffED0206),
+                                  color: const Color(0xffED0206),
                                 ),
                               ),
                             ),
@@ -574,7 +575,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-                                color: Color(0xffFFE7E6),
+                                color: const Color(0xffFFE7E6),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                               child: GestureDetector(
@@ -591,7 +592,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   "assets/delete.png",
                                   height: 15,
                                   width: 15,
-                                  color: Color(0xffED0206),
+                                  color: const Color(0xffED0206),
                                 ),
                               ),
                             ),
@@ -738,7 +739,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                     height: 35,
                                     width: 35,
                                     decoration: BoxDecoration(
-                                      color: Color(0xffE1FDE8),
+                                      color: const Color(0xffE1FDE8),
                                       borderRadius: BorderRadius.circular(25.0),
                                     ),
                                     child: GestureDetector(
@@ -759,7 +760,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                         "assets/hide.png",
                                         height: 15,
                                         width: 15,
-                                        color: Color(0xff00A600),
+                                        color: const Color(0xff00A600),
                                       ),
                                     ),
                                   ),
@@ -770,7 +771,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                     height: 35,
                                     width: 35,
                                     decoration: BoxDecoration(
-                                      color: Color(0xffFEF4E1),
+                                      color: const Color(0xffFEF4E1),
                                       borderRadius: BorderRadius.circular(25.0),
                                     ),
                                     child: GestureDetector(
@@ -830,7 +831,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                         "assets/edit-alt.png",
                                         height: 15,
                                         width: 15,
-                                        color: Color(0xffED7402),
+                                        color: const Color(0xffED7402),
                                       ),
                                     ),
                                   ),
@@ -841,7 +842,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                     height: 35,
                                     width: 35,
                                     decoration: BoxDecoration(
-                                      color: Color(0xffFFE7E6),
+                                      color: const Color(0xffFFE7E6),
                                       borderRadius: BorderRadius.circular(25.0),
                                     ),
                                     child: GestureDetector(
@@ -891,7 +892,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: OutlinedButton.icon(
                   icon: Icon(
                     Icons.add,
@@ -973,7 +974,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: OutlinedButton.icon(
                   icon: Icon(
                     Icons.add,
@@ -1014,7 +1015,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 25),
+                margin: const EdgeInsets.only(right: 25),
                 child: OutlinedButton.icon(
                   icon: Icon(
                     Icons.add,
@@ -1031,7 +1032,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         addNewSupplier(1), 30, 400);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -1105,45 +1106,55 @@ class _IngredientManagementState extends State<IngredientManagement>
             margin:const EdgeInsets.only(left: 100),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const[
+              children: [
                  Card(
                   elevation: 0.0,
                   child: SizedBox(
                       width: 300,
                       height: 40,
                       child: TextField(
-                          style: TextStyle(
+                          onChanged: (text)async{},
+                          controller: textController,
+                          style: const TextStyle(
                             fontSize: fontSmall,
-                            color: primaryColor,
+                            color: black,
                           ),
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white10,
                             contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                            prefixIcon: Icon(
+                                const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                            prefixIcon: const Icon(
                               Icons.search,
                               size: 20,
                             ),
+                            suffixIcon: IconButton(
+                                onPressed: (){
+                                  textController.text='';
+                                },
+                                icon: Icon(
+                                  Icons.close,
+                                  color:textSecondary
+                                )),
                             hintText: "Search Item",
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                                 fontSize: fontSmall, color: black),
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            disabledBorder: OutlineInputBorder(
+                            disabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            enabledBorder: OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            errorBorder: OutlineInputBorder(
+                            errorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            focusedErrorBorder: OutlineInputBorder(
+                            focusedErrorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
                           ))),
@@ -1160,7 +1171,7 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Container(
       height: Size.infinite.height,
       width: Size.infinite.width,
-      padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: Form(
         key: _ingredientController.addIngredintFormKey,
         child: ListView(children: [
@@ -1172,7 +1183,7 @@ class _IngredientManagementState extends State<IngredientManagement>
               validator2: _ingredientController.textValidator,
               textInputType1: TextInputType.text,
               textInputType2: TextInputType.number),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           textRow('Code', 'Alert Qty'),
           textFieldRow('Enter Code', 'Enter Alert Qty',
               controller1: _ingredientController.addIngredintCodeCtlr,
@@ -1181,7 +1192,7 @@ class _IngredientManagementState extends State<IngredientManagement>
               validator2: _ingredientController.textValidator,
               textInputType1: TextInputType.number,
               textInputType2: TextInputType.number),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           textRow('Select Category', 'Select Unit'),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1224,14 +1235,14 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
                       ),
                     );
                   })),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Expanded(
                   flex: 1,
                   child:
@@ -1269,7 +1280,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1278,7 +1289,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                   })),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
               height: 40,
               width: 50,
@@ -1314,7 +1325,7 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Container(
       height: Size.infinite.height,
       width: Size.infinite.width,
-      padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: Form(
         key: _ingredientController.updateIngredintFormKey,
         child: ListView(children: [
@@ -1329,7 +1340,7 @@ class _IngredientManagementState extends State<IngredientManagement>
             textInputType1: TextInputType.text,
             textInputType2: TextInputType.number,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           textRow('Code', 'Alert Qty'),
           textFieldRow(
             'Enter Code',
@@ -1341,7 +1352,7 @@ class _IngredientManagementState extends State<IngredientManagement>
             textInputType1: TextInputType.number,
             textInputType2: TextInputType.number,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           textRow('Select Category', 'Select Unit'),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1383,14 +1394,14 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
                       ),
                     );
                   })),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Expanded(
                   flex: 1,
                   child:
@@ -1428,7 +1439,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1437,7 +1448,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                   })),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             height: 40,
             width: 50,
@@ -1468,7 +1479,7 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Container(
       height: Size.infinite.height,
       width: Size.infinite.width,
-      padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: ListView(children: [
         textRow('Name', 'Status'),
         textFieldRow(
@@ -1481,7 +1492,7 @@ class _IngredientManagementState extends State<IngredientManagement>
           textInputType1: TextInputType.text,
           textInputType2: TextInputType.number,
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Container(
           height: 40,
           width: 50,
@@ -1507,7 +1518,7 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
-        padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+        padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
         child: ListView(
           children: [
             textRow('Name', 'Description'),
@@ -1521,7 +1532,7 @@ class _IngredientManagementState extends State<IngredientManagement>
               textInputType1: TextInputType.text,
               textInputType2: TextInputType.text,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               height: 40,
               width: 50,
@@ -1548,7 +1559,7 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
-        padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+        padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
         child: Form(
           key: _ingredientController.addIngredintSupplierFormKey,
           child: ListView(
@@ -1566,7 +1577,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 textInputType1: TextInputType.text,
                 textInputType2: TextInputType.emailAddress,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               textRow('Phone', 'Reference'),
               textFieldRow(
                 'Enter Phone',
@@ -1579,7 +1590,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 textInputType1: TextInputType.number,
                 textInputType2: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               textRow('Address', 'Status'),
               textFieldRow(
                 'Enter Address',
@@ -1593,9 +1604,9 @@ class _IngredientManagementState extends State<IngredientManagement>
                 textInputType1: TextInputType.text,
                 textInputType2: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               textRow('ID Card Front', 'ID Card Back'),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1604,7 +1615,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                     height: 40,
                     width: 400,
                     child: OutlinedButton.icon(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.cloud_upload_outlined,
                         color: primaryColor,
                       ),
@@ -1635,7 +1646,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                     height: 40,
                     width: 400,
                     child: OutlinedButton.icon(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.cloud_upload_outlined,
                         color: primaryColor,
                       ),
@@ -1664,7 +1675,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                   height: 40,
                   width: 50,
@@ -1775,7 +1786,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 height: 40,
                 width: 400,
                 child: OutlinedButton.icon(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.cloud_upload_outlined,
                     color: primaryColor,
                   ),
@@ -1803,7 +1814,7 @@ class _IngredientManagementState extends State<IngredientManagement>
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             height: 40,
             width: 50,
@@ -1832,7 +1843,7 @@ class _IngredientManagementState extends State<IngredientManagement>
 
   Widget viewSupplierDetails() {
     return Container(
-        padding: EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30),
         child: ListView(
           children: [
             SizedBox(
@@ -2051,7 +2062,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 ],
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             SizedBox(
               height: 200,
               child: Row(
@@ -2081,7 +2092,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                 ],
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
           ],
         ));
   }

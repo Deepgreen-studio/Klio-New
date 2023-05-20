@@ -189,8 +189,8 @@ class TransactionsController extends GetxController with ErrorController{
   }
 
   Future<void> getBankByKeyword({String keyword = ''})async{
-    // Map<String, String> qParams = {'keyword': keyword};
-    // String endPoint = "finance/bank";
+    Map<String, String> qParams = {'keyword': keyword};
+    String endPoint = "finance/bank";
     // print(endPoint);
     // var response= await ApiClient()
     //   .get(endPoint, header: Utils.apiHeader, query: qParams);

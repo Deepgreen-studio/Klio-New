@@ -33,6 +33,7 @@ class _FoodManagementState extends State<FoodManagement>
   FoodManagementController foodCtlr = Get.find();
   int _currentSelection = 0;
   late TabController controller;
+  TextEditingController textController = TextEditingController();
 
   Variant? selectedValue;
   List<String> selected = [];
@@ -43,11 +44,12 @@ class _FoodManagementState extends State<FoodManagement>
     // TODO: implement initState
 
     scrollController = ScrollController();
+    controller = TabController(vsync: this, length: 6);
 
-    // controller.addListener(() {
-    //   _currentSelection = controller.index;
-    //   foodCtlr.update(['changeCustomTabBar']);
-    // });
+    controller.addListener(() {
+      _currentSelection = controller.index;
+      foodCtlr.update(['changeCustomTabBar']);
+    });
 
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
@@ -65,7 +67,6 @@ class _FoodManagementState extends State<FoodManagement>
         }
       }
     });
-    controller = TabController(vsync: this, length: 6);
     super.initState();
   }
 
@@ -1537,46 +1538,57 @@ class _FoodManagementState extends State<FoodManagement>
             margin: const EdgeInsets.only(left: 100),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const[
+              children: [
                 Card(
                   elevation: 0.0,
                   child: SizedBox(
                       width: 300,
                       height: 40,
                       child: TextField(
-                          style:  TextStyle(
+                        onChanged: (text)async{},
+                          controller: textController,
+                          style: const TextStyle(
                             fontSize: fontSmall,
-                            color: Colors.blueAccent,
+                            color: black,
                           ),
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white10,
                             contentPadding:
-                             EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                            prefixIcon:  Icon(
+                             const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                            prefixIcon:  const Icon(
                               Icons.search,
                               size: 20,
                             ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: textSecondary,
+                              ),
+                              onPressed: (){
+                                textController.text='';
+                              },
+                            ),
                             hintText: "Search Item",
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                                 fontSize: fontSmall,
                                 color: black),
-                            border:  OutlineInputBorder(
+                            border:  const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            disabledBorder: OutlineInputBorder(
+                            disabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            enabledBorder: OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            errorBorder: OutlineInputBorder(
+                            errorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
-                            focusedErrorBorder: OutlineInputBorder(
+                            focusedErrorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: Colors.transparent)),
                           ))),
