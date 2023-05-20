@@ -19,11 +19,14 @@ class TransactionManagement extends StatefulWidget {
   State<TransactionManagement> createState() => _TransactionManagementState();
 }
 
-class _TransactionManagementState extends State<TransactionManagement>with SingleTickerProviderStateMixin {
+class _TransactionManagementState extends State<TransactionManagement>
+    with SingleTickerProviderStateMixin {
   TransactionsController _transactionsController = Get.put(TransactionsController());
+  TextEditingController? textController = TextEditingController();
   int _currentSelection = 0;
   late TabController controller;
   late ScrollController scrollController;
+
 
   @override
   void initState() {
@@ -34,7 +37,6 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
       _transactionsController.update(['changeCustomTabBar']);
     });
     scrollController= ScrollController();
-
     scrollController.addListener(() {
       if(scrollController.position.pixels>=
       scrollController.position.maxScrollExtent * 0.95){
@@ -45,15 +47,16 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
         }
       }
     });
-
     super.initState();
   }
+
 
   @override
   void dispose() {
     scrollController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +79,7 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
         )
     );
   }
+
   itemTitleHeader() {
     return Builder(builder: (context) {
       if (_currentSelection == 0) {
@@ -176,12 +180,12 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
                     0: Text(
                       'Bank List',
                       style: TextStyle(
-                          color: _currentSelection == 0 ? white : textSecondary),
+                          color: _currentSelection == 0 ? white : black),
                     ),
                     1: Text(
                       'Bank Transactions',
                       style: TextStyle(
-                          color: _currentSelection == 1 ? white : textSecondary),
+                          color: _currentSelection == 1 ? white : black),
                     ),
                   },
                   selectionIndex: _currentSelection,
@@ -208,104 +212,76 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
               );
             }
           ),
-          Expanded(
-              flex: 1,
-              child: Container(
-                margin: const EdgeInsets.only(left: 100),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Card(
-                      elevation: 0.0,
-                      child: SizedBox(
-                          width: 250,
-                          height: 30,
-                          child: TextField(
-                              style: const TextStyle(
-                                fontSize: fontSmall,
-                                color: Colors.blueAccent,
-                              ),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white10,
-                                contentPadding:
-                                const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  size: 18,
-                                ),
-                                hintText: "Search Item",
-                                hintStyle: TextStyle(
-                                    fontSize: fontVerySmall,
-                                    color: textSecondary),
-                                border: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                disabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                errorBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                                focusedErrorBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.transparent)),
-                              ))),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Show :",
-                            style: TextStyle(color: textSecondary),
+         Container(
+            margin: const EdgeInsets.only(left: 100),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Card(
+                  elevation: 0.0,
+                  child: SizedBox(
+                      width: 300,
+                      height: 40,
+                      child: TextField(
+                          onChanged: (text) async {
+                            _transactionsController.getBankByKeyword(keyword: text);
+                          },
+                          keyboardType: TextInputType.text,
+                          controller: textController,
+                          textInputAction: TextInputAction.search,
+                          style:  const TextStyle(
+                            fontSize: fontSmall,
+                            color: Colors.blueAccent,
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            height: 30,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(color: Colors.black12)),
-                            child: DropdownButton<int>(
-                              hint: Text(
-                                '1',
-                                style: TextStyle(color: textSecondary),
-                              ),
-                              dropdownColor: white,
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              iconSize: 15,
-                              underline: const SizedBox(),
-                              items: <int>[1, 2, 3, 4].map((int value) {
-                                return DropdownMenuItem<int>(
-                                  value: value,
-                                  child: Text(value.toString()),
-                                );
-                              }).toList(),
-                              onChanged: (int? newVal) {},
+
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white10,
+                            contentPadding:
+                             const EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 0.0),
+                            prefixIcon:  const Icon(
+                              Icons.search,
+                              size: 20,
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Entries",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: textSecondary,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  textController!.text = '';
+                                  _transactionsController.getBankByKeyword();
+                                });
+                              },
+                            ),
+                            hintText: "Search Item",
+                            hintStyle: const TextStyle(
+                                fontSize: fontSmall,
+                                color: black),
+                            border:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                            disabledBorder:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                            enabledBorder:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                            errorBorder:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                            focusedBorder:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                            focusedErrorBorder:  const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Colors.transparent)),
+                          ))),
                 ),
-              )),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -555,8 +531,6 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
     );
   }
 
-
-
   Widget newBankForm() {
     return Container(
       padding: const EdgeInsets.all(25.0),
@@ -741,7 +715,5 @@ class _TransactionManagementState extends State<TransactionManagement>with Singl
       )
     );
   }
-
-
 
 }

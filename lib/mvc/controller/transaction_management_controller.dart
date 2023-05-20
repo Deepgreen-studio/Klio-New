@@ -22,6 +22,7 @@ class TransactionsController extends GetxController with ErrorController{
   Rx<TransactionListModel> transactionListData = TransactionListModel(data: []).obs;
   File? signatureStoreImage;
 
+
   ///Api data fetch varriable
   int bankPageNumber = 1;
   int transitionPageNumber = 1;
@@ -186,6 +187,18 @@ class TransactionsController extends GetxController with ErrorController{
     update(['transId']);
 
   }
+
+  Future<void> getBankByKeyword({String keyword = ''})async{
+    // Map<String, String> qParams = {'keyword': keyword};
+    // String endPoint = "finance/bank";
+    // print(endPoint);
+    // var response= await ApiClient()
+    //   .get(endPoint, header: Utils.apiHeader, query: qParams);
+    // print(response);
+    // bankListData.value= bankListModelFromJson(response);
+  }
+
+
 
   dynamic _processResponse(http.Response response) {
     var jsonResponse = utf8.decode(response.bodyBytes);

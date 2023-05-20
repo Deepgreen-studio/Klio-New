@@ -95,14 +95,14 @@ class _HomeState extends State<Home> {
                         Obx(() {
                           return homeController.currentPage.value == 0
                               ? Expanded(
-                                  child: Column(
-                                    children: [
-                                      buildTabBar(),
-                                      buildMenuItems(size),
-                                      buildOrdersList(context),
-                                    ],
-                                  ),
-                                )
+                            child: Column(
+                              children: [
+                                buildTabBar(),
+                                buildMenuItems(size),
+                                buildOrdersList(context),
+                              ],
+                            ),
+                          )
                               : pageList[homeController.currentPage.value];
                         }),
                       ],
@@ -112,32 +112,32 @@ class _HomeState extends State<Home> {
                 Obx(() {
                   return homeController.currentPage.value == 0
                       ? size.width > size.height
-                          ? Expanded(
-                              flex: 30,
-                              child: leftSideView(
-                                  context, scaffoldKey.currentState),
-                            )
-                          : Container(
-                              height: 50,
-                              width: 15,
-                              padding: EdgeInsets.zero,
-                              margin: EdgeInsets.zero,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(100),
-                                    bottomLeft: Radius.circular(100)),
-                                color: primaryColor,
-                              ),
-                              child: MaterialButton(
-                                  onPressed: () {
-                                    scaffoldKey.currentState!.openEndDrawer();
-                                  },
-                                  padding: const EdgeInsets.all(12),
-                                  child: const Icon(
-                                    Icons.arrow_back_ios,
-                                    color: white,
-                                  )),
-                            )
+                      ? Expanded(
+                    flex: 30,
+                    child: leftSideView(
+                        context, scaffoldKey.currentState),
+                  )
+                      : Container(
+                    height: 50,
+                    width: 15,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(100),
+                          bottomLeft: Radius.circular(100)),
+                      color: primaryColor,
+                    ),
+                    child: MaterialButton(
+                        onPressed: () {
+                          scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        padding: const EdgeInsets.all(12),
+                        child: const Icon(
+                          Icons.arrow_back_ios,
+                          color: white,
+                        )),
+                  )
                       : const SizedBox();
                 }),
               ],
@@ -170,10 +170,10 @@ class _HomeState extends State<Home> {
                 itemCount: homeController.orders.value.data!.length,
                 itemBuilder: (context, index) {
                   String value = homeController
-                                  .orders.value.data![index].customerName !=
-                              null &&
-                          homeController.orders.value.data![index].customerName!
-                              .isNotEmpty
+                      .orders.value.data![index].customerName !=
+                      null &&
+                      homeController.orders.value.data![index].customerName!
+                          .isNotEmpty
                       ? "C Name : ${homeController.orders.value.data![index].customerName}"
                       : "Invoice : ${homeController.orders.value.data![index].invoice.toString()}";
                   return Card(
@@ -203,7 +203,7 @@ class _HomeState extends State<Home> {
                         ),
                         title: Text(
                             homeController.orders.value.data![index].type
-                                    .toString() ??
+                                .toString() ??
                                 '',
                             style: TextStyle(
                                 fontSize: fontMedium,
@@ -233,78 +233,78 @@ class _HomeState extends State<Home> {
                 bottomIconTextBtn(
                     'assets/delivery.png', 'Order Detail', primaryColor,
                     onPressed: () async {
-                  Utils.showLoading();
-                  await homeController.getOrder(homeController.orders.value
-                      .data![homeController.selectedOrder.value].id!
-                      .toInt());
-                  Utils.hidePopup();
-                  showCustomDialog(
-                      context, "Order Details", orderDetail(context), 50, 400);
-                }),
+                      Utils.showLoading();
+                      await homeController.getOrder(homeController.orders.value
+                          .data![homeController.selectedOrder.value].id!
+                          .toInt());
+                      Utils.hidePopup();
+                      showCustomDialog(
+                          context, "Order Details", orderDetail(context), 50, 400);
+                    }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/circle-error.png', 'Cancel Order', primaryColor,
                     onPressed: () {
-                  showWarningDialog('Are you sure to cancel this order?',
-                      onAccept: () async {
-                    Utils.showLoading();
-                    await homeController.cancelOrder(homeController.orders.value
-                        .data![homeController.selectedOrder.value].id!
-                        .toInt());
-                    homeController.getOrders();
-                    Utils.hidePopup();
-                    Utils.hidePopup();
-                    Utils.showSnackBar("Order canceled successfully");
-                  });
-                }),
+                      showWarningDialog('Are you sure to cancel this order?',
+                          onAccept: () async {
+                            Utils.showLoading();
+                            await homeController.cancelOrder(homeController.orders.value
+                                .data![homeController.selectedOrder.value].id!
+                                .toInt());
+                            homeController.getOrders();
+                            Utils.hidePopup();
+                            Utils.hidePopup();
+                            Utils.showSnackBar("Order canceled successfully");
+                          });
+                    }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/edit-alt.png', 'Edit Order', primaryColor,
                     onPressed: () {
-                  showWarningDialog('Are you sure to edit this order?',
-                      onAccept: () async {
-                    Utils.showLoading();
-                    homeController.cardList.clear();
-                    await homeController.getOrder(homeController.orders.value
-                        .data![homeController.selectedOrder.value].id!
-                        .toInt());
-                    for (OrderDetailsDatum order in homeController
-                        .order.value.data!.orderDetails!.data!
-                        .toList()) {
-                      MenuData menuData = await MenuData(
-                          id: order.foodId,
-                          name: order.food!.name,
-                          taxVat: order.vat,
-                          quantity: order.quantity,
-                          variant: order.variantId.toString(),
-                          addons: order.addons,
-                          variants: Variants(data: [
-                            VariantsDatum(
-                                id: order.variantId,
-                                name: order.variant!.name,
-                                price: order.price)
-                          ]));
-                      homeController.cardList.add(menuData);
-                      homeController.cardList.refresh();
-                    }
-                    homeController.isUpdate.value = true;
-                    Utils.hidePopup();
-                    Utils.hidePopup();
-                  });
-                }),
+                      showWarningDialog('Are you sure to edit this order?',
+                          onAccept: () async {
+                            Utils.showLoading();
+                            homeController.cardList.clear();
+                            await homeController.getOrder(homeController.orders.value
+                                .data![homeController.selectedOrder.value].id!
+                                .toInt());
+                            for (OrderDetailsDatum order in homeController
+                                .order.value.data!.orderDetails!.data!
+                                .toList()) {
+                              MenuData menuData = await MenuData(
+                                  id: order.foodId,
+                                  name: order.food!.name,
+                                  taxVat: order.vat,
+                                  quantity: order.quantity,
+                                  variant: order.variantId.toString(),
+                                  addons: order.addons,
+                                  variants: Variants(data: [
+                                    VariantsDatum(
+                                        id: order.variantId,
+                                        name: order.variant!.name,
+                                        price: order.price)
+                                  ]));
+                              homeController.cardList.add(menuData);
+                              homeController.cardList.refresh();
+                            }
+                            homeController.isUpdate.value = true;
+                            Utils.hidePopup();
+                            Utils.hidePopup();
+                          });
+                    }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/delivery.png', 'Kitchen Status', primaryColor,
                     onPressed: () async {
-                  Utils.showLoading();
-                  await homeController.getOrder(homeController.orders.value
-                      .data![homeController.selectedOrder.value].id!
-                      .toInt());
-                  Utils.hidePopup();
-                  print(homeController.order.value.toJson());
-                  showCustomDialog(context, "Order Status",
-                      orderDetail(context, true), 100, 400);
-                }),
+                      Utils.showLoading();
+                      await homeController.getOrder(homeController.orders.value
+                          .data![homeController.selectedOrder.value].id!
+                          .toInt());
+                      Utils.hidePopup();
+                      print(homeController.order.value.toJson());
+                      showCustomDialog(context, "Order Status",
+                          orderDetail(context, true), 100, 400);
+                    }),
               ],
             ),
           ),
@@ -343,24 +343,24 @@ class _HomeState extends State<Home> {
                 },
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       gridImage
                           ? Expanded(
-                              flex: 3,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  homeController.filteredMenu[index].image
-                                      .toString(),
-                                  height: Size.infinite.height,
-                                  width: Size.infinite.width,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            )
+                        flex: 3,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            homeController.filteredMenu[index].image
+                                .toString(),
+                            height: Size.infinite.height,
+                            width: Size.infinite.width,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
                           : const SizedBox(),
                       const SizedBox(
                         width: 6,
@@ -380,7 +380,7 @@ class _HomeState extends State<Home> {
                                   width: 3,
                                   height: 50,
                                   decoration:
-                                      const BoxDecoration(color: primaryColor),
+                                  const BoxDecoration(color: primaryColor),
                                 ),
                                 const SizedBox(width: 5),
                                 Expanded(
@@ -389,9 +389,9 @@ class _HomeState extends State<Home> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           homeController
@@ -414,13 +414,13 @@ class _HomeState extends State<Home> {
                                 gridImage
                                     ? const SizedBox()
                                     : Text(
-                                        homeController.filteredMenu[index].price
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: fontMediumExtra,
-                                            color: primaryColor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                  homeController.filteredMenu[index].price
+                                      .toString(),
+                                  style: const TextStyle(
+                                      fontSize: fontMediumExtra,
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ],
                             ),
                             Row(
@@ -467,7 +467,7 @@ class _HomeState extends State<Home> {
               height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 25),
               color:
-                  selectedCategory == -1 ? primaryColor : secondaryBackground,
+              selectedCategory == -1 ? primaryColor : secondaryBackground,
               onPressed: () {
                 setState(() {
                   selectedCategory = -1;
@@ -506,10 +506,10 @@ class _HomeState extends State<Home> {
                             selectedCategory = index;
                           });
                           homeController.filteredMenu.value =
-                              Utils.filterCategory(
-                                  homeController.menus.value,
-                                  homeController.category.value.data![index].id!
-                                      .toInt())!;
+                          Utils.filterCategory(
+                              homeController.menus.value,
+                              homeController.category.value.data![index].id!
+                                  .toInt())!;
                           // homeController
                           //     .getMenuByCategory(
                           //         id: homeController
@@ -577,7 +577,7 @@ class _HomeState extends State<Home> {
                 }),
                 Text(DateFormat('kk:mm:a | dd MMM').format(DateTime.now()),
                     style:
-                        TextStyle(fontSize: fontVerySmall, color: primaryText)),
+                    TextStyle(fontSize: fontVerySmall, color: primaryText)),
               ],
             ),
           ),
@@ -587,42 +587,43 @@ class _HomeState extends State<Home> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SizedBox(
-                    width: 280,
-                    height: 40,
-                    child: TextField(
-                        onChanged: (text) async {
-                          homeController.getMenuByKeyword(keyword: text);
-                        },
-                        keyboardType: TextInputType.text,
-                        controller: textController,
-                        textInputAction: TextInputAction.search,
-                        style:
-                            TextStyle(fontSize: fontSmall, color: primaryText),
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: secondaryBackground,
-                            prefixIcon: Image.asset("assets/search.png",
-                                color: primaryText),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: textSecondary,
+                Obx(()=>homeController.currentPage!=0?Container(): SizedBox(
+                      width: 280,
+                      height: 40,
+                      child: TextField(
+                          onChanged: (text) async {
+                            homeController.getMenuByKeyword(keyword: text);
+                          },
+                          keyboardType: TextInputType.text,
+                          controller: textController,
+                          textInputAction: TextInputAction.search,
+                          style:
+                          TextStyle(fontSize: fontSmall, color: primaryText),
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: secondaryBackground,
+                              prefixIcon: Image.asset("assets/search.png",
+                                  color: primaryText),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: textSecondary,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    textController!.text = '';
+                                    homeController.getMenuByKeyword();
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  textController!.text = '';
-                                  homeController.getMenuByKeyword();
-                                });
-                              },
-                            ),
-                            hintText: 'Search item',
-                            hintStyle: TextStyle(
-                                fontSize: fontMedium, color: primaryText),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none),
-                            contentPadding: EdgeInsets.zero))),
+                              hintText: 'Search item',
+                              hintStyle: TextStyle(
+                                  fontSize: fontMedium, color: primaryText),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none),
+                              contentPadding: EdgeInsets.zero))),
+                ),
                 const SizedBox(width: 12),
                 topBarIconBtn(
                     Image.asset('assets/reload.png', color: primaryColor),
@@ -689,25 +690,26 @@ class _HomeState extends State<Home> {
                       builder: (BuildContext context) => Home(refresh: false)));
                 }),
                 const SizedBox(width: 12),
-                topBarIconBtn(
-                    Image.asset('assets/filter-alt.png', color: primaryText),
-                    secondaryBackground,
-                    8,
-                    15,
-                    40, onPressed: () {
-                  gridImage ? gridImage = false : gridImage = true;
-                  setState(() {});
-                }),
+                Obx(()=> homeController.currentPage!=0 ? SizedBox() : topBarIconBtn(
+                      Image.asset('assets/filter-alt.png', color: primaryText),
+                      secondaryBackground,
+                      8,
+                      15,
+                      40, onPressed: () {
+                    gridImage ? gridImage = false : gridImage = true;
+                    setState(() {});
+                  }),
+                ),
                 const SizedBox(width: 12),
                 topBarIconBtn(Image.asset('assets/logout.png', color: white),
                     primaryColor, 8, 15, 40, onPressed: () {
-                  showWarningDialog("Do you want to Logout from app",
-                      onAccept: () async {
-                    await SharedPref().saveValue('token', '');
-                    await SharedPref().saveValue('loginType', '');
-                    Get.off(Login());
-                  });
-                }),
+                      showWarningDialog("Do you want to Logout from app",
+                          onAccept: () async {
+                            await SharedPref().saveValue('token', '');
+                            await SharedPref().saveValue('loginType', '');
+                            Get.off(Login());
+                          });
+                    }),
               ],
             ),
           ),

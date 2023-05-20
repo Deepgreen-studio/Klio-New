@@ -65,7 +65,6 @@ class CustomerController extends GetxController with ErrorController{
         .catchError(handleApiError);
     customerData.value = customerListModelFromJson(response);
     update();
-    customerDataLoading();
   }
   Future<void> getSingleCustomerDetails(dynamic id )async{
     String endPoint = 'pos/customer/$id';

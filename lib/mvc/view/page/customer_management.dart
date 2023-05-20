@@ -108,7 +108,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                 ],
                 //rows: [],
 
-                rows: customerController.customerData.value.data!
+                rows: customerController.customerData.value.data!.reversed
                     .map((item)=>DataRow(
                     cells: [
                       DataCell(

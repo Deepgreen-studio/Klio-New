@@ -139,7 +139,6 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
             GetBuilder<ReportManagementController>(
                 id: 'changeCustomTabBar',
                 builder: (context) {
-                  print('+++++++++++++++++++++++++++++++++');
                   return Expanded(
                       flex: 1,
                       child: MaterialSegmentedControl(
@@ -201,108 +200,61 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                             });
                           }));
                 }),
-            Expanded(
-                flex: 1,
-                child: Container(
-                    margin: const EdgeInsets.only(left: 100),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Card(
-                          elevation: 0.0,
-                          child: SizedBox(
-                              width: 250,
-                              height: 30,
-                              child: TextField(
-                                  style: TextStyle(
-                                    fontSize: fontSmall,
-                                    color: primaryColor,
-                                  ),
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white10,
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(10, 3, 10, 0),
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      size: 18,
-                                    ),
-                                    hintText: "Search Item",
-                                    hintStyle: TextStyle(
-                                        fontSize: fontVerySmall, color: black),
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                    disabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.transparent)),
-                                  ))),
-                        ),
-                        Container(
-                            child: Row(children: [
-                          Text(
-                            "Show :",
-                            style: TextStyle(color: textSecondary),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            height: 30,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(color: Colors.black12)),
-                            child: DropdownButton<int>(
-                              hint: const Text(
-                                '1',
-                                style: TextStyle(color: black),
+            Container(
+                margin: const EdgeInsets.only(left: 100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const[
+                     Card(
+                      elevation: 0.0,
+                      child: SizedBox(
+                          width: 300,
+                          height: 40,
+                          child: TextField(
+                              style: TextStyle(
+                                fontSize: fontSmall,
+                                color: primaryColor,
                               ),
-                              dropdownColor: white,
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              iconSize: 15,
-                              underline: const SizedBox(),
-                              value: dropdownvalue,
-                              items: <int>[1, 2, 3, 4].map((int value) {
-                                return DropdownMenuItem<int>(
-                                  value: value,
-                                  child: Text(value.toString()),
-                                );
-                              }).toList(),
-                              onChanged: (int? newVal) {
-                                setState(() {
-                                  dropdownvalue = newVal!;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            "Entries",
-                            style: TextStyle(color: textSecondary),
-                          )
-                        ]))
-                      ],
-                    )))
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white10,
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 3, 10, 0),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  size: 20,
+                                ),
+                                hintText: "Search Item",
+                                hintStyle: TextStyle(
+                                    fontSize: fontSmall, color: black),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                                disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                                errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                                focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.transparent)),
+                              ))),
+                    ),
+                  ],
+                ))
           ],
         ));
   }
