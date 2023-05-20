@@ -277,6 +277,13 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         child: GetBuilder<ReportManagementController>(
             id: "saleId",
             builder: (controller) {
+              if(controller.saleRepData.value.data!.isEmpty){
+                return  Center(child: Container(
+                    height:40,
+                    width: 40,
+                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                    child: CircularProgressIndicator()));
+              }
               if (!controller.haveMoreAllSale &&
                   controller.saleRepData.value.data!.last.id != 0) {
                 controller.saleRepData.value.data!.add(SaleReport.Datum(id: 0));

@@ -132,6 +132,13 @@ class _FoodManagementState extends State<FoodManagement>
             builder: (controller) {
               List<FoodMenuManagementDatum> data =
                   controller.menusData.value.data ?? [];
+              if(data.isEmpty){
+                return  Center(child: Container(
+                    height:40,
+                    width: 40,
+                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                    child: CircularProgressIndicator()));
+              }
               if (!controller.haveMoreMenuItem && data.last.id != 0) {
                 data.add(FoodMenuManagementDatum(id: 0));
               }

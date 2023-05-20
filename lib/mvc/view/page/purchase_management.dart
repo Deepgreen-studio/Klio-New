@@ -340,6 +340,13 @@ class _PurchaseManagementState extends State<PurchaseManagement>
         child: GetBuilder<PurchaseManagementController>(
             id: 'purchaseId',
             builder: (controller) {
+              if(controller.purchaseData.value.data.isEmpty){
+                return  Center(child: Container(
+                    height:40,
+                    width: 40,
+                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                    child: CircularProgressIndicator()));
+              }
               if (!controller.haveMorePurchase && controller.purchaseData.value.data.last.id != 0) {
                 controller.purchaseData.value.data.add(Datum(id:0));
               }

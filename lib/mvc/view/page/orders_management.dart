@@ -486,6 +486,13 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allOrders",
           builder: (controller) {
+            if(controller.allOrdersData.value.data!.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             return dataTable(
               controller,
               controller.allOrdersData.value.data ?? [],
@@ -501,7 +508,7 @@ class _OrdersManagementState extends State<OrdersManagement>
     );
   }
 
-  successOrder(BuildContext context) {
+  Widget successOrder(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
@@ -509,6 +516,13 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allSuccessOrders",
           builder: (controller) {
+            if(controller.allSuccessData.value.data!.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             return dataTable(
               controller,
               controller.allSuccessData.value.data ?? [],
@@ -532,6 +546,13 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allProcessingOrders",
           builder: (controller) {
+            if(controller.allProcessingData.value.data!.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             return dataTable(
               controller,
               controller.allProcessingData.value.data ?? [],
@@ -555,8 +576,14 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allPendingOrders",
           builder: (controller) {
-            print("*********************************************");
             print(controller.allPendingData.value.data!.length);
+            if(controller.allPendingData.value.data!.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             return dataTable(
               controller,
               controller.allPendingData.value.data ?? [],
@@ -580,6 +607,13 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allCancelOrders",
           builder: (controller) {
+            if(controller.allCancelData.value.data!.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             return dataTable(
                 controller,
                 controller.allCancelData.value.data ?? [],

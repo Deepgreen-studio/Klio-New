@@ -295,6 +295,13 @@ class _TransactionManagementState extends State<TransactionManagement>
         child: GetBuilder<TransactionsController>(
           id: 'bankId',
           builder: (controller) {
+            if(controller.bankListData.value.data.isEmpty){
+              return  Center(child: Container(
+                  height:40,
+                  width: 40,
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                  child: CircularProgressIndicator()));
+            }
             if (!controller.haveMoreBank && controller.bankListData.value.data.last.id != 0) {
               controller.bankListData.value.data.add(Bank.Datum(id:0));
             }

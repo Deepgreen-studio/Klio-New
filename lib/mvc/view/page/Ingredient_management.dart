@@ -126,12 +126,20 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
+
         controller: scrollController,
         child: GetBuilder<IngredientController>(
             id: "ingredientTab",
             builder: (controller) {
               List<Ingrediant> data =
                   controller.ingredientData.value.data ?? [];
+              if(data.isEmpty){
+                return  Center(child: Container(
+                    height:40,
+                    width: 40,
+                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                    child: CircularProgressIndicator()));
+              }
               if (!controller.haveMoreIngredient && data.last.id != 0) {
                 data.add(Ingrediant(id: 0));
               }

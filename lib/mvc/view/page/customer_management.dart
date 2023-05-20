@@ -83,6 +83,13 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
         color: secondaryBackground,
         child: SingleChildScrollView(
             child: GetBuilder<CustomerController>(builder: (customerController) {
+              if(customerController.customerData.value.data!.isEmpty){
+                return  Center(child: Container(
+                    height:40,
+                    width: 40,
+                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                    child: CircularProgressIndicator()));
+              }
               return DataTable(
                 dataRowHeight: 70,
                 columns:
