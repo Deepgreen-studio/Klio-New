@@ -83,16 +83,20 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,*/
               children: [
-                SizedBox(
-                  width: size.width > 1300 ? size.width * 0.7 : size.width,
-                  child: SizedBox(
-                    height: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        buildHomeTop(context),
-                        Obx(() {
-                          return homeController.currentPage.value == 0
+                Obx(
+                  () => SizedBox(
+                    width: homeController.currentPage.value == 0
+                        ? size.width > 1200
+                            ? size.width * 0.7
+                            : size.width
+                        : size.width,
+                    child: SizedBox(
+                      height: double.infinity,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          buildHomeTop(context),
+                          homeController.currentPage.value == 0
                               ? Expanded(
                                   child: Column(
                                     children: [
@@ -102,9 +106,9 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                 )
-                              : pageList[homeController.currentPage.value];
-                        }),
-                      ],
+                              : pageList[homeController.currentPage.value]
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -112,7 +116,7 @@ class _HomeState extends State<Home> {
                   right: 0,
                   child: Obx(() {
                     return homeController.currentPage.value == 0
-                        ? size.width > 1300
+                        ? size.width > 1200
                             ? SizedBox(
                                 width: size.width * 0.3,
                                 height: size.height,
