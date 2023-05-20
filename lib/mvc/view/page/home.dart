@@ -66,6 +66,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: primaryBackground,
@@ -77,13 +78,13 @@ class _HomeState extends State<Home> {
           child: SizedBox(
             width: double.infinity,
             height: double.infinity,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
+            child: Stack(
+              /*mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,*/
               children: [
-                Expanded(
-                  flex: 75,
+                SizedBox(
+                  width: size.width > 1300 ? size.width * 0.7 : size.width,
                   child: SizedBox(
                     height: double.infinity,
                     child: Column(
@@ -107,37 +108,56 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                Obx(() {
-                  return homeController.currentPage.value == 0
-                      ? size.width > size.height
-                          ? Expanded(
-                              flex: 30,
-                              child: leftSideView(
-                                  context, scaffoldKey.currentState),
-                            )
-                          : Container(
-                              height: 50,
-                              width: 15,
-                              padding: EdgeInsets.zero,
-                              margin: EdgeInsets.zero,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(100),
-                                    bottomLeft: Radius.circular(100)),
-                                color: primaryColor,
-                              ),
-                              child: MaterialButton(
-                                  onPressed: () {
-                                    scaffoldKey.currentState!.openEndDrawer();
-                                  },
-                                  padding: const EdgeInsets.all(12),
-                                  child: const Icon(
-                                    Icons.arrow_back_ios,
-                                    color: white,
-                                  )),
-                            )
-                      : const SizedBox();
-                }),
+                Positioned(
+                  right: 0,
+                  child: Obx(() {
+                    return homeController.currentPage.value == 0
+                        ? size.width > 1300
+                            ? SizedBox(
+                                width: size.width * 0.3,
+                                height: size.height,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: size.height * 0.005,
+                                      bottom: size.height * 0.02),
+                                  child: leftSideView(
+                                      context, scaffoldKey.currentState),
+                                ),
+                              )
+                            : SizedBox(
+                                height: size.height,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      width: 30,
+                                      padding: EdgeInsets.zero,
+                                      margin: EdgeInsets.zero,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(100),
+                                            bottomLeft: Radius.circular(100)),
+                                        color: primaryColor,
+                                      ),
+                                      child: MaterialButton(
+                                          onPressed: () {
+                                            scaffoldKey.currentState!
+                                                .openEndDrawer();
+                                          },
+                                          padding: const EdgeInsets.all(12),
+                                          child: const Icon(
+                                            Icons.arrow_back_ios,
+                                            color: white,
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              )
+                        : const SizedBox();
+                  }),
+                ),
               ],
             ),
           ),
@@ -332,8 +352,10 @@ class _HomeState extends State<Home> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  if(homeController.cardList.isNotEmpty)print(homeController.cardList[0].quantity);
-                  print("----------------------============================= 1");
+                  if (homeController.cardList.isNotEmpty)
+                    print(homeController.cardList[0].quantity);
+                  print(
+                      "----------------------============================= 1");
                   MenuData data = homeController.filteredMenu[index];
                   print(data.toJson());
                   showCustomDialog(

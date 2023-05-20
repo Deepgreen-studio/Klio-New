@@ -1128,19 +1128,27 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 flex: 1,
                 child: textMixer(
                     'Order Type: ',
-                    homeController.order.value.data!.type.toString(),
+                    homeController.order.value.data != null
+                        ? homeController.order.value.data!.type.toString()
+                        : "null",
                     MainAxisAlignment.start)),
             Expanded(
                 flex: 1,
                 child: textMixer(
                     'Customer Name: ',
-                    homeController.order.value.data!.customer!.name.toString(),
+                    homeController.order.value.data != null
+                        ?   homeController.order.value.data!.customer!.name.toString()
+                        : "null",
+
                     MainAxisAlignment.center)),
             Expanded(
                 flex: 1,
                 child: textMixer(
                     'Invoice: ',
-                    homeController.order.value.data!.invoice.toString(),
+                    homeController.order.value.data != null
+                        ? homeController.order.value.data!.invoice.toString()
+                        : "null",
+
                     MainAxisAlignment.end)),
           ],
         ),
