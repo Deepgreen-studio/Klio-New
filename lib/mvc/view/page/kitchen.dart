@@ -32,12 +32,23 @@ class _KitchenState extends State<Kitchen> {
     // TODO: implement initState
     super.initState();
     applyThem(darkMode);
+
     kitchenController.getKitchenOrder(false).then((value) {
+      if (Navigator.of(context).canPop()) {
+        print(" popppppppppppppppppppppppppppppppppppppppppppppp");
+        Navigator.pop(context);
+      }
       setState(() {});
     });
     timer = Timer.periodic(const Duration(minutes: 1), (Timer t) {
-      kitchenController.getKitchenOrder(true);
+      //kitchenController.getKitchenOrder(true);
     });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -140,7 +151,7 @@ class _KitchenState extends State<Kitchen> {
                               onAccept: () async {
                             await SharedPref().saveValue('token', '');
                             await SharedPref().saveValue('loginType', '');
-                            Get.off(const Login());
+                            Get.offAll(const Login());
                           });
                         }),
                       ],
@@ -158,7 +169,7 @@ class _KitchenState extends State<Kitchen> {
                 radius: const Radius.circular(20),
                 controller: _scrollController,
                 child:  GetBuilder<KitchenController>(
-                  id: 'changeUi',
+                  id: 'changeKitchenUi',
                   builder: (Ccontext) {
                    return GridView.count(
                       crossAxisCount: 3,
@@ -356,7 +367,7 @@ class _KitchenState extends State<Kitchen> {
               Obx(() {
                 return SizedBox(
                     width: 110,
-                    height: 35,
+                    height: 40,
                     child: normalButton(
                         kitchenController.kitchenOrder.value.data![index1]
                             .orderDetails!.data![index2].status
@@ -459,6 +470,7 @@ class _KitchenState extends State<Kitchen> {
   }
 
   Future<void> changeStatus(String status, int index) async {
+
     Utils.showLoading();
     List<int> itemList = [];
     for (var element in kitchenController

@@ -69,8 +69,8 @@ class _LoginState extends State<Login> {
           width: 330,
           child: Card(
             elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: const BorderRadius.all(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
                 Radius.circular(10.0),
               ),
             ),
@@ -199,18 +199,17 @@ class _LoginState extends State<Login> {
                                 fontSize: fontVerySmall, color: primaryText),
                           )),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     normalButton('Login', primaryColor, white,
                         onPressed: () async {
                       if (!formKey.currentState!.validate()) {
-                        // if(formKey.currentState!.validate()){
+
                         Utils.showLoading();
                         formKey.currentState!.save();
                         var response = await ApiClient().post('login', {
                           "email": "admin@gmail.com",
                           "password": "12345678",
-                          // "email": controllerEmail.text,
-                          // "password": controllerPass.text
+
                         }).catchError((e) {
                           Utils.showSnackBar("Invalid Username or Password");
                         });
@@ -220,6 +219,7 @@ class _LoginState extends State<Login> {
                         await SharedPref()
                             .saveValue('token', jsonDecode(response)["token"]);
                         await SharedPref().saveValue('loginType', selected);
+
                         if (staffUser) {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
@@ -228,7 +228,7 @@ class _LoginState extends State<Login> {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      Kitchen()));
+                                      const Kitchen()));
                         }
                       }
                     }),

@@ -49,11 +49,6 @@ class KitchenController extends GetxController with ErrorController {
       }
       var queryParameters = {"ids": ids, "available_times": availableTime};
 
-      print("------------------------------------------------45");
-     /* var queryParameters = {
-        "ids" : [162, 161],
-        "available_times" : ["00:19:00", "00:15:00"]
-      };*/
 
       String queryString = queryParameters.entries
           .map((e) => '${e.key}[]=${e.value.join('&${e.key}[]=')}')
@@ -73,7 +68,7 @@ class KitchenController extends GetxController with ErrorController {
 
       kitchenOrder.value = kitchenOrderFromJson(response);
 
-      update(['changeUi']);
+      update(['changeKitchenUi']);
       Utils.hidePopup();
       return;
     }
@@ -88,6 +83,9 @@ class KitchenController extends GetxController with ErrorController {
     kitchenOrder.value = kitchenOrderFromJson(response);
 
     Utils.hidePopup();
+
+    print("---- ******************************** 12121");
+
   }
 
   Future<bool> updateTimer(int id, List<int> itemList, String status) async {
