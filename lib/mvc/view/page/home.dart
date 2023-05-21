@@ -356,6 +356,10 @@ class _HomeState extends State<Home> {
               ),
               child: GestureDetector(
                 onTap: () {
+                  if (homeController.cardList.isNotEmpty)
+                    print(homeController.cardList[0].quantity);
+                  print(
+                      "----------------------============================= 1");
                   MenuData data = homeController.filteredMenu[index];
                   print(data.toJson());
                   showCustomDialog(
@@ -734,7 +738,7 @@ class _HomeState extends State<Home> {
                       onAccept: () async {
                     await SharedPref().saveValue('token', '');
                     await SharedPref().saveValue('loginType', '');
-                    Get.offAll(Login());
+                    Get.off(Login());
                   });
                 }),
               ],
