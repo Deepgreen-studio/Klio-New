@@ -37,16 +37,17 @@ class _OrdersManagementState extends State<OrdersManagement>
       _ordersManagementController.update(['changeTabBar']);
 
       if (_currentSelection == 1 &&
-          _ordersManagementController.allSuccessData.value.data!.isEmpty) {
+          _ordersManagementController.allSuccessData.value.data!.isEmpty && !_ordersManagementController.isLoadingSuccessOrder) {
         _ordersManagementController.getSuccessData();
       } else if (_currentSelection == 2 &&
-          _ordersManagementController.allProcessingData.value.data!.isEmpty) {
+          _ordersManagementController.allProcessingData.value.data!.isEmpty&& !_ordersManagementController.isLoadingProcessingOrder) {
         _ordersManagementController.getProcessingData();
       } else if (_currentSelection == 3 &&
-          _ordersManagementController.allPendingData.value.data!.isEmpty) {
+          _ordersManagementController.allPendingData.value.data!.isEmpty&& !_ordersManagementController.isLoadingPendingOrder) {
         _ordersManagementController.getPendingData();
+
       } else if (_currentSelection == 4 &&
-          _ordersManagementController.allCancelData.value.data!.isEmpty) {
+          _ordersManagementController.allCancelData.value.data!.isEmpty&& !_ordersManagementController.isLoadingCancelOrder) {
         _ordersManagementController.getCancelData();
       }
     });
@@ -402,6 +403,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         } else if (index == 3 &&
                             _ordersManagementController
                                 .allPendingData.value.data!.isEmpty) {
+                          print("Now caloling ontap");
                           _ordersManagementController.getPendingData();
                         } else if (index == 4 &&
                             _ordersManagementController
@@ -491,7 +493,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                   height:40,
                   width: 40,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                  child: CircularProgressIndicator()));
+                  child: const CircularProgressIndicator()));
             }
             return dataTable(
               controller,
@@ -521,7 +523,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                   height:40,
                   width: 40,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                  child: CircularProgressIndicator()));
+                  child: const CircularProgressIndicator()));
             }
             return dataTable(
               controller,
@@ -551,7 +553,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                   height:40,
                   width: 40,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                  child: CircularProgressIndicator()));
+                  child: const CircularProgressIndicator()));
             }
             return dataTable(
               controller,
@@ -577,12 +579,13 @@ class _OrdersManagementState extends State<OrdersManagement>
           id: "allPendingOrders",
           builder: (controller) {
             print(controller.allPendingData.value.data!.length);
+            print("Length printed");
             if(controller.allPendingData.value.data!.isEmpty){
               return  Center(child: Container(
                   height:40,
                   width: 40,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                  child: CircularProgressIndicator()));
+                  child: const CircularProgressIndicator()));
             }
             return dataTable(
               controller,
@@ -612,7 +615,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                   height:40,
                   width: 40,
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                  child: CircularProgressIndicator()));
+                  child: const CircularProgressIndicator()));
             }
             return dataTable(
                 controller,
@@ -684,16 +687,16 @@ class _OrdersManagementState extends State<OrdersManagement>
         rows: data.map(
           (item) {
             if (item.id == 0 && !haveMoreData) {
-              return const DataRow(cells: [
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
-                DataCell(Text('No Data')),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
+              return  DataRow(cells: [
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                DataCell(Text('No Data', style: TextStyle(color: primaryText),)),
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
+                const DataCell(CircularProgressIndicator(color: Colors.transparent)),
               ]);
-            } else if (item == lastItem && !isLoading && haveMoreData) {
+            } else if (item.id == lastItem.id && !isLoading && haveMoreData) {
               return const DataRow(cells: [
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),

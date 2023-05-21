@@ -528,15 +528,15 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                       ],
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                        "${homeController.settings.value.data![11].value}${(homeController.menuData.value.quantity! * unitPrice)}",
-                        style: TextStyle(
-                            fontSize: fontMedium,
-                            color: primaryText,
-                            fontWeight: FontWeight.bold)),
-                  ),
+                   SizedBox(
+                      width: MediaQuery.of(context).size.width/16,
+                      child: Text(
+                          "${homeController.settings.value.data![11].value}${(homeController.menuData.value.quantity! * unitPrice).toStringAsFixed(2)}",
+                          style: TextStyle(
+                              fontSize: fontMedium,
+                              color: primaryText,
+                              fontWeight: FontWeight.bold) ),
+                    ),
                 ],
               );
             }),
@@ -1180,7 +1180,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                     MainAxisAlignment.end)),
           ],
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -1467,20 +1467,18 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                     Utils.orderSubTotal(homeController
                             .order.value.data!.orderDetails!.data!
                             .toList())
-                        .toString(),
+                        .toStringAsFixed(2),
                     // '${double.parse(homeController.order.value.data!.grandTotal.toString()) + double.parse(homeController.order.value.data!.discount.toString()) - (double.parse(homeController.order.value.data!.deliveryCharge.toString()) + Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()) + double.parse(homeController.order.value.data!.serviceCharge.toString()))}',
                     MainAxisAlignment.center)),
             Expanded(
                 flex: 1,
                 child: textMixer(
                     'Service Charge: ',
-                    '${homeController.settings.value.data![11].value}' +
-                        homeController.order.value.data!.serviceCharge
-                            .toString(),
+                    '${homeController.settings.value.data![11].value}${homeController.order.value.data!.serviceCharge}',
                     MainAxisAlignment.end)),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -1513,7 +1511,7 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
         ),
         const Expanded(child: SizedBox(height: 500)),
         kitchen
-            ? SizedBox()
+            ?   SizedBox()
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

@@ -104,7 +104,7 @@ class _FoodManagementState extends State<FoodManagement>
         if (rowNumber == 6 || rowNumber == 5)
           const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
-        const DataCell(Text('No Data')),
+         DataCell(Text('No Data', style: TextStyle(color: primaryText),)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         //if (rowNumber == 8 || rowNumber == 7 || rowNumber == 5)
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),

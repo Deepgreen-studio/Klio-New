@@ -26,13 +26,13 @@ class MyApp extends StatelessWidget {
         home: const Login(),
       );
     } else {
-      if (loginType == loginTypes[1]) {
+        if (loginType == loginTypes[1]) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Nunito'),
           home: const Kitchen(),
         );
-      } else {
+        } else {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Nunito'),
@@ -42,3 +42,10 @@ class MyApp extends StatelessWidget {
     }
   }
 }
+
+
+
+///reduce app size command
+//flutter build apk --release --target-platform android-arm64
+//flutter build apk --split-per-abi
+//flutter build apk --target-platform android-arm64 --analyze-size
