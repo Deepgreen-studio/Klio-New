@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/controller/error_controller.dart';
@@ -86,7 +88,7 @@ class OrdersManagementController extends GetxController with ErrorController {
       total: 0,
     ),
   ).obs;
-  Rx<AllOrdersModel> allPendingData =  AllOrdersModel(
+  Rx<AllOrdersModel> allPendingData = AllOrdersModel(
     data: [],
     links: Links(first: '', last: '', prev: null, next: ''),
     meta: Meta(
@@ -100,7 +102,7 @@ class OrdersManagementController extends GetxController with ErrorController {
       total: 0,
     ),
   ).obs;
-  Rx<AllOrdersModel> allCancelData =  AllOrdersModel(
+  Rx<AllOrdersModel> allCancelData = AllOrdersModel(
     data: [],
     links: Links(first: '', last: '', prev: null, next: ''),
     meta: Meta(
@@ -158,7 +160,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     allOrdersData.value.data?.addAll(datums);
     allOrdersData.value.meta = temp.meta;
     allOrderPageNumber++;
-    if (allOrdersData.value.meta!.total <= allOrdersData.value.meta!.to) {
+    if (allOrdersData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
       haveMoreAllOrder = false;
     }
 
@@ -183,7 +185,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     }
     allSuccessData.value.data?.addAll(datums);
     allSuccessData.value.meta = temp.meta;
-    if (allSuccessData.value.meta!.total <= allSuccessData.value.meta!.to) {
+    if (allSuccessData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
       haveMoreSuccessOrder = false;
     }
     successOrderPageNumber++;
@@ -210,7 +212,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     allProcessingData.value.data?.addAll(datums);
     allProcessingData.value.meta = temp.meta;
     if (allProcessingData.value.meta!.total <=
-        allProcessingData.value.meta!.to) {
+        (allCancelData.value.meta!.to ?? 0)) {
       haveMoreProcessingOrder = false;
     }
     processingOrderPageNumber++;
@@ -219,12 +221,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     update(["allProcessingOrders"]);
   }
 
-
-
-
-
   Future<void> getPendingData() async {
-
     if (!haveMorePendingOrder) {
       return;
     }
@@ -234,6 +231,15 @@ class OrdersManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
+
+    /*if (json.decode(response)["data"]) {
+      haveMorePendingOrder = false;
+      isLoadingPendingOrder = false;
+      update(["allPendingOrders"]);
+
+      return;
+    }*/
+
     var temp = allOrdersModelFromJson(response);
     List<Datum> datums = [];
     for (Datum it in temp.data!) {
@@ -244,8 +250,7 @@ class OrdersManagementController extends GetxController with ErrorController {
 
     allPendingData.value.meta = temp.meta;
 
-    if (allPendingData.value.meta!.total <=
-        allPendingData.value.meta!.to) {
+    if (allPendingData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
       haveMorePendingOrder = false;
     }
     print(haveMorePendingOrder);
@@ -256,13 +261,11 @@ class OrdersManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getCancelData() async {
-
     if (!haveMoreCancelOrder) {
       return;
     }
     isLoadingCancelOrder = true;
-    String endPoint =
-        'orders/order?page=$cancelOrderPageNumber&status=cancel';
+    String endPoint = 'orders/order?page=$cancelOrderPageNumber&status=cancel';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -274,8 +277,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     allCancelData.value.data?.addAll(datums);
     allCancelData.value.meta = temp.meta;
 
-    if (allCancelData.value.meta!.total <=
-        allCancelData.value.meta!.to) {
+    if (allCancelData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
       haveMoreCancelOrder = false;
     }
     cancelOrderPageNumber++;

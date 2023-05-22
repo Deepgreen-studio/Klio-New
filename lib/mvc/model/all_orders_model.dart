@@ -83,8 +83,8 @@ class Datum {
 // });
 
 class Links {
-  String first;
-  String last;
+  String? first;
+  String? last;
   dynamic prev;
   String? next;
 
@@ -112,12 +112,12 @@ class Links {
 
 class Meta {
   int currentPage;
-  int from;
+  int? from;
   int lastPage;
   List<Link> links;
   String path;
   int perPage;
-  int to;
+  int? to;
   int total;
 
   Meta({

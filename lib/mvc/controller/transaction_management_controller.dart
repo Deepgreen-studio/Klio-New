@@ -88,6 +88,9 @@ class TransactionsController extends GetxController with ErrorController{
     if(!haveMoreBank){
       return;
     }
+    if(bankPageNumber ==1 && bankListData.value.data.isNotEmpty){
+      bankListData.value.data.clear();
+    }
     isLoadingBank =true;
     String endPoint = 'finance/bank?page$bankPageNumber';
     var response = await ApiClient()
@@ -143,7 +146,9 @@ class TransactionsController extends GetxController with ErrorController{
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      transactionsDataLoading();
+      bankPageNumber = 1;
+      haveMoreBank = true;
+      bankListDataList();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -157,7 +162,9 @@ class TransactionsController extends GetxController with ErrorController{
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    transactionsDataLoading();
+    bankPageNumber = 1;
+    haveMoreBank = true;
+    bankListDataList();
     Utils.hidePopup();
   }
 

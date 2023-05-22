@@ -133,12 +133,13 @@ Widget normalButton(String text, Color background, Color textColor,
       ));
 }
 
-Widget normalTextField(TextEditingController controller) {
+Widget normalTextField(TextEditingController controller, {String? hint}) {
   return TextFormField(
       controller: controller,
       keyboardType: TextInputType.text,
       style: TextStyle(fontSize: fontSmall, color: primaryText),
       decoration: InputDecoration(
+        hintText: hint ?? "",
         fillColor: secondaryBackground,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -229,8 +230,8 @@ Widget textFieldRow1(String text1, String text2,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                     hintText: text1)),
           )),
       SizedBox(width: 20),
@@ -247,8 +248,8 @@ Widget textFieldRow1(String text1, String text2,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                     hintText: text2)),
           )),
     ],
@@ -279,9 +280,7 @@ Widget roundTextButton(Text text,
     ),
     onPressed: onPressed,
   );
-
 }
-
 
 Widget textRow(String text1, String text2) {
   return Row(
@@ -312,15 +311,16 @@ Widget textRow(String text1, String text2) {
 }
 
 Widget textFieldRow(
-    String text1,
-    String text2, {
-      TextEditingController? controller1,
-      TextEditingController? controller2,
-      String? Function(String?)? validator1,
-      String? Function(String?)? validator2,
-      TextInputType? textInputType1,
-      TextInputType? textInputType2,
-    }) {
+  String text1,
+  String text2, {
+  TextEditingController? controller1,
+  TextEditingController? controller2,
+  String? Function(String?)? validator1,
+  String? Function(String?)? validator2,
+  TextInputType? textInputType1,
+  TextInputType? textInputType2,
+  bool showOne = false,
+}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
@@ -338,29 +338,30 @@ Widget textFieldRow(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    hintStyle: TextStyle(
-                        fontSize: fontVerySmall, color: primaryText),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: primaryText),
                     hintText: text1)),
           )),
-      SizedBox(width: 20),
-      Expanded(
-          flex: 1,
-          child: SizedBox(
-            //  height: 45,
-            child: TextFormField(
-                controller: controller2,
-                validator: validator1,
-                keyboardType: textInputType2,
-                style: TextStyle(fontSize: fontVerySmall, color: primaryText),
-                decoration: InputDecoration(
-                    fillColor: secondaryBackground,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    hintStyle: TextStyle(
-                        fontSize: fontVerySmall, color: primaryText),
-                    hintText: text2)),
-          )),
+      if (showOne != true) const SizedBox(width: 20),
+      if (showOne != true)
+        Expanded(
+            flex: 1,
+            child: SizedBox(
+              //  height: 45,
+              child: TextFormField(
+                  controller: controller2,
+                  validator: validator1,
+                  keyboardType: textInputType2,
+                  style: TextStyle(fontSize: fontVerySmall, color: primaryText),
+                  decoration: InputDecoration(
+                      fillColor: secondaryBackground,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      hintStyle: TextStyle(
+                          fontSize: fontVerySmall, color: primaryText),
+                      hintText: text2)),
+            )),
     ],
   );
 }

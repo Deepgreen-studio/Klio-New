@@ -169,6 +169,9 @@ class IngredientController extends GetxController with ErrorController {
     if (!haveMoreIngredient) {
       return;
     }
+    if (ingredientPageNumber == 1 &&  ingredientData.value.data!.isNotEmpty) {
+      ingredientData.value.data!.clear();
+    }
     isLoading = true;
     String endPoint = id == '' ? 'master/ingredient' : 'master/ingredient/$id';
     var response = await ApiClient()
@@ -194,11 +197,13 @@ class IngredientController extends GetxController with ErrorController {
 
   void deleteIngredientDataList({id = ''}) async {
     Utils.showLoading();
+    ingredientPageNumber = 1;
+    haveMoreIngredient = true;
     String endPoint = 'master/ingredient/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientDataLoading();
+    getIngredientDataList();
     Utils.hidePopup();
   }
 
@@ -215,6 +220,10 @@ class IngredientController extends GetxController with ErrorController {
 
     if (!haveMoreCategory) {
       return;
+    }
+
+    if (categoryPageNumber == 1 &&  ingredientCategoryData.value.data.isNotEmpty) {
+      ingredientCategoryData.value.data.clear();
     }
     isLoading = true;
 
@@ -246,17 +255,22 @@ class IngredientController extends GetxController with ErrorController {
 
   void deleteIngredientCategory({id = ''}) async {
     Utils.showLoading();
+    haveMoreCategory = true;
+    categoryPageNumber = 1;
     String endPoint = 'master/ingredient-category/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientDataLoading();
+    getIngredientCategory();
     Utils.hidePopup();
   }
 
   Future<void> getIngredientUnit({dynamic id = ''}) async {
     if (!haveMoreUnit) {
       return;
+    }
+    if (unitPageNumber == 1 &&  ingredientUnitData.value.data.isNotEmpty) {
+      ingredientUnitData.value.data.clear();
     }
     isLoading = true;
 
@@ -291,17 +305,22 @@ class IngredientController extends GetxController with ErrorController {
 
   void deleteIngredientUnit({id = ''}) async {
     Utils.showLoading();
+    unitPageNumber = 1;
+    haveMoreUnit = true;
     String endPoint = 'master/ingredient-unit/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientDataLoading();
+    getIngredientUnit();
     Utils.hidePopup();
   }
 
   Future<void> getIngredientSupplier({dynamic id = ''}) async {
     if (!haveMoreSupplier) {
       return;
+    }
+    if (supplierPageNumber == 1 &&  ingredientSupplierData.value.data.isNotEmpty) {
+      ingredientSupplierData.value.data.clear();
     }
     isLoading = true;
 
@@ -347,15 +366,17 @@ class IngredientController extends GetxController with ErrorController {
 
   void deleteIngredientSupplier({id = ''}) async {
     Utils.showLoading();
+    haveMoreSupplier = true;
+    supplierPageNumber = 1;
     String endPoint = 'master/supplier/$id';
      await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientDataLoading();
+    getIngredientSupplier();
     Utils.hidePopup();
   }
 
-  void addAndUpdateIngrediant(bool add, String name, String price, String code,
+  Future addAndUpdateIngrediant(bool add, String name, String price, String code,
       String quantity, String categoryId, String unitId,
       {String id = ''}) async {
     print(categoryId);
@@ -379,16 +400,16 @@ class IngredientController extends GetxController with ErrorController {
           .catchError(handleApiError);
     }
     if (response == null) return;
-    ingredientDataLoading();
+    getIngredientDataList();
     Utils.hidePopup();
   }
 
-  void addAndUpdateIngrediantCategory(bool add, String name, String status,
+  Future addAndUpdateIngrediantCategory(bool add, String name,
       {String id = ''}) async {
     Utils.showLoading();
     var body = jsonEncode({
       "name": name,
-      "status": status,
+
     });
     var response;
     if (add) {
@@ -402,11 +423,11 @@ class IngredientController extends GetxController with ErrorController {
           .catchError(handleApiError);
     }
     if (response == null) return;
-    ingredientDataLoading();
+    getIngredientCategory();
     Utils.hidePopup();
   }
 
-  void addAndUpdateIngrediantUnit(
+  Future addAndUpdateIngrediantUnit(
       bool add, String name, String description, bool status,
       {String id = ''}) async {
     Utils.showLoading();
@@ -425,12 +446,14 @@ class IngredientController extends GetxController with ErrorController {
           .put('master/ingredient-unit/$id', body, header: Utils.apiHeader)
           .catchError(handleApiError);
     }
+    print(response);
+    print("4444444444444444444444444444444444444444 responseeeeeeeee");
     if (response == null) return print('No response...!!');
-    ingredientDataLoading();
+    await getIngredientUnit();
     Utils.hidePopup();
   }
 
-  void addSupplierMethod(
+  Future addSupplierMethod(
       String name,
       String email,
       String phone,
@@ -483,7 +506,7 @@ class IngredientController extends GetxController with ErrorController {
   }
 
 
-  void updateSupplierMethod(
+  Future updateSupplierMethod(
       String name,
       String email,
       String phone,
@@ -524,7 +547,7 @@ class IngredientController extends GetxController with ErrorController {
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      ingredientDataLoading();
+      getIngredientSupplier();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {

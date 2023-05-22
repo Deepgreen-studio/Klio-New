@@ -69,7 +69,10 @@ class _IngredientManagementState extends State<IngredientManagement>
         width: double.infinity,
         child: Column(
           children: [
-            itemTitleHeader(),
+            GetBuilder<IngredientController>(
+              id: "changeCustomTabBar",
+              builder: (controller) => itemTitleHeader(),
+            ),
             customTapbarHeader(controller),
             Expanded(
               child: TabBarView(
@@ -97,7 +100,7 @@ class _IngredientManagementState extends State<IngredientManagement>
           const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
-         DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+        DataCell(Text('No Data', style: TextStyle(color: primaryText))),
         const DataCell(CircularProgressIndicator(color: Colors.transparent)),
         if (rowNumber == 8 || rowNumber == 7 || rowNumber == 5)
           const DataCell(CircularProgressIndicator(color: Colors.transparent)),
@@ -126,19 +129,20 @@ class _IngredientManagementState extends State<IngredientManagement>
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
-
         controller: scrollController,
         child: GetBuilder<IngredientController>(
             id: "ingredientTab",
             builder: (controller) {
               List<Ingrediant> data =
                   controller.ingredientData.value.data ?? [];
-              if(data.isEmpty){
-                return  Center(child: Container(
-                    height:40,
-                    width: 40,
-                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                    child: CircularProgressIndicator()));
+              if (data.isEmpty) {
+                return Center(
+                    child: Container(
+                        height: 40,
+                        width: 40,
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.3),
+                        child: CircularProgressIndicator()));
               }
               if (!controller.haveMoreIngredient && data.last.id != 0) {
                 data.add(Ingrediant(id: 0));
@@ -689,196 +693,192 @@ class _IngredientManagementState extends State<IngredientManagement>
                     ),
                   ],
                   rows: data.map(
-                        (item) {
-                          if (item.id == 0 && !controller.haveMoreSupplier) {
-                            return buildLoadingAndNoData(false, 7);
-                          } else if (item ==
+                    (item) {
+                      if (item.id == 0 && !controller.haveMoreSupplier) {
+                        return buildLoadingAndNoData(false, 7);
+                      } else if (item ==
                               controller
                                   .ingredientSupplierData.value.data.last &&
-                              !controller.isLoading &&
-                              controller.haveMoreSupplier) {
-                            return buildLoadingAndNoData(true, 7);
-                          }
-                          return DataRow(
-                          cells: [
-                            DataCell(
-                              Text(
-                                '${item.id}',
-                                style: TextStyle(color: primaryText),
-                              ),
+                          !controller.isLoading &&
+                          controller.haveMoreSupplier) {
+                        return buildLoadingAndNoData(true, 7);
+                      }
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              '${item.id}',
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Text(
-                                item.name,
-                                style: TextStyle(color: primaryText),
-                              ),
+                          ),
+                          DataCell(
+                            Text(
+                              item.name,
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Text(
-                                item.email,
-                                style: TextStyle(color: primaryText),
-                              ),
+                          ),
+                          DataCell(
+                            Text(
+                              item.email,
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Text(
-                                item.phone,
-                                style: TextStyle(color: primaryText),
-                              ),
+                          ),
+                          DataCell(
+                            Text(
+                              item.phone,
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Text(
-                                item.reference,
-                                style: TextStyle(color: primaryText),
-                              ),
+                          ),
+                          DataCell(
+                            Text(
+                              item.reference,
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Text(
-                                '${item.status ?? ""}',
-                                style: TextStyle(color: primaryText),
-                              ),
+                          ),
+                          DataCell(
+                            Text(
+                              '${item.status ?? ""}',
+                              style: TextStyle(color: primaryText),
                             ),
-                            DataCell(
-                              Row(
-                                // mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffE1FDE8),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _ingredientController
-                                            .getSupplierSingleDetails(
-                                                id: item.id)
-                                            .then((value) {
-                                          showCustomDialog(
-                                              context,
-                                              "Supplier Details",
-                                              viewSupplierDetails(),
-                                              100,
-                                              400);
-                                        });
-                                      },
-                                      child: Image.asset(
-                                        "assets/hide.png",
-                                        height: 15,
-                                        width: 15,
-                                        color: const Color(0xff00A600),
-                                      ),
+                          ),
+                          DataCell(
+                            Row(
+                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffE1FDE8),
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _ingredientController
+                                          .getSupplierSingleDetails(id: item.id)
+                                          .then((value) {
+                                        showCustomDialog(
+                                            context,
+                                            "Supplier Details",
+                                            viewSupplierDetails(),
+                                            100,
+                                            400);
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/hide.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xff00A600),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFEF4E1),
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                  Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffFEF4E1),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _ingredientController
+                                          .getSupplierSingleDetails(id: item.id)
+                                          .then((value) {
                                         _ingredientController
-                                            .getSupplierSingleDetails(
-                                                id: item.id)
-                                            .then((value) {
-                                          _ingredientController
-                                                  .updateSupplierNameCtlr.text =
-                                              _ingredientController
-                                                  .ingredientSupplierSingleItem
-                                                  .value
-                                                  .data!
-                                                  .name;
-                                          _ingredientController
-                                                  .updateSupplierEmailCtlr
-                                                  .text =
-                                              _ingredientController
-                                                  .ingredientSupplierSingleItem
-                                                  .value
-                                                  .data!
-                                                  .email;
-                                          _ingredientController
-                                                  .updateSupplierPhoneCtlr
-                                                  .text =
-                                              _ingredientController
-                                                  .ingredientSupplierSingleItem
-                                                  .value
-                                                  .data!
-                                                  .phone;
-                                          _ingredientController
-                                                  .updateSupplierRefCtlr.text =
-                                              _ingredientController
-                                                  .ingredientSupplierSingleItem
-                                                  .value
-                                                  .data!
-                                                  .reference;
-                                          _ingredientController
-                                                  .updateSupplierAddressCtlr
-                                                  .text =
-                                              _ingredientController
-                                                  .ingredientSupplierSingleItem
-                                                  .value
-                                                  .data!
-                                                  .address;
+                                                .updateSupplierNameCtlr.text =
+                                            _ingredientController
+                                                .ingredientSupplierSingleItem
+                                                .value
+                                                .data!
+                                                .name;
+                                        _ingredientController
+                                                .updateSupplierEmailCtlr.text =
+                                            _ingredientController
+                                                .ingredientSupplierSingleItem
+                                                .value
+                                                .data!
+                                                .email;
+                                        _ingredientController
+                                                .updateSupplierPhoneCtlr.text =
+                                            _ingredientController
+                                                .ingredientSupplierSingleItem
+                                                .value
+                                                .data!
+                                                .phone;
+                                        _ingredientController
+                                                .updateSupplierRefCtlr.text =
+                                            _ingredientController
+                                                .ingredientSupplierSingleItem
+                                                .value
+                                                .data!
+                                                .reference;
+                                        _ingredientController
+                                                .updateSupplierAddressCtlr
+                                                .text =
+                                            _ingredientController
+                                                .ingredientSupplierSingleItem
+                                                .value
+                                                .data!
+                                                .address;
 
-                                          showCustomDialog(
-                                              context,
-                                              'Update Supplier',
-                                              updateSupplier(item.id),
-                                              30,
-                                              400);
-                                        });
-                                      },
-                                      child: Image.asset(
-                                        "assets/edit-alt.png",
-                                        height: 15,
-                                        width: 15,
-                                        color: const Color(0xffED7402),
-                                      ),
+                                        showCustomDialog(
+                                            context,
+                                            'Update Supplier',
+                                            updateSupplier(item.id),
+                                            30,
+                                            400);
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/edit-alt.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED7402),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFFE7E6),
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                  Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffFFE7E6),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showWarningDialog(
-                                            "Do you want to delete this item?",
-                                            onAccept: () async {
-                                          _ingredientController
-                                              .deleteIngredientSupplier(
-                                                  id: item.id);
-                                          Get.back();
-                                        });
-                                      },
-                                      child: Image.asset(
-                                        "assets/delete.png",
-                                        height: 15,
-                                        width: 15,
-                                        color: const Color(0xffED0206),
-                                      ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showWarningDialog(
+                                          "Do you want to delete this item?",
+                                          onAccept: () async {
+                                        _ingredientController
+                                            .deleteIngredientSupplier(
+                                                id: item.id);
+                                        Get.back();
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/delete.png",
+                                      height: 15,
+                                      width: 15,
+                                      color: const Color(0xffED0206),
                                     ),
                                   ),
-                                ],
-                              ),
-                            )
-                          ],
-                        );},
-                      )
-                      .toList());
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ).toList());
             }),
       ),
     );
@@ -1111,17 +1111,17 @@ class _IngredientManagementState extends State<IngredientManagement>
                 );
               }),
           Container(
-            margin:const EdgeInsets.only(left: 100),
+            margin: const EdgeInsets.only(left: 100),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Card(
+                Card(
                   elevation: 0.0,
                   child: SizedBox(
                       width: 300,
                       height: 40,
                       child: TextField(
-                          onChanged: (text)async{},
+                          onChanged: (text) async {},
                           controller: textController,
                           style: const TextStyle(
                             fontSize: fontSmall,
@@ -1137,13 +1137,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                               size: 20,
                             ),
                             suffixIcon: IconButton(
-                                onPressed: (){
-                                  textController.text='';
+                                onPressed: () {
+                                  textController.text = '';
                                 },
-                                icon: Icon(
-                                  Icons.close,
-                                  color:textSecondary
-                                )),
+                                icon: Icon(Icons.close, color: textSecondary)),
                             hintText: "Search Item",
                             hintStyle: const TextStyle(
                                 fontSize: fontSmall, color: black),
@@ -1243,7 +1240,8 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1288,7 +1286,8 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1312,8 +1311,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                   //   foodCtlr.updateMealVariantsPriceTextCtlr.text,
                   //   id:itemId,
                   // );
-
-                  _ingredientController.addAndUpdateIngrediant(
+                  _ingredientController.haveMoreIngredient = true;
+                  _ingredientController.ingredientPageNumber = 1;
+                  _ingredientController
+                      .addAndUpdateIngrediant(
                     true,
                     _ingredientController.addIngrediantNameCtlr.text,
                     _ingredientController.addIngredientPriceCtlr.text,
@@ -1321,7 +1322,16 @@ class _IngredientManagementState extends State<IngredientManagement>
                     2.toString(),
                     5.toString(),
                     1.toString(),
-                  );
+                  )
+                      .then((value) {
+                    _ingredientController.addIngredintUnitCtlr.clear();
+                    _ingredientController.addIngredintCodeCtlr.clear();
+                    _ingredientController.addIngredientPriceCtlr.clear();
+                    _ingredientController.addIngrediantNameCtlr.clear();
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.pop(context);
+                    }
+                  });
                 }
               })),
         ]),
@@ -1402,7 +1412,8 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1447,7 +1458,8 @@ class _IngredientManagementState extends State<IngredientManagement>
                       selectedOptionIcon: const Icon(Icons.check_circle),
                       inputDecoration: BoxDecoration(
                         color: secondaryBackground,
-                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                           color: primaryBackground,
                         ),
@@ -1465,7 +1477,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                 onPressed: () async {
               if (_ingredientController.updateIngredintFormKey.currentState!
                   .validate()) {
-                _ingredientController.addAndUpdateIngrediant(
+                _ingredientController.haveMoreIngredient = true;
+                _ingredientController.ingredientPageNumber = 1;
+                _ingredientController
+                    .addAndUpdateIngrediant(
                   false,
                   _ingredientController.updateIngrediantNameCtlr.text,
                   _ingredientController.updateIngredientPriceCtlr.text,
@@ -1474,7 +1489,16 @@ class _IngredientManagementState extends State<IngredientManagement>
                   5.toString(),
                   1.toString(),
                   id: itemId.toString(),
-                );
+                )
+                    .then((value) {
+                  _ingredientController.addIngredintUnitCtlr.clear();
+                  _ingredientController.addIngredintCodeCtlr.clear();
+                  _ingredientController.addIngredientPriceCtlr.clear();
+                  _ingredientController.addIngrediantNameCtlr.clear();
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.pop(context);
+                  }
+                });
               }
             }),
           ),
@@ -1489,16 +1513,14 @@ class _IngredientManagementState extends State<IngredientManagement>
       width: Size.infinite.width,
       padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: ListView(children: [
-        textRow('Name', 'Status'),
+        textRow('Name', ''),
         textFieldRow(
           'Enter Name',
-          'Enter Status',
+          '',
           controller1: _ingredientController.ingredientCategoryNameCtlr,
-          controller2: _ingredientController.ingredientCategoryStatusCtlr,
           validator1: _ingredientController.textValidator,
-          validator2: _ingredientController.textValidator,
           textInputType1: TextInputType.text,
-          textInputType2: TextInputType.number,
+          showOne: true,
         ),
         const SizedBox(height: 10),
         Container(
@@ -1510,11 +1532,19 @@ class _IngredientManagementState extends State<IngredientManagement>
             primaryColor,
             white,
             onPressed: () async {
-              _ingredientController.addAndUpdateIngrediantCategory(
+              _ingredientController.haveMoreCategory = true;
+              _ingredientController.categoryPageNumber = 1;
+              _ingredientController
+                  .addAndUpdateIngrediantCategory(
                 true,
                 _ingredientController.ingredientCategoryNameCtlr.text,
-                _ingredientController.ingredientCategoryStatusCtlr.text,
-              );
+              )
+                  .then((value) {
+                _ingredientController.ingredientCategoryNameCtlr.clear();
+                if (Navigator.of(context).canPop()) {
+                  Navigator.pop(context);
+                }
+              });
             },
           ),
         ),
@@ -1550,12 +1580,22 @@ class _IngredientManagementState extends State<IngredientManagement>
                 primaryColor,
                 white,
                 onPressed: () async {
-                  _ingredientController.addAndUpdateIngrediantUnit(
+                  _ingredientController.haveMoreUnit = true;
+                  _ingredientController.unitPageNumber = 1;
+                  _ingredientController
+                      .addAndUpdateIngrediantUnit(
                     true,
                     _ingredientController.ingredientUnitNameCtlr.text,
                     _ingredientController.ingredientUnitDescriptionCtlr.text,
                     true,
-                  );
+                  )
+                      .then((value) {
+                    _ingredientController.ingredientUnitNameCtlr.clear();
+                    _ingredientController.ingredientUnitDescriptionCtlr.clear();
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.pop(context);
+                    }
+                  });
                 },
               ),
             ),
@@ -1599,18 +1639,15 @@ class _IngredientManagementState extends State<IngredientManagement>
                 textInputType2: TextInputType.number,
               ),
               const SizedBox(height: 10),
-              textRow('Address', 'Status'),
+              textRow('Address', ''),
               textFieldRow(
                 'Enter Address',
-                'Enter Status',
+                '',
                 controller1:
                     _ingredientController.addIngredintSupplierAddressCtlr,
-                controller2:
-                    _ingredientController.addIngredintSupplierStatusCtlr,
                 validator1: _ingredientController.textValidator,
-                validator2: _ingredientController.textValidator,
                 textInputType1: TextInputType.text,
-                textInputType2: TextInputType.number,
+                showOne: true,
               ),
               const SizedBox(height: 10),
               textRow('ID Card Front', 'ID Card Back'),
@@ -1693,7 +1730,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                     if (_ingredientController
                         .addIngredintSupplierFormKey.currentState!
                         .validate()) {
-                      _ingredientController.addSupplierMethod(
+                      _ingredientController.haveMoreSupplier = true;
+                      _ingredientController.supplierPageNumber = 1;
+                      _ingredientController
+                          .addSupplierMethod(
                         _ingredientController
                             .addIngrediantSupplierNameCtlr.text,
                         _ingredientController
@@ -1706,7 +1746,23 @@ class _IngredientManagementState extends State<IngredientManagement>
                         1.toString(),
                         _ingredientController.idCardFront,
                         _ingredientController.idCardBack,
-                      );
+                      )
+                          .then((value) {
+                        _ingredientController
+                            .addIngrediantSupplierNameCtlr.clear();
+                        _ingredientController
+                            .addIngredientSupplierEmailCtlr.clear();
+                        _ingredientController
+                            .addIngredintSupplierPhoneCtlr.clear();
+                        _ingredientController.addIngredintSupplierRefCtlr.clear();
+                        _ingredientController
+                            .addIngredintSupplierAddressCtlr.clear();
+                        _ingredientController.idCardFront = null;
+                        _ingredientController.idCardBack = null;
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.pop(context);
+                        }
+                      });
                     } else {
                       print('Not Validate form!!');
                     }
@@ -1831,16 +1887,24 @@ class _IngredientManagementState extends State<IngredientManagement>
                 onPressed: () async {
               if (_ingredientController.updateSupplierFormKey.currentState!
                   .validate()) {
-                _ingredientController.updateSupplierMethod(
-                    _ingredientController.updateSupplierNameCtlr.text,
-                    _ingredientController.updateSupplierEmailCtlr.text,
-                    _ingredientController.updateSupplierPhoneCtlr.text,
-                    _ingredientController.updateSupplierRefCtlr.text,
-                    _ingredientController.updateSupplierAddressCtlr.text,
-                    1.toString(),
-                    // _ingredientController.idCardFront,
-                    // _ingredientController.idCardBack,
-                    id: itemId);
+                _ingredientController.supplierPageNumber = 1;
+                _ingredientController.haveMoreSupplier = true;
+                _ingredientController
+                    .updateSupplierMethod(
+                        _ingredientController.updateSupplierNameCtlr.text,
+                        _ingredientController.updateSupplierEmailCtlr.text,
+                        _ingredientController.updateSupplierPhoneCtlr.text,
+                        _ingredientController.updateSupplierRefCtlr.text,
+                        _ingredientController.updateSupplierAddressCtlr.text,
+                        1.toString(),
+                        // _ingredientController.idCardFront,
+                        // _ingredientController.idCardBack,
+                        id: itemId)
+                    .then((value) {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.pop(context);
+                  }
+                });
               }
             }),
           ),
