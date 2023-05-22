@@ -35,13 +35,12 @@ class _KitchenState extends State<Kitchen> {
 
     kitchenController.getKitchenOrder(false).then((value) {
       if (Navigator.of(context).canPop()) {
-        print(" popppppppppppppppppppppppppppppppppppppppppppppp");
         Navigator.pop(context);
       }
       setState(() {});
     });
     timer = Timer.periodic(const Duration(minutes: 1), (Timer t) {
-      //kitchenController.getKitchenOrder(true);
+      kitchenController.getKitchenOrder(true);
     });
   }
 

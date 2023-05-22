@@ -38,6 +38,9 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Obx(() {
+                    print(
+                        "updationf ///////////////////////////////////////////////// top");
+                    print(homeController.topBtnPosition.value);
                     return Container(
                       decoration: BoxDecoration(
                           color: primaryColor,
@@ -244,8 +247,15 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               showCustomDialog(
                                   context,
                                   "Add Customer",
-                                  addCustomer(context, false, onPressed: () {
-                                    homeController.addUpdateCustomer(true);
+                                  addCustomer(context, false,
+                                      onPressed: () async {
+                                    homeController
+                                        .addUpdateCustomer(true)
+                                        .then((value) {
+                                      if (Navigator.of(context).canPop()) {
+                                        Navigator.pop(context);
+                                      }
+                                    });
                                   }),
                                   60,
                                   400);
@@ -300,13 +310,14 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     ],
                   ),
                   Expanded(
-                    child:
-
-                       GetBuilder<HomeController>(
+                    child: GetBuilder<HomeController>(
                         id: "cardUpdate",
                         builder: (context) {
+                          print(
+                              " ============================================ cardUpdate");
                           return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                             itemCount: homeController.cardList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
@@ -338,14 +349,16 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                                 0,
                                                 2,
                                                 16, onPressed: () {
-                                              homeController
-                                                      .cardList[index].quantity =
+                                              homeController.cardList[index]
+                                                      .quantity =
                                                   Utils.incrementDecrement(
                                                       false,
                                                       homeController
-                                                          .cardList[index].quantity!
+                                                          .cardList[index]
+                                                          .quantity!
                                                           .toInt());
-                                              homeController.update(["cardUpdate"]);
+                                              homeController
+                                                  .update(["cardUpdate"]);
                                             }),
                                             SizedBox(width: 6),
                                             Text(
@@ -363,14 +376,16 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                                 0,
                                                 2,
                                                 16, onPressed: () {
-                                              homeController
-                                                      .cardList[index].quantity =
+                                              homeController.cardList[index]
+                                                      .quantity =
                                                   Utils.incrementDecrement(
                                                       true,
                                                       homeController
-                                                          .cardList[index].quantity!
+                                                          .cardList[index]
+                                                          .quantity!
                                                           .toInt());
-                                              homeController.update(["cardUpdate"]);
+                                              homeController
+                                                  .update(["cardUpdate"]);
                                             }),
                                           ],
                                         ),
@@ -405,8 +420,10 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                             size: 18,
                                           ),
                                           onPressed: () {
-                                            homeController.cardList.removeAt(index);
-                                            homeController.update(["cardUpdate"]);
+                                            homeController.cardList
+                                                .removeAt(index);
+                                            homeController
+                                                .update(["cardUpdate"]);
                                           },
                                         ),
                                       ),
@@ -420,11 +437,13 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                             ? Container(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 8, vertical: 4),
-                                                margin: EdgeInsets.only(right: 5),
+                                                margin:
+                                                    EdgeInsets.only(right: 5),
                                                 decoration: BoxDecoration(
                                                     color: alternate,
                                                     borderRadius:
-                                                        BorderRadius.circular(10)),
+                                                        BorderRadius.circular(
+                                                            10)),
                                                 child: Text(
                                                     '${addons.name}  ${addons.quantity}x${addons.price}',
                                                     style: TextStyle(
@@ -437,9 +456,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               );
                             },
                           );
-                        }
-                      ),
-
+                        }),
                   ),
                 ],
               ),
@@ -572,24 +589,25 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                           white, onPressed: () async {
                         if (homeController.orderTypeNumber == 2 &&
                             homeController.customerName.value == "None") {
-                          Utils.showSnackBar("Please select a name");
+                          Utils.showSnackBar("Please select customer name");
                         } else if (homeController.orderTypeNumber == 3) {
                           if (homeController.customerName.value == "None") {
-                            Utils.showSnackBar("Please select a name");
-                          }else{
+                            Utils.showSnackBar("Please select customer name");
+                          } else {
                             Customer customer = await homeController
                                 .getCustomer(Utils.findIdByListNearValue(
-                                homeController.customers.value.data!
-                                    .toList(),
-                                homeController.customerName.value));
+                                    homeController.customers.value.data!
+                                        .toList(),
+                                    homeController.customerName.value));
 
-                            if(customer.data!.deliveryAddress!.isNotEmpty){
+                            if (customer.data!.deliveryAddress!.isNotEmpty) {
                               homeController.addUpdateOrder();
                               homeController.getOrders();
                               homeController.orders.refresh();
                               CustomerDisplay.sleep();
-                            }else{
-                              Utils.showSnackBar("Please add your delivery address");
+                            } else {
+                              Utils.showSnackBar(
+                                  "Please add your delivery address");
                             }
                           }
                         } else {
@@ -683,7 +701,13 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                         onPressed: () {
                       homeController.isUpdate.value = false;
                       homeController.cardList.clear();
+                      homeController.topBtnPosition.value = 1;
+                      homeController.orderTypeNumber = 1;
+                      homeController.customerName.value = "None";
+                      homeController.discount
+                          .refresh(); // to refresh calculation (sub total, total etc)
                       CustomerDisplay.sleep();
+                      homeController.update(["cardUpdate"]);
                     }),
                   ],
                 ),

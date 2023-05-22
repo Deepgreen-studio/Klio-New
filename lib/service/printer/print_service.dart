@@ -440,7 +440,7 @@ class SumniPrinter {
       await SunmiPrinter.printText(
           'Due: ${(double.parse(homeController.order.value.data!.grandTotal!) - homeController.giveAmount.value).toStringAsFixed(2)}');
     }
-    if (int.parse(homeController.order.value.data!.grandTotal!) <=
+    if (double.parse(homeController.order.value.data!.grandTotal!) <=
         homeController.giveAmount.value) {
       await SunmiPrinter.printText(
           'Change: ${(homeController.giveAmount.value - double.parse(homeController.order.value.data!.grandTotal!)).toStringAsFixed(2)}');

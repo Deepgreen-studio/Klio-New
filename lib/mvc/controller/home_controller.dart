@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/model/Customer.dart';
@@ -50,7 +51,6 @@ class HomeController extends GetxController with ErrorController {
   RxString customerName = ''.obs;
   Rx<MenuData> menuData = MenuData().obs;
   List<MenuData> cardList = [];
-
 
   // RxDouble variantPrice = 0.0.obs;
   RxDouble discount = 0.0.obs;
@@ -115,7 +115,6 @@ class HomeController extends GetxController with ErrorController {
         .catchError(handleApiError);
     dashData.value = dashDataFromJson(response);
     Utils.hidePopup();
-
   }
 
   Future<void> getMenuByKeyword({String keyword = ''}) async {
@@ -135,8 +134,14 @@ class HomeController extends GetxController with ErrorController {
         .get('pos/customer', header: Utils.apiHeader)
         .catchError(handleApiError);
 
-    customers.value = customerFromJson(response);
-    customers.value.data?.add(cus.Datum(id: 0, name: "None"));
+    var temp = customerFromJson(response);
+    List<cus.Datum> customersData = temp.data!;
+
+    customers.value.data = [cus.Datum(id: 0, name: "None")];
+    customers.value.data?.addAll(customersData);
+
+    //customers.value = customerFromJson(response);
+    customers.refresh();
     customerName.value = "None";
   }
 
@@ -188,7 +193,7 @@ class HomeController extends GetxController with ErrorController {
     tables.value = tableListFromJson(response);
   }
 
-  void addUpdateCustomer(bool add, {String id = ''}) async {
+  Future<void> addUpdateCustomer(bool add, {String id = ''}) async {
     Utils.showLoading();
     var body = jsonEncode({
       "first_name": controllerName.value.text,
@@ -197,13 +202,23 @@ class HomeController extends GetxController with ErrorController {
       "delivery_address": controllerAddress.value.text
     });
 
-    print(body);
-    print("=========================");
     var response;
     if (add) {
-      response = await ApiClient()
-          .post('pos/customer', body, header: Utils.apiHeader)
-          .catchError(handleApiError);
+      if (controllerAddress.value.text.isNotEmpty &&
+          controllerName.value.text.isNotEmpty &&
+          controllerPhone.value.text.isNotEmpty) {
+        response = await ApiClient()
+            .post('pos/customer', body, header: Utils.apiHeader)
+            .catchError(handleApiError);
+      } else {
+        if (controllerName.value.text.isEmpty) {
+          Utils.showSnackBar("Name is required");
+        } else if (controllerPhone.value.text.isEmpty) {
+          Utils.showSnackBar("Phone is required");
+        } else if (controllerAddress.value.text.isEmpty) {
+          Utils.showSnackBar("Address is required");
+        }
+      }
     } else {
       response = await ApiClient()
           .put('pos/customer/$id', body, header: Utils.apiHeader)
@@ -212,12 +227,11 @@ class HomeController extends GetxController with ErrorController {
     if (response == null) return;
     getCustomers();
     Utils.hidePopup();
+
     Utils.showSnackBar("Customer added successfully");
   }
 
   Future<void> addUpdateOrder() async {
-
-
     if (orderTypeNumber == 1 && withoutTable.isFalse) {
       Utils.showSnackBar("No table selected for new order");
       return;

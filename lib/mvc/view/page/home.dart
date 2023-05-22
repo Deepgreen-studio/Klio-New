@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
                 Obx(
                   () => SizedBox(
                     width: homeController.currentPage.value == 0
-                        ? size.width > 1200
+                        ? size.width > 1300
                             ? size.width * 0.7
                             : size.width
                         : size.width,
@@ -116,7 +116,7 @@ class _HomeState extends State<Home> {
                   right: 0,
                   child: Obx(() {
                     return homeController.currentPage.value == 0
-                        ? size.width > 1200
+                        ? size.width > 1300
                             ? SizedBox(
                                 width: size.width * 0.3,
                                 height: size.height,
@@ -231,12 +231,12 @@ class _HomeState extends State<Home> {
                                 fontSize: fontMedium,
                                 color: primaryText,
                                 fontWeight: FontWeight.bold)),
-                        subtitle: Text(
-                            'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n $value',
-                            style: TextStyle(
-                              fontSize: fontVerySmall,
-                              color: primaryText,
-                            )),
+                        subtitle:  Text(
+                                'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n $value',
+                                style: TextStyle(
+                                  fontSize: fontVerySmall,
+                                  color: primaryText,
+                                )),
                         tileColor: secondaryBackground,
                         dense: false,
                       ),
@@ -285,6 +285,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                   showWarningDialog('Are you sure to edit this order?',
                       onAccept: () async {
+                    Utils.hidePopup();
                     Utils.showLoading();
                     homeController.cardList.clear();
                     await homeController.getOrder(homeController.orders.value
@@ -293,7 +294,7 @@ class _HomeState extends State<Home> {
                     for (OrderDetailsDatum order in homeController
                         .order.value.data!.orderDetails!.data!
                         .toList()) {
-                      MenuData menuData = await MenuData(
+                      MenuData menuData = MenuData(
                           id: order.foodId,
                           name: order.food!.name,
                           taxVat: order.vat,
@@ -307,10 +308,44 @@ class _HomeState extends State<Home> {
                                 price: order.price)
                           ]));
                       homeController.cardList.add(menuData);
-                      homeController.update(["cardUpdate"]);
+
                     }
                     homeController.isUpdate.value = true;
-                    Utils.hidePopup();
+
+
+                    String type = "";
+
+
+                    if(homeController.order.value.data != null){
+                       type = homeController.order.value.data?.type ?? "";
+                      if(homeController.order.value.data!.customer != null){
+                         homeController.customerName.value = homeController.order.value.data!.customer!.name ?? "None";
+                      }
+                    }
+
+                    if(type == "Dine In"){
+                      homeController.topBtnPosition.value = 1;
+                      homeController.orderTypeNumber = 1;
+                      homeController.topBtnPosition.refresh();
+                    }else if(type == "Takeway"){
+                      homeController.topBtnPosition.value = 2;
+                      homeController.orderTypeNumber = 2;
+                      homeController.withoutTable.value = true;
+                      homeController.topBtnPosition.refresh();
+
+                    }else if(type == "Delivery"){
+                      homeController.topBtnPosition.value = 3;
+                      homeController.orderTypeNumber = 3;
+                      homeController.withoutTable.value = true;
+                      homeController.topBtnPosition.refresh();
+                    }else if(type == "Reservation"){
+                      homeController.topBtnPosition.value = 4;
+                      homeController.orderTypeNumber = 4;
+                      homeController.withoutTable.value = false;
+                      homeController.topBtnPosition.refresh();
+                    }
+
+                    homeController.update(["cardUpdate"]);
                     Utils.hidePopup();
                   });
                 }),

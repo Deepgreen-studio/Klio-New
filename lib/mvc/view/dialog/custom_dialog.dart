@@ -280,56 +280,57 @@ Widget addCustomer(BuildContext context, bool isDetail,
   return Container(
     height: Size.infinite.height,
     width: Size.infinite.width,
-    padding: EdgeInsets.all(30),
+    padding: const EdgeInsets.all(30),
     child: ListView(children: [
       Text(
         'Name*',
         style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       normalTextField(homeController.controllerName.value),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Text(
         'Email',
         style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       normalTextField(homeController.controllerEmail.value),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Text(
         'Phone*',
         style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       normalTextField(homeController.controllerPhone.value),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Text(
-        'Delivery Address',
+        'Delivery Address*',
         style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       normalTextField(homeController.controllerAddress.value),
       if (isDetail)
         for (int i = 5; i < customer!.data!.toJson().entries.length; i++)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 customer.data!.toJson().keys.toList()[i].toUpperCase(),
                 style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               normalTextField(TextEditingController(
                   text: customer.data!.toJson().values.toList()[i].toString())),
-              SizedBox(height: 10)
+              const SizedBox(height: 10)
             ],
           ),
-      SizedBox(height: 20),
+      const SizedBox(height: 20),
       if (!isDetail)
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+
             normalButton('Submit', primaryColor, white, onPressed: onPressed),
           ],
         )
@@ -1533,8 +1534,10 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
 Widget finalizeOrder(BuildContext context) {
   homeController.giveAmount.value = 0;
 
-  double totalPayable = Utils.calcSubTotal(homeController.cardList);
-  double totalPayableWithReward = Utils.calcSubTotal(homeController.cardList) -
+  double totalPayable = double.parse(
+      homeController.order.value.data!.grandTotal!);// Utils.calcSubTotal(homeController.cardList);
+  double totalPayableWithReward = double.parse(
+      homeController.order.value.data!.grandTotal!) -
       (double.parse(homeController.settings.value.data![21].value!) *
           double.parse(homeController.settings.value.data![23].value!));
 
@@ -1573,7 +1576,7 @@ Widget finalizeOrder(BuildContext context) {
             Expanded(child: SizedBox(width: Size.infinite.width)),
             Obx(
               () => Text(
-                'Payable Amount: ${homeController.settings.value.data![11].value}${homeController.reward.value ? totalPayableWithReward.toStringAsFixed(3) : totalPayable.toStringAsFixed(3)}',
+                'Payable Amount: ${homeController.settings.value.data![11].value}${homeController.reward.value ? totalPayableWithReward.toStringAsFixed(2) : totalPayable.toStringAsFixed(2)}',
                 style: TextStyle(fontSize: fontSmall, color: primaryText),
               ),
             ),
@@ -1646,9 +1649,8 @@ Widget finalizeOrder(BuildContext context) {
             child: Obx(() {
               return Text(
                 (homeController.giveAmount.value -
-                        double.parse(
-                            homeController.order.value.data!.grandTotal!))
-                    .toString(),
+                    (homeController.reward.value ? totalPayableWithReward : totalPayable))
+                    .toStringAsFixed(2) ,
                 style: TextStyle(fontSize: fontSmall, color: primaryText),
               );
             })),
