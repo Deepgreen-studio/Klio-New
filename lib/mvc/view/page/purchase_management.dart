@@ -98,31 +98,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   'Purchase List',
                   style: TextStyle(fontSize: fontBig, color: primaryText),
                 ),
-              ),
-              Container(
-                child: OutlinedButton.icon(
-                  icon: Icon(
-                    Icons.add,
-                    color: primaryText,
-                  ),
-                  label: Text(
-                    "Add New Purchase",
-                    style: TextStyle(
-                      color: primaryText,
-                    ),
-                  ),
-                  onPressed: () {
-                    // showCustomDialog(context, "Add New Purchase",
-                    //     addNewPurchaseForm(), 100, 260);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    side: const BorderSide(width: 1.0, color: primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                ),
-              )
+              ),const SizedBox(height:48)
             ],
           ),
         );
@@ -732,6 +708,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                           onAccept: () {
                                             purchaseCtrl.deleteExpense(
                                                 id: item.id);
+                                            Get.back();
+                                            Get.back();
                                           });
                                     },
                                     child: Image.asset(
@@ -849,6 +827,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                       onAccept: () {
                                         purchaseCtrl.deleteExpenseCategory(
                                             id: item.id);
+                                        Get.back();
+                                        Get.back();
                                       });
                                 },
                                 child: Image.asset(
@@ -1247,8 +1227,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         },
                         options: controller.expenseData.value.data.map((e) {
                           return ValueItem(
-                            label: e.person!.name,
-                            value: e.person!.id.toString(),
+                            label: e.person?.name??"",
+                            value: e.person?.id.toString(),
                           );
                         }).toList(),
                         hint: 'Select Person',
@@ -1438,8 +1418,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         },
                         options: controller.expenseData.value.data.map((e) {
                           return ValueItem(
-                            label: e.person!.name,
-                            value: e.person!.id.toString(),
+                            label: e.person?.name??"",
+                            value: e.person?.id.toString(),
                           );
                         }).toList(),
                         selectedOptions:
@@ -1643,16 +1623,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     return Container(
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: ListView(children: [
-          textRow('Name', 'Status'),
-          textFieldRow(
-            'Enter Name',
-            'Enter Status',
-            controller1: purchaseCtrl.expenseCategoryNameCtlr.value,
-            // controller2: _ingredientController.ingredientCategoryStatusCtlr,
-            // validator1: _ingredientController.textValidator,
-            // validator2: _ingredientController.textValidator,
-            textInputType1: TextInputType.text,
-            textInputType2: TextInputType.number,
+          textRow('Name', ''),
+          normalTextField(
+             purchaseCtrl.expenseCategoryNameCtlr.value,
           ),
           const SizedBox(height: 10),
           Container(

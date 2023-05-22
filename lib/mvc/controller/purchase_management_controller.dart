@@ -168,6 +168,9 @@ class PurchaseManagementController extends GetxController with ErrorController{
     if(!haveMoreExpence){
       return;
     }
+    if(expencePageNumber==1 && haveMoreExpence){
+      expenseData.value.data.clear();
+    }
     isLoadingExpence =true;
     String endPoint = 'finance/expense?page=$expencePageNumber';
     var response = await ApiClient()
@@ -197,6 +200,7 @@ class PurchaseManagementController extends GetxController with ErrorController{
     double amount,
     String date,
     {String note = ''})async{
+    Utils.showLoading();
     String endPoint = 'finance/expense';
     var body = jsonEncode({
       "person": personId,
@@ -209,7 +213,11 @@ class PurchaseManagementController extends GetxController with ErrorController{
     .post(endPoint, body, header: Utils.apiHeader)
     .catchError(handleApiError);
     if (response == null) return;
-    purchaseDataLoading();
+    haveMoreExpence=true;
+    expencePageNumber=1;
+    await getExpenseDataList();
+    update(['expenceId']);
+    //purchaseDataLoading();
     Utils.hidePopup();
     Get.back();
     Utils.showSnackBar("Successfully Added");
@@ -235,7 +243,11 @@ class PurchaseManagementController extends GetxController with ErrorController{
     .catchError(handleApiError);
     print(response);
     if(response==null) return ;
-      purchaseDataLoading();
+    haveMoreExpence=true;
+    expencePageNumber=1;
+    await getExpenseDataList();
+    update(['expenceId']);
+      // purchaseDataLoading();
       Get.back();
       Get.back();
       Utils.showSnackBar("successfully");
@@ -258,16 +270,23 @@ class PurchaseManagementController extends GetxController with ErrorController{
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
+    Utils.showLoading();
     if(response==null) return;
-    purchaseDataLoading();
+    haveMoreExpence=true;
+    expencePageNumber=1;
+    await getExpenseDataList();
+    update(['expenceId']);
+   // purchaseDataLoading();
     Utils.hidePopup();
-    Get.back();
     Utils.showSnackBar("Deleted Expense");
   }
 
   Future<void> getExpenseCategoryList({dynamic id = ''})async{
     if (!haveMoreExpenceCategory) {
       return;
+    }
+    if(expenceCategoryPageNumber==1&&haveMoreExpenceCategory){
+      expenseCategoryData.value.data.clear();
     }
     isLoadingExpenceCategory=true;
     String endPoint = 'finance/expense-category?page=$expenceCategoryPageNumber';
@@ -303,8 +322,13 @@ class PurchaseManagementController extends GetxController with ErrorController{
     .post(endPoint, body, header: Utils.apiHeader )
         .catchError(handleApiError);
     if (response == null) return;
-    purchaseDataLoading();
+    haveMoreExpenceCategory=true;
+    expenceCategoryPageNumber=1;
+    await getExpenseCategoryList();
+    update(['expCategoryId']);
+   // purchaseDataLoading();
     Utils.hidePopup();
+
     Get.back();
     Utils.showSnackBar("Successfully Added");
   }
@@ -315,10 +339,14 @@ class PurchaseManagementController extends GetxController with ErrorController{
     var response = await ApiClient()
     .delete(endPoint, header: Utils.apiHeader)
     .catchError(handleApiError);
+    Utils.showLoading();
     if(response==null) return;
-    purchaseDataLoading();
+    haveMoreExpenceCategory=true;
+    expenceCategoryPageNumber=1;
+    await getExpenseCategoryList();
+    update(['expCategoryId']);
+    //purchaseDataLoading();
     Utils.hidePopup();
-    Get.back();
     Utils.showSnackBar("Deleted Category");
   }
 

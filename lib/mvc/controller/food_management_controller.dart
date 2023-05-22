@@ -269,9 +269,10 @@ class FoodManagementController extends GetxController with ErrorController {
     if (!haveMoreMealCategory) {
       return;
     }
+    if (categoryPageNumber==1 && foodMenuCategory.value.data!.isNotEmpty) {
+       foodMenuCategory.value.data?.clear();
+    }
     isLoading = true;
-
-
     String endPoint = id == '' ? 'food/category?page=$categoryPageNumber' : 'food/category/$id';
 
     var response = await ApiClient()
@@ -305,6 +306,9 @@ class FoodManagementController extends GetxController with ErrorController {
 
     if (!haveMoreAllergy) {
       return;
+    }
+    if (allergyPageNumber==1 && foodMenuAllergy.value.data!.isNotEmpty) {
+      foodMenuAllergy.value.data?.clear();
     }
     isLoading = true;
 
@@ -343,6 +347,9 @@ class FoodManagementController extends GetxController with ErrorController {
     if (!haveMoreAddons) {
       return;
     }
+    if (addonsPageNumber==1 && foodAddons.value.data!.isNotEmpty) {
+      foodAddons.value.data?.clear();
+    }
     isLoading = true;
     /*var response = await ApiClient()
         .get('pos/category', header: Utils.apiHeader)
@@ -380,6 +387,9 @@ class FoodManagementController extends GetxController with ErrorController {
 
     if (!haveMoreVariants) {
       return;
+    }
+    if (variantPageNumber==1 && foodVariants.value.data!.isNotEmpty) {
+      foodVariants.value.data?.clear();
     }
     isLoading = true;
 
@@ -421,14 +431,13 @@ class FoodManagementController extends GetxController with ErrorController {
     update();
   }
 
-  void addMenu(
+  Future <void> addMenu(
     String name,
     String price,
     String processingTime,
     String vatTax,
     String calories,
     String description,
-    String ingredient,
     List<int> mealPeriods,
     List<int> addons,
     List<int> allergies,
@@ -464,20 +473,24 @@ class FoodManagementController extends GetxController with ErrorController {
         "tax_vat": vatTax,
         "calorie": calories,
         "description": description,
-        "ingredient_name": ingredient,
       });
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
+      menusData.value.data?.clear();
+      menuPageNumber=1;
+      await getFoodDataList();
+      update(["menuDataTable"]);
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
       throw ProcessDataException("Not responding in time", uri.toString());
     }
+
   }
 
 
@@ -537,6 +550,10 @@ class FoodManagementController extends GetxController with ErrorController {
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
+      menusData.value.data?.clear();
+      menuPageNumber=1;
+      await getFoodDataList();
+      update(["menuDataTable"]);
       Get.back();
       _processResponse(res);
       print(res);
@@ -549,15 +566,15 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
 
-  void addMealPeriod(String name, File? image) async {
+   void addMealPeriod(String name) async {
     Utils.showLoading();
-    var uri = Uri.parse(baseUrl + "food/meal-period");
+    var uri = Uri.parse("${baseUrl}food/meal-period");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
-      if (image != null) {
+      if (mealPeriodStoreImage != null) {
         http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', image.path);
+        await http.MultipartFile.fromPath('image', mealPeriodStoreImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -567,10 +584,12 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      await getFoodMealPeriod();
+      update(["mealPeriodTable"]);
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -598,11 +617,13 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      await getFoodMealPeriod();
+      update(["mealPeriodTable"]);
       Utils.hidePopup();
       Get.back();
       print('chekOurMessage${res.body}');
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -611,9 +632,9 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
 
-  void addMealCategory(String name, File? image) async {
+  Future <void> addMealCategory(String name, File? image) async {
     Utils.showLoading();
-    var uri = Uri.parse(baseUrl + "food/category");
+    var uri = Uri.parse("${baseUrl}food/category");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
@@ -629,10 +650,15 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      //foodMenuCategory.value.data?.clear();
+      categoryPageNumber=1;
+      haveMoreMealCategory=true;
+      await getFoodMenuCategory();
+      update(["categoryDataTable"]);
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -660,10 +686,14 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      categoryPageNumber=1;
+      haveMoreMealCategory=true;
+      await getFoodMenuCategory();
+      update(["categoryDataTable"]);
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -689,6 +719,11 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      allergyPageNumber=1;
+      haveMoreAllergy=true;
+      await getFoodMenuAllergy();
+      update(["allergyDataTable"]);
+
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
@@ -719,10 +754,14 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
+      allergyPageNumber=1;
+      haveMoreAllergy=true;
+      await getFoodMenuAllergy();
+      update(["allergyDataTable"]);
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+     // foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -736,14 +775,19 @@ class FoodManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+    allergyPageNumber=1;
+    haveMoreAllergy=true;
+    await getFoodMenuAllergy();
+    update(["allergyDataTable"]);
+    //foodDataLoading();
     Utils.hidePopup();
   }
 
 
   void addMealAddons(String name,String price,String details, File? image) async {
     Utils.showLoading();
-    var uri = Uri.parse(baseUrl + "food/addon");
+    var uri = Uri.parse("${baseUrl}food/addon");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
@@ -762,9 +806,13 @@ class FoodManagementController extends GetxController with ErrorController {
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
+      addonsPageNumber=1;
+      haveMoreAddons=true;
+      await getFoodMenuAddons();
+      update(["addonsDataTable"]);
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -796,9 +844,13 @@ class FoodManagementController extends GetxController with ErrorController {
       print(res.statusCode);
       print(res.body);
       Utils.hidePopup();
+      addonsPageNumber=1;
+      haveMoreAddons=true;
+      await getFoodMenuAddons();
+      update(["addonsDataTable"]);
       Get.back();
       _processResponse(res);
-      foodDataLoading();
+      //foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -811,7 +863,12 @@ class FoodManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+    addonsPageNumber=1;
+    haveMoreAddons=true;
+    await getFoodMenuAddons();
+    update(["addonsDataTable"]);
+    //foodDataLoading();
     Utils.hidePopup();
   }
 
@@ -830,7 +887,12 @@ class FoodManagementController extends GetxController with ErrorController {
     Utils.hidePopup();
     Get.back();
     if (response == null) return;
-    foodDataLoading();
+    variantPageNumber=1;
+    haveMoreVariants=true;
+    await getFoodMenuVariants();
+    update(["variantDataTable"]);
+    Utils.hidePopup();
+    //foodDataLoading();
     Utils.showSnackBar("Customer added successfully");
   }
   void updateVariant(
@@ -846,11 +908,15 @@ class FoodManagementController extends GetxController with ErrorController {
         .put('food/variant/$id', body, header: Utils.apiHeader);
         //.catchError(handleApiError);
     print(response);
-    Utils.hidePopup();
-
-    Get.back();
     if (response == null) return;
-    foodDataLoading();
+    Utils.hidePopup();
+    variantPageNumber=1;
+    haveMoreVariants=true;
+    await getFoodMenuVariants();
+    update(["variantDataTable"]);
+    Get.back();
+    Utils.hidePopup();
+    // foodDataLoading();
     Utils.showSnackBar("Customer added successfully");
   }
 
@@ -860,8 +926,14 @@ class FoodManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+    variantPageNumber=1;
+    haveMoreVariants=true;
+    await getFoodMenuVariants();
+    update(["variantDataTable"]);
+    //foodDataLoading();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted successfully");
   }
 
 
@@ -881,17 +953,30 @@ class FoodManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+    //foodDataLoading();
+    menusData.value.data?.clear();
+    menuPageNumber=1;
+    await getFoodDataList();
+    update(["menuDataTable"]);
     Utils.hidePopup();
   }
+
   Future<void> deleteMealPeriod({dynamic id = ''})async{
-    Utils.showLoading();
     String endPoint = 'food/meal-period/$id';
+    Utils.showLoading();
+
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+
+    await getFoodMealPeriod();
+    update(["mealPeriodTable"]);
+    //foodDataLoading();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted Successfully");
+
   }
 
 
@@ -902,7 +987,12 @@ class FoodManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    foodDataLoading();
+    Utils.showLoading();
+    categoryPageNumber=1;
+    haveMoreMealCategory=true;
+    await getFoodMenuCategory();
+    update(["categoryDataTable"]);
+    //foodDataLoading();
     Utils.hidePopup();
   }
 

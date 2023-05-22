@@ -2524,7 +2524,6 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                   foodCtlr.vatEditingCtlr.text,
                   foodCtlr.caloriesEditingCtlr.text,
                   foodCtlr.descriptionEditingCtlr.text,
-                  foodCtlr.uploadMenuIngredientIdList[0].toString(),
                   foodCtlr.uploadMealPeriodIdList,
                   foodCtlr.uploadMenuAddonsIdList,
                   foodCtlr.uploadMenuAllergyIdList,
