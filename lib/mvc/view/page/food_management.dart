@@ -21,6 +21,8 @@ import 'package:klio_staff/mvc/view/dialog/custom_dialog.dart';
 import 'package:klio_staff/mvc/view/widget/custom_widget.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 
+import '../../../utils/utils.dart';
+
 class FoodManagement extends StatefulWidget {
   const FoodManagement({Key? key}) : super(key: key);
 
@@ -79,7 +81,7 @@ class _FoodManagementState extends State<FoodManagement>
         child: Column(
           children: [
             GetBuilder<FoodManagementController>(
-              id: "changeCustomTabBar",
+                id: "changeCustomTabBar",
                 builder: (controller) => itemTitleHeader()),
             customTapbarHeader(controller),
             Expanded(
@@ -300,6 +302,7 @@ class _FoodManagementState extends State<FoodManagement>
                                               .text =
                                           foodCtlr.foodSingleItemDetails.value
                                               .data!.processingTime!;
+                                      /*foodCtlr.updateMenuAllergyIdList = */
                                       showCustomDialogResponsive(
                                           context,
                                           "Update menu",
@@ -1221,53 +1224,27 @@ class _FoodManagementState extends State<FoodManagement>
               ),
               Container(
                 margin: const EdgeInsets.only(right: 25),
-                child: Row(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: Icon(
-                        Icons.add,
-                        color: primaryText,
-                      ),
-                      label: Text(
-                        "Add New Menu",
-                        style: TextStyle(
-                          color: primaryText,
-                        ),
-                      ),
-                      onPressed: () {
-                        showCustomDialog(context, "Add New menu",
-                            addNewMenuForm(foodCtlr), 30, 400);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
+                child: OutlinedButton.icon(
+                  icon: Icon(
+                    Icons.add,
+                    color: primaryText,
+                  ),
+                  label: Text(
+                    "Add New Menu",
+                    style: TextStyle(
+                      color: primaryText,
                     ),
-                    const SizedBox(
-                      width: 10,
+                  ),
+                  onPressed: () {
+                    showCustomDialog(context, "Add New menu",
+                        addNewMenuForm(foodCtlr), 30, 400);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    side: const BorderSide(width: 1.0, color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    OutlinedButton.icon(
-                      icon: const Icon(
-                        Icons.cloud_upload_outlined,
-                        color: white,
-                      ),
-                      label: const Text(
-                        "Upload Menu",
-                        style: TextStyle(color: white),
-                      ),
-                      onPressed: () => print("it's pressed"),
-                      style: ElevatedButton.styleFrom(
-                        primary: primaryColor,
-                        side: const BorderSide(
-                            width: 2.0, color: Colors.transparent),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               )
             ],
@@ -1922,25 +1899,32 @@ class _FoodManagementState extends State<FoodManagement>
             children: [
               normalButton('Submit', primaryColor, white, onPressed: () async {
                 if (foodCtlr.uploadMenuFormKey.currentState!.validate()) {
-                  await foodCtlr.addMenu(
-                    foodCtlr.nameTextCtlr.text,
-                    foodCtlr.varinetPriceEditingCtlr.text,
-                    foodCtlr.processTimeEditingCtlr.text,
-                    foodCtlr.vatEditingCtlr.text,
-                    foodCtlr.caloriesEditingCtlr.text,
-                    foodCtlr.descriptionEditingCtlr.text,
-                    foodCtlr.uploadMealPeriodIdList,
-                    foodCtlr.uploadMenuAddonsIdList,
-                    foodCtlr.uploadMenuAllergyIdList,
-                    foodCtlr.uploadMenuCategoryIdList,
-                  );
+                  if (foodCtlr.uploadMenuCategoryIdList.isEmpty) {
+                    Utils.showSnackBar("Please select menu category");
+                  } else if (foodCtlr.menuStoreImage == null) {
+                    Utils.showSnackBar("Please select menu image");
+                  } else {
+                    await foodCtlr.addMenu(
+                      foodCtlr.nameTextCtlr.text,
+                      foodCtlr.varinetPriceEditingCtlr.text,
+                      foodCtlr.processTimeEditingCtlr.text,
+                      foodCtlr.vatEditingCtlr.text,
+                      foodCtlr.caloriesEditingCtlr.text,
+                      foodCtlr.descriptionEditingCtlr.text,
+                      foodCtlr.uploadMealPeriodIdList,
+                      foodCtlr.uploadMenuAddonsIdList,
+                      foodCtlr.uploadMenuAllergyIdList,
+                      foodCtlr.uploadMenuCategoryIdList,
+                    );
 
-                  foodCtlr.nameTextCtlr.clear();
-                  foodCtlr.varinetPriceEditingCtlr.clear();
-                  foodCtlr.vatEditingCtlr.clear();
-                  foodCtlr.processTimeEditingCtlr.clear();
-                  foodCtlr.caloriesEditingCtlr.clear();
-                  foodCtlr.descriptionEditingCtlr.clear();
+                    foodCtlr.nameTextCtlr.clear();
+                    foodCtlr.varinetPriceEditingCtlr.clear();
+                    foodCtlr.vatEditingCtlr.clear();
+                    foodCtlr.processTimeEditingCtlr.clear();
+                    foodCtlr.caloriesEditingCtlr.clear();
+                    foodCtlr.descriptionEditingCtlr.clear();
+                    foodCtlr.menuStoreImage = null;
+                  }
                 }
               }),
             ],
@@ -2287,7 +2271,7 @@ class _FoodManagementState extends State<FoodManagement>
               onEditingComplete: () async {},
               keyboardType: TextInputType.text,
               validator: foodCtlr.textValidator,
-              controller: foodCtlr.descriptionEditingCtlr,
+              controller: foodCtlr.descriptionUpdateEditingCtlr,
               maxLines: 2,
               style: TextStyle(fontSize: fontSmall, color: textSecondary),
               decoration: InputDecoration(
@@ -2311,13 +2295,20 @@ class _FoodManagementState extends State<FoodManagement>
                     foodCtlr.vatUpdateEditingCtlr.text,
                     foodCtlr.caloriesUpdateEditingCtlr.text,
                     foodCtlr.descriptionUpdateEditingCtlr.text,
-                    foodCtlr.updateMenuIngredientIdList.first.toString(),
+                    foodCtlr.updateMenuIngredientIdList.isNotEmpty
+                        ? foodCtlr.updateMenuIngredientIdList.first.toString()
+                        : null,
                     foodCtlr.updateMealPeriodIdList,
                     foodCtlr.updateMenuAddonsIdList,
                     foodCtlr.updateMenuAllergyIdList,
                     foodCtlr.updateMenuCategoryIdList,
                     id: itemId,
                   );
+                  /*if (foodCtlr.updateMenuCategoryIdList.isEmpty) {
+                    Utils.showSnackBar("Please select menu category");
+                  } else {
+
+                  }*/
                 }
               }),
             ],
@@ -2397,7 +2388,7 @@ class _FoodManagementState extends State<FoodManagement>
                   if (foodCtlr.uploadMealPeriodKey.currentState!.validate()) {
                     foodCtlr.addMealPeriod(foodCtlr.mealPeriodTextCtlr.text);
                     foodCtlr.mealPeriodTextCtlr.clear();
-                    foodCtlr.mealPeriodStoreImage=null;
+                    foodCtlr.mealPeriodStoreImage = null;
                   }
                 })),
           ],
@@ -2561,8 +2552,13 @@ class _FoodManagementState extends State<FoodManagement>
                 child:
                     normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.uploadMealCategoryKey.currentState!.validate()) {
-                    foodCtlr.addMealCategory(foodCtlr.mealCategoryTextCtlr.text,
-                        foodCtlr.mealCategoryStoreImage!);
+                    foodCtlr
+                        .addMealCategory(foodCtlr.mealCategoryTextCtlr.text,
+                            foodCtlr.mealCategoryStoreImage!)
+                        .then((value) {
+                      foodCtlr.mealCategoryTextCtlr.clear();
+                      foodCtlr.mealCategoryStoreImage = null;
+                    });
                   }
                 })),
           ],
@@ -2700,14 +2696,23 @@ class _FoodManagementState extends State<FoodManagement>
                 ),
               ),
             ),
-            Container(
+            SizedBox(
                 height: 40,
                 width: 200,
                 child:
                     normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.uploadMealAllergyKey.currentState!.validate()) {
-                    foodCtlr.addMealAllergy(foodCtlr.mealAllergyTextCtlr.text,
-                        foodCtlr.mealAllergyStoreImage!);
+                    if (foodCtlr.mealAllergyStoreImage == null) {
+                      Utils.showSnackBar("Please select an image");
+                    } else {
+                      foodCtlr
+                          .addMealAllergy(foodCtlr.mealAllergyTextCtlr.text,
+                              foodCtlr.mealAllergyStoreImage!)
+                          .then((value) {
+                        foodCtlr.mealAllergyTextCtlr.clear();
+                        foodCtlr.mealAllergyStoreImage = null;
+                      });
+                    }
                   }
                 })),
           ],
@@ -2816,6 +2821,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAddonsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2883,11 +2889,18 @@ class _FoodManagementState extends State<FoodManagement>
                 child:
                     normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.uploadMealAddonsKey.currentState!.validate()) {
-                    foodCtlr.addMealAddons(
-                        foodCtlr.mealAddonsNameTextCtlr.text,
-                        foodCtlr.mealAddonsPriceTextCtlr.text,
-                        foodCtlr.mealAddonsDetailsTextCtlr.text,
-                        foodCtlr.mealAddonsStoreImage!);
+                    foodCtlr
+                        .addMealAddons(
+                            foodCtlr.mealAddonsNameTextCtlr.text,
+                            foodCtlr.mealAddonsPriceTextCtlr.text,
+                            foodCtlr.mealAddonsDetailsTextCtlr.text,
+                            foodCtlr.mealAddonsStoreImage)
+                        .then((value) {
+                      foodCtlr.mealAddonsNameTextCtlr.clear();
+                      foodCtlr.mealAddonsPriceTextCtlr.clear();
+                      foodCtlr.mealAddonsDetailsTextCtlr.clear();
+                      foodCtlr.mealAddonsStoreImage = null;
+                    });
                   }
                 })),
           ],
@@ -3071,6 +3084,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.uploadMealVariantsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -3090,10 +3104,15 @@ class _FoodManagementState extends State<FoodManagement>
                 child:
                     normalButton('Submit', primaryColor, white, onPressed: () {
                   if (foodCtlr.uploadMealVariantsKey.currentState!.validate()) {
-                    foodCtlr.addMenuVariant(
-                        foodCtlr.selectMenuItem[0],
-                        foodCtlr.uploadMealVariantsNameTextCtlr.text,
-                        foodCtlr.uploadMealVariantsPriceTextCtlr.text);
+                    foodCtlr
+                        .addMenuVariant(
+                            foodCtlr.selectMenuItem[0],
+                            foodCtlr.uploadMealVariantsNameTextCtlr.text,
+                            foodCtlr.uploadMealVariantsPriceTextCtlr.text)
+                        .then((value) {
+                      foodCtlr.uploadMealVariantsNameTextCtlr.clear();
+                      foodCtlr.uploadMealVariantsPriceTextCtlr.clear();
+                    });
                   }
                 })),
           ],

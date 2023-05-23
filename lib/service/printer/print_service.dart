@@ -381,7 +381,7 @@ class SumniPrinter {
     await SunmiPrinter.printText('Order Summary');
 
     await SunmiPrinter.setFontSize(SunmiFontSize.MD);
-    await SunmiPrinter.printText('SL -  Name -   V. Name  -  Qty  -  Total');
+    await SunmiPrinter.printText('SL    -    Name -   V. Name  -  Qty  -  Total');
     // await SunmiPrinter.printRow(cols: [
     //   ColumnMaker(text: 'SL', width: 1, align: SunmiPrintAlign.LEFT),
     //   ColumnMaker(text: 'Name', width: 3, align: SunmiPrintAlign.LEFT),
@@ -426,7 +426,7 @@ class SumniPrinter {
     await SunmiPrinter.printText(
         'Total Vat: ${Utils.vatCount(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}%');
     await SunmiPrinter.printText(
-        'Charges (Vat+Service+Delivery): ${Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}+${homeController.order.value.data!.serviceCharge.toString()}+${homeController.order.value.data!.deliveryCharge.toString()}');
+        'Charges (Vat+Service+Delivery): ${Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}+${homeController.order.value.data!.serviceCharge}+${homeController.order.value.data!.deliveryCharge}');
     await SunmiPrinter.printText(
         'Payment Method: ${homeController.payMethod.value}');
     await SunmiPrinter.line();

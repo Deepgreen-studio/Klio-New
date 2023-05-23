@@ -38,8 +38,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Obx(() {
-                    print(
-                        "updationf ///////////////////////////////////////////////// top");
+
                     print(homeController.topBtnPosition.value);
                     return Container(
                       decoration: BoxDecoration(
@@ -140,9 +139,6 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   onChanged: (value) {
                                     homeController.customerName.value = value!;
 
-                                    print(homeController
-                                        .controllerName.value.text);
-                                    print("===============================");
                                   },
                                 );
                               })),

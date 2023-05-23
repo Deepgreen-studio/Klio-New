@@ -283,10 +283,20 @@ class HomeController extends GetxController with ErrorController {
     discount.value = 0;
     withoutTable.value = false;
 
+    topBtnPosition.value = 1;
+    orderTypeNumber = 1;
+    customerName.value = "None";
+    discount.refresh();
     getOrders();
+    update(["cardUpdate"]);
 
     Utils.hidePopup();
-    Utils.showSnackBar("Order added successfully");
+    if (isUpdate.value) {
+      Utils.showSnackBar("Order updated successfully");
+    } else {
+      Utils.showSnackBar("Order added successfully");
+    }
+
   }
 
   Future<bool> orderPayment() async {

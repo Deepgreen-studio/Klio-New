@@ -27,8 +27,6 @@ import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
 
 class FoodManagementController extends GetxController with ErrorController {
-
-
   /// Api data fetch variable
   Rx<FoodMenuManagement> menusData = FoodMenuManagement(data: []).obs;
   Rx<MealPeriod> mealPeriod = MealPeriod(data: []).obs;
@@ -37,36 +35,34 @@ class FoodManagementController extends GetxController with ErrorController {
   Rx<FoodMenuAddons> foodAddons = FoodMenuAddons(data: []).obs;
   Rx<FoodMenuVariants> foodVariants = FoodMenuVariants(data: []).obs;
   Rx<IngredinetListModel> ingredientData = IngredinetListModel(data: []).obs;
-  Rx<FooodMenueDetailsSingleItem> foodSingleItemDetails = FooodMenueDetailsSingleItem().obs;
-  Rx<SingleMealPeriodDetails> singleMealPeriodDetails = SingleMealPeriodDetails().obs;
-  Rx<SingleDisplayCategoryDetaiils> singleMealCategoryDetails = SingleDisplayCategoryDetaiils().obs;
-  Rx<SingleDisplayAllergyDetails> singleMealAllergyDetails = SingleDisplayAllergyDetails().obs;
+  Rx<FooodMenueDetailsSingleItem> foodSingleItemDetails =
+      FooodMenueDetailsSingleItem().obs;
+  Rx<SingleMealPeriodDetails> singleMealPeriodDetails =
+      SingleMealPeriodDetails().obs;
+  Rx<SingleDisplayCategoryDetaiils> singleMealCategoryDetails =
+      SingleDisplayCategoryDetaiils().obs;
+  Rx<SingleDisplayAllergyDetails> singleMealAllergyDetails =
+      SingleDisplayAllergyDetails().obs;
   Rx<SingleMealAddons> singleMealAddonsDetails = SingleMealAddons().obs;
   Rx<SingleVariantDetails> singleVariantDetails = SingleVariantDetails().obs;
-
-
-
-
 
   // temp variable upload
   List<int> uploadMealPeriodIdList = [];
   List<int> uploadMenuCategoryIdList = [];
-  List<int>  uploadMenuAddonsIdList=[];
-  List<int> uploadMenuAllergyIdList=[];
-  List<int> uploadMenuIngredientIdList=[];
-  List<int> selectMenuItem=[];
-
+  List<int> uploadMenuAddonsIdList = [];
+  List<int> uploadMenuAllergyIdList = [];
+  List<int> uploadMenuIngredientIdList = [];
+  List<int> selectMenuItem = [];
 
   // temp variable update
   List<int> updateMealPeriodIdList = [];
   List<int> updateMenuCategoryIdList = [];
-  List<int> updateMenuAddonsIdList=[];
-  List<int> updateMenuAllergyIdList=[];
-  List<int> updateMenuIngredientIdList=[];
-  List<int> updateMenuItem=[];
+  List<int> updateMenuAddonsIdList = [];
+  List<int> updateMenuAllergyIdList = [];
+  List<int> updateMenuIngredientIdList = [];
+  List<int> updateMenuItem = [];
 
   //update temp variable
-
 
   /// upload menu
   final uploadMenuFormKey = GlobalKey<FormState>();
@@ -86,10 +82,9 @@ class FoodManagementController extends GetxController with ErrorController {
   TextEditingController caloriesUpdateEditingCtlr = TextEditingController();
   TextEditingController descriptionEditingCtlr = TextEditingController();
   TextEditingController descriptionUpdateEditingCtlr = TextEditingController();
-  List<SingleMenuDetailsData> updateMealIngrediantSelectMeal=[];
+  List<SingleMenuDetailsData> updateMealIngrediantSelectMeal = [];
   RxBool isDrinks = false.obs;
   RxString currentSelectedValue = ''.obs;
-
 
   /// Meal period
   File? mealPeriodStoreImage;
@@ -98,6 +93,7 @@ class FoodManagementController extends GetxController with ErrorController {
   final updateMealPeriodKey = GlobalKey<FormState>();
   TextEditingController mealPeriodTextCtlr = TextEditingController();
   TextEditingController mealPeriodUpdateTextCtlr = TextEditingController();
+
   // RxBool mealPeriodAddIsDrinks = false.obs;
   // RxBool mealPeriodUpdateIsDrinks = false.obs;
 
@@ -105,10 +101,9 @@ class FoodManagementController extends GetxController with ErrorController {
   File? mealCategoryStoreImage;
   File? mealCategoryUpdateStoreImage;
   final uploadMealCategoryKey = GlobalKey<FormState>();
-  final updateMealCategoryKey=GlobalKey<FormState>();
+  final updateMealCategoryKey = GlobalKey<FormState>();
   TextEditingController mealCategoryTextCtlr = TextEditingController();
   TextEditingController mealCategoryUpdateTextCtlr = TextEditingController();
-
 
   /// Meal allergy
   File? mealAllergyStoreImage;
@@ -117,7 +112,6 @@ class FoodManagementController extends GetxController with ErrorController {
   final updateMealAllergyKey = GlobalKey<FormState>();
   TextEditingController mealAllergyTextCtlr = TextEditingController();
   TextEditingController mealAllergyUpdateTextCtlr = TextEditingController();
-
 
   /// Meal addons
   File? mealAddonsStoreImage;
@@ -129,24 +123,28 @@ class FoodManagementController extends GetxController with ErrorController {
   TextEditingController mealAddonsPriceTextCtlr = TextEditingController();
   TextEditingController updateMealAddonsPriceTextCtlr = TextEditingController();
   TextEditingController mealAddonsDetailsTextCtlr = TextEditingController();
-  TextEditingController updateMealAddonsDetailsTextCtlr = TextEditingController();
-
+  TextEditingController updateMealAddonsDetailsTextCtlr =
+      TextEditingController();
 
   /// Meal variants
   final uploadMealVariantsKey = GlobalKey<FormState>();
   final updateMealVariantsKey = GlobalKey<FormState>();
-  TextEditingController uploadMealVariantsNameTextCtlr = TextEditingController();
-  TextEditingController updateMealVariantsNameTextCtlr = TextEditingController();
-  TextEditingController uploadMealVariantsPriceTextCtlr = TextEditingController();
-  TextEditingController updateMealVariantsPriceTextCtlr = TextEditingController();
-   List<SinlgeVariantData> updateSelectedVariant=[];
-  List<int> updateSelectVariantMenuItem=[];
+  TextEditingController uploadMealVariantsNameTextCtlr =
+      TextEditingController();
+  TextEditingController updateMealVariantsNameTextCtlr =
+      TextEditingController();
+  TextEditingController uploadMealVariantsPriceTextCtlr =
+      TextEditingController();
+  TextEditingController updateMealVariantsPriceTextCtlr =
+      TextEditingController();
+  List<SinlgeVariantData> updateSelectedVariant = [];
+  List<int> updateSelectVariantMenuItem = [];
 
   bool isLoading = false;
 
   bool haveMoreMenuItem = true;
-  bool haveMoreMealCategory= true;
-  bool haveMoreAllergy= true;
+  bool haveMoreMealCategory = true;
+  bool haveMoreAllergy = true;
   bool haveMoreAddons = true;
   bool haveMoreVariants = true;
 
@@ -182,7 +180,6 @@ class FoodManagementController extends GetxController with ErrorController {
     getFoodMenuVariants();
   }
 
-
   // Validator
   String? Function(String?)? textValidator = (String? value) {
     if (value!.isEmpty) {
@@ -193,12 +190,13 @@ class FoodManagementController extends GetxController with ErrorController {
   };
 
   Future<File> getImage() async {
-    File ?imageFile;
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    File? imageFile;
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-     File menuStoreImage = File(pickedFile.path);
-      imageFile=menuStoreImage;
+      File menuStoreImage = File(pickedFile.path);
+      imageFile = menuStoreImage;
       update();
     } else {
       print('No image selected.');
@@ -207,16 +205,20 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getFoodDataList({dynamic id = ''}) async {
-
     if (!haveMoreMenuItem) {
       return;
+    }
+
+    if (menuPageNumber == 1 && menusData.value.data!.isNotEmpty) {
+      ingredientData.value.data!.clear();
     }
     isLoading = true;
     /*var response = await ApiClient()
         .get('pos/category', header: Utils.apiHeader)
         .catchError(handleApiError);*/
 
-    String endPoint = id == '' ? 'food/menu?page=$menuPageNumber' : 'food/menu/$id';
+    String endPoint =
+        id == '' ? 'food/menu?page=$menuPageNumber' : 'food/menu/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -224,7 +226,6 @@ class FoodManagementController extends GetxController with ErrorController {
 
     var temp = foodMenuManagementFromJson(response);
     List<FoodMenuManagementDatum> datums = temp.data ?? [];
-
 
     menusData.value.data?.addAll(datums);
 
@@ -254,7 +255,7 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getFoodMealPeriod({dynamic id = ''}) async {
-    String endPoint ='food/meal-period/$id';
+    String endPoint = 'food/meal-period/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -265,15 +266,16 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   Future<void> getFoodMenuCategory({dynamic id = ''}) async {
-
     if (!haveMoreMealCategory) {
       return;
     }
-    if (categoryPageNumber==1 && foodMenuCategory.value.data!.isNotEmpty) {
-       foodMenuCategory.value.data?.clear();
+    if (categoryPageNumber == 1 && foodMenuCategory.value.data!.isNotEmpty) {
+      foodMenuCategory.value.data?.clear();
     }
     isLoading = true;
-    String endPoint = id == '' ? 'food/category?page=$categoryPageNumber' : 'food/category/$id';
+    String endPoint = id == ''
+        ? 'food/category?page=$categoryPageNumber'
+        : 'food/category/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -281,7 +283,6 @@ class FoodManagementController extends GetxController with ErrorController {
 
     var temp = foodMenuCategoryFromJson(response);
     List<MenuCategory> datums = temp.data ?? [];
-
 
     foodMenuCategory.value.data?.addAll(datums);
 
@@ -298,22 +299,19 @@ class FoodManagementController extends GetxController with ErrorController {
     isLoading = false;
 
     update(["categoryDataTable"]);
-
-
   }
 
   Future<void> getFoodMenuAllergy({dynamic id = ''}) async {
-
     if (!haveMoreAllergy) {
       return;
     }
-    if (allergyPageNumber==1 && foodMenuAllergy.value.data!.isNotEmpty) {
+    if (allergyPageNumber == 1 && foodMenuAllergy.value.data!.isNotEmpty) {
       foodMenuAllergy.value.data?.clear();
     }
     isLoading = true;
 
-
-    String endPoint = id == '' ? 'food/allergy?page=$allergyPageNumber' : 'food/allergy/$id';
+    String endPoint =
+        id == '' ? 'food/allergy?page=$allergyPageNumber' : 'food/allergy/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -321,7 +319,6 @@ class FoodManagementController extends GetxController with ErrorController {
 
     var temp = foodMenuAllergyFromJson(response);
     List<Allergy> datums = temp.data ?? [];
-
 
     foodMenuAllergy.value.data?.addAll(datums);
 
@@ -338,16 +335,13 @@ class FoodManagementController extends GetxController with ErrorController {
     isLoading = false;
 
     update(["allergyDataTable"]);
-
-
   }
 
   Future<void> getFoodMenuAddons({dynamic id = ''}) async {
-
     if (!haveMoreAddons) {
       return;
     }
-    if (addonsPageNumber==1 && foodAddons.value.data!.isNotEmpty) {
+    if (addonsPageNumber == 1 && foodAddons.value.data!.isNotEmpty) {
       foodAddons.value.data?.clear();
     }
     isLoading = true;
@@ -355,14 +349,14 @@ class FoodManagementController extends GetxController with ErrorController {
         .get('pos/category', header: Utils.apiHeader)
         .catchError(handleApiError);*/
 
-    String endPoint = id == '' ? 'food/addon?page=$addonsPageNumber' : 'food/addon/$id';
+    String endPoint =
+        id == '' ? 'food/addon?page=$addonsPageNumber' : 'food/addon/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
 
     var temp = foodMenuAddonsFromJson(response);
     List<MenuAddon> datums = temp.data ?? [];
-
 
     foodAddons.value.data?.addAll(datums);
 
@@ -379,21 +373,19 @@ class FoodManagementController extends GetxController with ErrorController {
     isLoading = false;
 
     update(["addonsDataTable"]);
-
-
   }
 
   Future<void> getFoodMenuVariants({dynamic id = ''}) async {
-
     if (!haveMoreVariants) {
       return;
     }
-    if (variantPageNumber==1 && foodVariants.value.data!.isNotEmpty) {
+    if (variantPageNumber == 1 && foodVariants.value.data!.isNotEmpty) {
       foodVariants.value.data?.clear();
     }
     isLoading = true;
 
-    String endPoint = id == '' ? 'food/variant?page=$variantPageNumber' : 'food/variant/$id';
+    String endPoint =
+        id == '' ? 'food/variant?page=$variantPageNumber' : 'food/variant/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -401,7 +393,6 @@ class FoodManagementController extends GetxController with ErrorController {
 
     var temp = foodMenuVariantsFromJson(response);
     List<Variant> datums = temp.data ?? [];
-
 
     foodVariants.value.data?.addAll(datums);
 
@@ -418,11 +409,9 @@ class FoodManagementController extends GetxController with ErrorController {
     isLoading = false;
 
     update(["variantDataTable"]);
-
   }
 
-
-  Future<void> getIngredientDataList({dynamic id = ''})async{
+  Future<void> getIngredientDataList({dynamic id = ''}) async {
     String endPoint = id == '' ? 'master/ingredient' : 'master/ingredient/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -431,7 +420,7 @@ class FoodManagementController extends GetxController with ErrorController {
     update();
   }
 
-  Future <void> addMenu(
+  Future<void> addMenu(
     String name,
     String price,
     String processingTime,
@@ -479,20 +468,17 @@ class FoodManagementController extends GetxController with ErrorController {
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
       menusData.value.data?.clear();
-      menuPageNumber=1;
-      await getFoodDataList();
-      update(["menuDataTable"]);
+      menuPageNumber = 1;
+      haveMoreMenuItem = true;
+      getFoodDataList();
       Get.back();
       _processResponse(res);
-
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
       throw ProcessDataException("Not responding in time", uri.toString());
     }
-
   }
-
 
   void updateMenu(
       String name,
@@ -501,22 +487,20 @@ class FoodManagementController extends GetxController with ErrorController {
       String vatTax,
       String calories,
       String description,
-      String ingredient,
+      String? ingredient,
       List<int> mealPeriods,
       List<int> addons,
       List<int> allergies,
       List<int> categories,
-      {dynamic id=''}
-      ) async {
+      {dynamic id = ''}) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/menu/$id");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (menuUpdateImage != null) {
-
         http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', menuUpdateImage!.path);
+            await http.MultipartFile.fromPath('image', menuUpdateImage!.path);
         request.files.add(multipartFile);
       }
       for (int i = 0; i < mealPeriods.length; i++) {
@@ -534,15 +518,15 @@ class FoodManagementController extends GetxController with ErrorController {
       print("Hii $categories");
 
       Map<String, String> _fields = Map();
-      _fields.addAll(<String, String> {
+      _fields.addAll(<String, String>{
         "name": name,
         "price": price,
         "processing_time": processingTime,
         "tax_vat": vatTax,
         "calorie": calories,
         "description": description,
-        "ingredient_name": ingredient,
-        '_method':'PUT'
+        "ingredient_name": ingredient ?? "",
+        '_method': 'PUT'
       });
 
       request.fields.addAll(_fields);
@@ -551,13 +535,13 @@ class FoodManagementController extends GetxController with ErrorController {
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
       menusData.value.data?.clear();
-      menuPageNumber=1;
-      await getFoodDataList();
-      update(["menuDataTable"]);
+      menuPageNumber = 1;
+      haveMoreMenuItem = true;
+      getFoodDataList();
+
       Get.back();
       _processResponse(res);
-      print(res);
-      foodDataLoading();
+
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -565,16 +549,15 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-
-   void addMealPeriod(String name) async {
+  void addMealPeriod(String name) async {
     Utils.showLoading();
     var uri = Uri.parse("${baseUrl}food/meal-period");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (mealPeriodStoreImage != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', mealPeriodStoreImage!.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'image', mealPeriodStoreImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -597,22 +580,24 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-
-  void UpdateMealPeriod(String name, { dynamic id = ''}) async {
+  void UpdateMealPeriod(String name, {dynamic id = ''}) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/meal-period/$id");
     try {
-      http.MultipartRequest request = http.MultipartRequest('POST', uri,);
+      http.MultipartRequest request = http.MultipartRequest(
+        'POST',
+        uri,
+      );
       request.headers.addAll(Utils.apiHeader);
       if (mealPeriodUpdateStoreImage != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', mealPeriodUpdateStoreImage!.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'image', mealPeriodUpdateStoreImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
       _fields.addAll(<String, String>{
-        "name" : name,
-        "_method" : 'PUT',
+        "name": name,
+        "_method": 'PUT',
       });
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
@@ -631,8 +616,7 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-
-  Future <void> addMealCategory(String name, File? image) async {
+  Future<void> addMealCategory(String name, File? image) async {
     Utils.showLoading();
     var uri = Uri.parse("${baseUrl}food/category");
     try {
@@ -640,7 +624,7 @@ class FoodManagementController extends GetxController with ErrorController {
       request.headers.addAll(Utils.apiHeader);
       if (image != null) {
         http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', image.path);
+            await http.MultipartFile.fromPath('image', image.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -651,8 +635,8 @@ class FoodManagementController extends GetxController with ErrorController {
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
       //foodMenuCategory.value.data?.clear();
-      categoryPageNumber=1;
-      haveMoreMealCategory=true;
+      categoryPageNumber = 1;
+      haveMoreMealCategory = true;
       await getFoodMenuCategory();
       update(["categoryDataTable"]);
       Utils.hidePopup();
@@ -666,7 +650,7 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void updateMealCategory(String name, {dynamic id=''}) async {
+  void updateMealCategory(String name, {dynamic id = ''}) async {
     print(name);
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/category/$id");
@@ -674,20 +658,20 @@ class FoodManagementController extends GetxController with ErrorController {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (mealCategoryUpdateStoreImage != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', mealCategoryUpdateStoreImage!.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'image', mealCategoryUpdateStoreImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
       _fields.addAll(<String, String>{
         "name": name,
-        '_method':'PUT',
+        '_method': 'PUT',
       });
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
-      categoryPageNumber=1;
-      haveMoreMealCategory=true;
+      categoryPageNumber = 1;
+      haveMoreMealCategory = true;
       await getFoodMenuCategory();
       update(["categoryDataTable"]);
       Utils.hidePopup();
@@ -701,7 +685,7 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void addMealAllergy(String name, File? image) async {
+  Future<void> addMealAllergy(String name, File? image) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/allergy");
     try {
@@ -709,7 +693,7 @@ class FoodManagementController extends GetxController with ErrorController {
       request.headers.addAll(Utils.apiHeader);
       if (image != null) {
         http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', image.path);
+            await http.MultipartFile.fromPath('image', image.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -719,8 +703,8 @@ class FoodManagementController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
-      allergyPageNumber=1;
-      haveMoreAllergy=true;
+      allergyPageNumber = 1;
+      haveMoreAllergy = true;
       await getFoodMenuAllergy();
       update(["allergyDataTable"]);
 
@@ -735,33 +719,30 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void updateMealAllergy(String name, {id=''}) async {
+  void updateMealAllergy(String name, {id = ''}) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/allergy/$id");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (mealAllergyUpdateImage != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', mealAllergyUpdateImage!.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'image', mealAllergyUpdateImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
-      _fields.addAll(<String, String>{
-        "name": name,
-        '_method': 'PUT'
-      });
+      _fields.addAll(<String, String>{"name": name, '_method': 'PUT'});
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
-      allergyPageNumber=1;
-      haveMoreAllergy=true;
+      allergyPageNumber = 1;
+      haveMoreAllergy = true;
       await getFoodMenuAllergy();
       update(["allergyDataTable"]);
       Utils.hidePopup();
       Get.back();
       _processResponse(res);
-     // foodDataLoading();
+      // foodDataLoading();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -769,23 +750,23 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void deleteMealAllergy({id=''}) async {
+  void deleteMealAllergy({id = ''}) async {
     Utils.showLoading();
     String endPoint = 'food/allergy/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     Utils.showLoading();
-    allergyPageNumber=1;
-    haveMoreAllergy=true;
+    allergyPageNumber = 1;
+    haveMoreAllergy = true;
     await getFoodMenuAllergy();
     update(["allergyDataTable"]);
     //foodDataLoading();
     Utils.hidePopup();
   }
 
-
-  void addMealAddons(String name,String price,String details, File? image) async {
+  Future<void> addMealAddons(
+      String name, String price, String details, File? image) async {
     Utils.showLoading();
     var uri = Uri.parse("${baseUrl}food/addon");
     try {
@@ -793,7 +774,7 @@ class FoodManagementController extends GetxController with ErrorController {
       request.headers.addAll(Utils.apiHeader);
       if (image != null) {
         http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', image.path);
+            await http.MultipartFile.fromPath('image', image.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -806,8 +787,8 @@ class FoodManagementController extends GetxController with ErrorController {
       http.StreamedResponse response = await request.send();
       var res = await http.Response.fromStream(response);
       Utils.hidePopup();
-      addonsPageNumber=1;
-      haveMoreAddons=true;
+      addonsPageNumber = 1;
+      haveMoreAddons = true;
       await getFoodMenuAddons();
       update(["addonsDataTable"]);
       Get.back();
@@ -820,15 +801,16 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void updateMealAddons(String name,String price,String details,{id=''}) async {
+  void updateMealAddons(String name, String price, String details,
+      {id = ''}) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + "food/addon/$id");
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (updateMealAddonsStoreImage != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('image', updateMealAddonsStoreImage!.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'image', updateMealAddonsStoreImage!.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
@@ -844,8 +826,8 @@ class FoodManagementController extends GetxController with ErrorController {
       print(res.statusCode);
       print(res.body);
       Utils.hidePopup();
-      addonsPageNumber=1;
-      haveMoreAddons=true;
+      addonsPageNumber = 1;
+      haveMoreAddons = true;
       await getFoodMenuAddons();
       update(["addonsDataTable"]);
       Get.back();
@@ -857,61 +839,61 @@ class FoodManagementController extends GetxController with ErrorController {
       throw ProcessDataException("Not responding in time", uri.toString());
     }
   }
-  void deleteMealAddons({id=''}) async {
+
+  void deleteMealAddons({id = ''}) async {
     Utils.showLoading();
     String endPoint = 'food/addon/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     Utils.showLoading();
-    addonsPageNumber=1;
-    haveMoreAddons=true;
+    addonsPageNumber = 1;
+    haveMoreAddons = true;
     await getFoodMenuAddons();
     update(["addonsDataTable"]);
     //foodDataLoading();
     Utils.hidePopup();
   }
 
-
-
-  void addMenuVariant(int selectedMenu, String variantName,String variantPrice) async {
+  Future<void> addMenuVariant(
+      int selectedMenu, String variantName, String variantPrice) async {
     Utils.showLoading();
     var body = jsonEncode({
       "menu": selectedMenu.toString(),
       "name": variantName,
       "price": variantPrice,
     });
-    var  response = await ApiClient()
+    var response = await ApiClient()
         .post('food/variant', body, header: Utils.apiHeader)
         .catchError(handleApiError);
     Utils.hidePopup();
     Get.back();
     if (response == null) return;
-    variantPageNumber=1;
-    haveMoreVariants=true;
+    variantPageNumber = 1;
+    haveMoreVariants = true;
     await getFoodMenuVariants();
     update(["variantDataTable"]);
     Utils.hidePopup();
     //foodDataLoading();
-    Utils.showSnackBar("Customer added successfully");
+    Utils.showSnackBar("Variants added successfully");
   }
-  void updateVariant(
-      int selectedMenu,
-      String variantName,String variantPrice,{dynamic id=''}) async {
+
+  void updateVariant(int selectedMenu, String variantName, String variantPrice,
+      {dynamic id = ''}) async {
     Utils.showLoading();
     var body = jsonEncode({
       "menu": 24,
       "name": variantName,
       "price": variantPrice,
     });
-    var  response = await ApiClient()
+    var response = await ApiClient()
         .put('food/variant/$id', body, header: Utils.apiHeader);
-        //.catchError(handleApiError);
+    //.catchError(handleApiError);
     print(response);
     if (response == null) return;
     Utils.hidePopup();
-    variantPageNumber=1;
-    haveMoreVariants=true;
+    variantPageNumber = 1;
+    haveMoreVariants = true;
     await getFoodMenuVariants();
     update(["variantDataTable"]);
     Get.back();
@@ -920,15 +902,15 @@ class FoodManagementController extends GetxController with ErrorController {
     Utils.showSnackBar("Customer added successfully");
   }
 
-  void deleteVariant({id=''}) async {
+  void deleteVariant({id = ''}) async {
     Utils.showLoading();
     String endPoint = 'food/variant/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     Utils.showLoading();
-    variantPageNumber=1;
-    haveMoreVariants=true;
+    variantPageNumber = 1;
+    haveMoreVariants = true;
     await getFoodMenuVariants();
     update(["variantDataTable"]);
     //foodDataLoading();
@@ -936,8 +918,7 @@ class FoodManagementController extends GetxController with ErrorController {
     Utils.showSnackBar("Deleted successfully");
   }
 
-
-  Future<void> getSingleMenuDetails({dynamic id = ''})async{
+  Future<void> getSingleMenuDetails({dynamic id = ''}) async {
     String endPoint = 'food/menu/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -947,22 +928,23 @@ class FoodManagementController extends GetxController with ErrorController {
     print('checkResponseDetails${foodSingleItemDetails.value.data!.name!}');
   }
 
-  Future<void> deleteMenu({dynamic id = ''})async{
+  Future<void> deleteMenu({dynamic id = ''}) async {
     Utils.showLoading();
     String endPoint = 'food/menu/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    Utils.showLoading();
+
     //foodDataLoading();
     menusData.value.data?.clear();
-    menuPageNumber=1;
-    await getFoodDataList();
+    menuPageNumber = 1;
+    haveMoreMenuItem = true;
+    getFoodDataList();
     update(["menuDataTable"]);
     Utils.hidePopup();
   }
 
-  Future<void> deleteMealPeriod({dynamic id = ''})async{
+  Future<void> deleteMealPeriod({dynamic id = ''}) async {
     String endPoint = 'food/meal-period/$id';
     Utils.showLoading();
 
@@ -976,55 +958,54 @@ class FoodManagementController extends GetxController with ErrorController {
     //foodDataLoading();
     Utils.hidePopup();
     Utils.showSnackBar("Deleted Successfully");
-
   }
 
-
-
-  Future<void> deleteMealCategory({dynamic id = ''})async{
+  Future<void> deleteMealCategory({dynamic id = ''}) async {
     Utils.showLoading();
     String endPoint = 'food/category/$id';
     var response = await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     Utils.showLoading();
-    categoryPageNumber=1;
-    haveMoreMealCategory=true;
+    categoryPageNumber = 1;
+    haveMoreMealCategory = true;
     await getFoodMenuCategory();
     update(["categoryDataTable"]);
     //foodDataLoading();
     Utils.hidePopup();
   }
 
-  Future<void> getSinleMelaPeriodDetails({dynamic id = ''})async{
+  Future<void> getSinleMelaPeriodDetails({dynamic id = ''}) async {
     String endPoint = 'food/meal-period/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-  //  print('mealPeriod Details1${response}');
+    //  print('mealPeriod Details1${response}');
     singleMealPeriodDetails.value = singleMealPeriodDetailsFromJson(response);
     update();
   }
 
-  Future<void> getSinleMealCategoryDetails({dynamic id = ''})async{
+  Future<void> getSinleMealCategoryDetails({dynamic id = ''}) async {
     String endPoint = 'food/category/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    singleMealCategoryDetails.value = singleDisplayCategoryDetaiilsFromJson(response);
+    singleMealCategoryDetails.value =
+        singleDisplayCategoryDetaiilsFromJson(response);
     update();
   }
 
-
-  Future<void> getSinleMealAllergyDetails({dynamic id = ''})async{
+  Future<void> getSinleMealAllergyDetails({dynamic id = ''}) async {
     String endPoint = 'food/allergy/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    singleMealAllergyDetails.value = singleDisplayAllergyDetailsFromJson(response);
+    singleMealAllergyDetails.value =
+        singleDisplayAllergyDetailsFromJson(response);
     update();
   }
-  Future<void> getSinleMealAdddonsDetails({dynamic id = ''})async{
+
+  Future<void> getSinleMealAdddonsDetails({dynamic id = ''}) async {
     String endPoint = 'food/addon/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -1033,22 +1014,21 @@ class FoodManagementController extends GetxController with ErrorController {
     update();
   }
 
-  Future<void> getSinleVariantDetails({dynamic id = ''})async{
+  Future<void> getSinleVariantDetails({dynamic id = ''}) async {
     updateSelectedVariant.clear();
     String endPoint = 'food/variant/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     singleVariantDetails.value = singleVariantDetailsFromJson(response);
-   // updateSelectedVariant.add(singleVariantDetails.value.data!);
+    // updateSelectedVariant.add(singleVariantDetails.value.data!);
     update();
   }
-
 
   dynamic _processResponse(http.Response response) {
     var jsonResponse = utf8.decode(response.bodyBytes);
     print('check body response${response.body}');
-    var jsonDecode=json.decode(response.body);
+    var jsonDecode = json.decode(response.body);
     Utils.showSnackBar(jsonDecode['message']);
     print(response.statusCode);
     print(response.request!.url);

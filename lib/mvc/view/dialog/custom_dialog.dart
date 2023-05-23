@@ -330,7 +330,6 @@ Widget addCustomer(BuildContext context, bool isDetail,
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-
             normalButton('Submit', primaryColor, white, onPressed: onPressed),
           ],
         )
@@ -529,15 +528,15 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                       ],
                     ),
                   ),
-                   SizedBox(
-                      width: MediaQuery.of(context).size.width/16,
-                      child: Text(
-                          "${homeController.settings.value.data![11].value}${(homeController.menuData.value.quantity! * unitPrice).toStringAsFixed(2)}",
-                          style: TextStyle(
-                              fontSize: fontMedium,
-                              color: primaryText,
-                              fontWeight: FontWeight.bold) ),
-                    ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 16,
+                    child: Text(
+                        "${homeController.settings.value.data![11].value}${(homeController.menuData.value.quantity! * unitPrice).toStringAsFixed(2)}",
+                        style: TextStyle(
+                            fontSize: fontMedium,
+                            color: primaryText,
+                            fontWeight: FontWeight.bold)),
+                  ),
                 ],
               );
             }),
@@ -1138,9 +1137,9 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                 child: textMixer(
                     'Customer Name: ',
                     homeController.order.value.data != null
-                        ?   homeController.order.value.data!.customer!.name.toString()
+                        ? homeController.order.value.data!.customer!.name
+                            .toString()
                         : "null",
-
                     MainAxisAlignment.center)),
             Expanded(
                 flex: 1,
@@ -1149,7 +1148,6 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                     homeController.order.value.data != null
                         ? homeController.order.value.data!.invoice.toString()
                         : "null",
-
                     MainAxisAlignment.end)),
           ],
         ),
@@ -1512,15 +1510,27 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
         ),
         const Expanded(child: SizedBox(height: 500)),
         kitchen
-            ?   SizedBox()
+            ? SizedBox()
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   normalButton('Create Invoice', primaryColor, white,
-                      onPressed: () {
+                      onPressed: () async {
+                    Utils.hidePopup();
+                    Utils.showLoading();
+                    String id = Utils.findIdByListNearValue(
+                        homeController.customers.value.data!.toList(),
+                        homeController.customerName.value);
+                    Customer customer = Customer();
+                    if(id != '0' && id.isNotEmpty){
+                      print(id);
+                      print("-----$id------------- idid");
+                      customer =  await homeController.getCustomer(id);
+                    }
+
                     Utils.hidePopup();
                     showCustomDialog(context, "Finalize Order",
-                        finalizeOrder(context), 200, 600);
+                        finalizeOrder(context, customer), 200, 600);
                   }),
                   normalButton('Close', textSecondary, white,
                       onPressed: () => Get.back()),
@@ -1531,15 +1541,15 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
   );
 }
 
-Widget finalizeOrder(BuildContext context) {
+finalizeOrder(BuildContext context, Customer customer) {
   homeController.giveAmount.value = 0;
 
-  double totalPayable = double.parse(
-      homeController.order.value.data!.grandTotal!);// Utils.calcSubTotal(homeController.cardList);
-  double totalPayableWithReward = double.parse(
-      homeController.order.value.data!.grandTotal!) -
-      (double.parse(homeController.settings.value.data![21].value!) *
-          double.parse(homeController.settings.value.data![23].value!));
+  double totalPayable = double.parse(homeController.order.value.data!
+      .grandTotal!); // Utils.calcSubTotal(homeController.cardList);
+  double totalPayableWithReward =
+      double.parse(homeController.order.value.data!.grandTotal!) -
+          ((customer.data == null ? 0 : customer.data!.pointsAcquired)! *
+              double.parse(homeController.settings.value.data![23].value!));
 
   CustomerDisplay.totalPayPrint(
       '${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}');
@@ -1554,7 +1564,7 @@ Widget finalizeOrder(BuildContext context) {
         SizedBox(height: 20),
         Center(
           child: Text(
-            'Reward: ${homeController.settings.value.data![21].value}, 1R = ${homeController.settings.value.data![11].value}${homeController.settings.value.data![23].value}, You get ${homeController.settings.value.data![11].value}${double.parse(homeController.settings.value.data![21].value!) * double.parse(homeController.settings.value.data![23].value!)}',
+            'Reward: ${customer.data == null ? 0 : customer.data!.pointsAcquired}, 1R = ${homeController.settings.value.data![11].value}${homeController.settings.value.data![23].value}, You get ${homeController.settings.value.data![11].value}${(customer.data == null ? 0 : customer.data!.pointsAcquired!) * double.parse(homeController.settings.value.data![23].value!)}',
             style: TextStyle(fontSize: fontSmall, color: primaryText),
           ),
         ),
@@ -1649,8 +1659,10 @@ Widget finalizeOrder(BuildContext context) {
             child: Obx(() {
               return Text(
                 (homeController.giveAmount.value -
-                    (homeController.reward.value ? totalPayableWithReward : totalPayable))
-                    .toStringAsFixed(2) ,
+                        (homeController.reward.value
+                            ? totalPayableWithReward
+                            : totalPayable))
+                    .toStringAsFixed(2),
                 style: TextStyle(fontSize: fontSmall, color: primaryText),
               );
             })),
