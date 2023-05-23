@@ -347,6 +347,7 @@ class PurchaseManagementController extends GetxController with ErrorController{
     update(['expCategoryId']);
     //purchaseDataLoading();
     Utils.hidePopup();
+    Get.back();
     Utils.showSnackBar("Deleted Category");
   }
 

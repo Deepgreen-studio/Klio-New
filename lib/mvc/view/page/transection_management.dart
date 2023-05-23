@@ -97,30 +97,30 @@ class _TransactionManagementState extends State<TransactionManagement>
                   style: TextStyle(fontSize: fontBig, color: primaryText),
                 ),
               ),
-              Container(
-                child: OutlinedButton.icon(
-                  icon: Icon(
-                    Icons.add,
-                    color: primaryText,
-                  ),
-                  label: Text(
-                    "Add New Bank",
-                    style: TextStyle(
-                      color: primaryText,
-                    ),
-                  ),
-                  onPressed: () {
-                    showCustomDialog(
-                        context, 'Add New Bank', newBankForm(), 100, 300);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    side: const BorderSide(width: 1.0, color: primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                ),
-              )
+              // Container(
+              //   child: OutlinedButton.icon(
+              //     icon: Icon(
+              //       Icons.add,
+              //       color: primaryText,
+              //     ),
+              //     label: Text(
+              //       "Add New Bank",
+              //       style: TextStyle(
+              //         color: primaryText,
+              //       ),
+              //     ),
+              //     onPressed: () {
+              //       showCustomDialog(
+              //           context, 'Add New Bank', newBankForm(), 100, 300);
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //       side: const BorderSide(width: 1.0, color: primaryColor),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(25),
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           ),
         );
@@ -137,7 +137,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                   style: TextStyle(fontSize: fontBig, color: primaryText),
                 ),
               ),
-              const SizedBox(height: 48)
+              // const SizedBox(height: 48)
             ],
           ),
         );
@@ -330,12 +330,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                         style: TextStyle(color: textSecondary),
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        'Action',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
                   ],
                   rows: controller.bankListData.value.data.map(
                     (item) {
@@ -353,8 +347,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          const DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                         ]);
                       } else if (item ==
                               controller.bankListData.value.data.last &&
@@ -368,8 +360,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator()),
-                          DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
@@ -414,57 +404,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                               style: TextStyle(color: primaryText),
                             ),
                           ),
-                          DataCell(
-                            Row(
-                              // mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: const Color(0xffED7402),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showWarningDialog(
-                                          'Are you sure to delete this ?',
-                                          onAccept: () {
-                                        _transactionsController.deleteBank(
-                                            id: item.id);
-                                        Get.back();
-                                      });
-                                    },
-                                    child: Image.asset(
-                                      "assets/delete.png",
-                                      height: 15,
-                                      width: 15,
-                                      color: const Color(0xffED0206),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
                         ],
                       );
                     },
@@ -521,12 +460,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                         style: TextStyle(color: textSecondary),
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        'Action',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
                   ],
                   rows: controller.transactionListData.value.data.map(
                     (item) {
@@ -542,8 +475,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                               style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          const DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                         ]);
                       } else if (item ==
                               controller.transactionListData.value.data.last &&
@@ -557,8 +488,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator()),
-                          DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                         ]);
@@ -596,46 +525,6 @@ class _TransactionManagementState extends State<TransactionManagement>
                               style: TextStyle(color: primaryText),
                             ),
                           ),
-                          DataCell(
-                            Row(
-                              // mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFEF4E1),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/edit-alt.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: const Color(0xffED7402),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFFE7E6),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/delete.png",
-                                    height: 15,
-                                    width: 15,
-                                    color: const Color(0xffED0206),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
                         ],
                       );
                     },

@@ -826,9 +826,11 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                       "Do you want to delete this item?",
                                       onAccept: () {
                                         purchaseCtrl.deleteExpenseCategory(
-                                            id: item.id);
-                                        Get.back();
-                                        Get.back();
+                                            id: item.id).then((value) {
+                                              if(Navigator.of(context).canPop()){
+                                                Navigator.of(context).pop();
+                                              }
+                                        });
                                       });
                                 },
                                 child: Image.asset(
@@ -1380,6 +1382,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         purchaseCtrl.dateCtlr.value,
                         note: purchaseCtrl.expenceNoteCtlr.text);
                   }
+                  purchaseCtrl.expenceAmountCtlr.clear();
+                  purchaseCtrl.dateCtlr.close();
+                  purchaseCtrl.expenceNoteCtlr.clear();
                 },
               ),
             ),

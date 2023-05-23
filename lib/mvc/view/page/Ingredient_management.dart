@@ -333,7 +333,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                                 .singleIngredientData
                                                 .value
                                                 .data!
-                                                .alertQty;
+                                                .alertQty.toString();
                                       });
                                     },
                                     child: Image.asset(
@@ -1801,13 +1801,12 @@ class _IngredientManagementState extends State<IngredientManagement>
           textRow('Address', 'Status'),
           textFieldRow(
             'Enter Address',
-            'Enter Status',
+            '',
             controller1: _ingredientController.updateSupplierAddressCtlr,
             // controller2: _ingredientController.addIngredintSupplierStatusCtlr,
             validator1: _ingredientController.textValidator,
-            validator2: _ingredientController.textValidator,
             textInputType1: TextInputType.text,
-            textInputType2: TextInputType.number,
+            showOne: true,
           ),
           const SizedBox(height: 10),
           textRow('ID Card Front', 'ID Card Back'),

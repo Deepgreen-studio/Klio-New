@@ -109,229 +109,14 @@ class _OrdersManagementState extends State<OrdersManagement>
   }
 
   itemTitleHeader() {
-    if (_currentSelection == 0) {
-      return Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 25),
-              child: Text(
-                'Order List',
-                style: TextStyle(fontSize: fontBig, color: primaryText),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(right: 25),
-              child: Row(
-                children: [
-                  OutlinedButton.icon(
-                    icon: Icon(
-                      Icons.add,
-                      color: primaryText,
-                    ),
-                    label: Text(
-                      "Add New Orders",
-                      style: TextStyle(
-                        color: primaryText,
-                      ),
-                    ),
-                    onPressed: () {
-                      // showCustomDialog(context, "Add New Ingredient",
-                      //     addIngrediant(1), 30, 400);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      side: const BorderSide(width: 1.0, color: primaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      );
-    } else if (_currentSelection == 1) {
-      return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Order List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 25),
-                child: Row(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: Icon(
-                        Icons.add,
-                        color: primaryText,
-                      ),
-                      label: Text(
-                        "Add Success Orders",
-                        style: TextStyle(
-                          color: primaryText,
-                        ),
-                      ),
-                      onPressed: () {
-                        // showCustomDialog(context, "Add New Ingredient",
-                        //     addIngrediant(1), 30, 400);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ));
-    } else if (_currentSelection == 2) {
-      return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Order List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 25),
-                child: Row(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: Icon(
-                        Icons.add,
-                        color: primaryText,
-                      ),
-                      label: Text(
-                        "Add Processing Orders",
-                        style: TextStyle(
-                          color: primaryText,
-                        ),
-                      ),
-                      onPressed: () {
-                        // showCustomDialog(context, "Add New Ingredient",
-                        //     addIngrediant(1), 30, 400);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ));
-    } else if (_currentSelection == 3) {
-      return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Order List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 25),
-                child: Row(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: Icon(
-                        Icons.add,
-                        color: primaryText,
-                      ),
-                      label: Text(
-                        "Add Pending Orders",
-                        style: TextStyle(
-                          color: primaryText,
-                        ),
-                      ),
-                      onPressed: () {
-                        // showCustomDialog(context, "Add New Ingredient",
-                        //     addIngrediant(1), 30, 400);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ));
-    } else if (_currentSelection == 4) {
-      return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  'Order List',
-                  style: TextStyle(fontSize: fontBig, color: primaryText),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 25),
-                child: Row(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: Icon(
-                        Icons.add,
-                        color: primaryText,
-                      ),
-                      label: Text(
-                        "Add Cancel Orders",
-                        style: TextStyle(
-                          color: primaryText,
-                        ),
-                      ),
-                      onPressed: () {
-                        // showCustomDialog(context, "Add New Ingredient",
-                        //     addIngrediant(1), 30, 400);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ));
-    }
-    return Container();
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+      child: Text(
+        'Order List',
+        style: TextStyle(fontSize: fontBig, color: primaryText),
+      ),
+    );
   }
 
   customTapBarHeader(TabController controller) {
@@ -692,12 +477,6 @@ class _OrdersManagementState extends State<OrdersManagement>
               style: TextStyle(color: textSecondary),
             ),
           ),
-          DataColumn(
-            label: Text(
-              'Action',
-              style: TextStyle(color: textSecondary),
-            ),
-          ),
         ],
         rows: data.map(
           (item) {
@@ -717,8 +496,6 @@ class _OrdersManagementState extends State<OrdersManagement>
                     CircularProgressIndicator(color: Colors.transparent)),
                 const DataCell(
                     CircularProgressIndicator(color: Colors.transparent)),
-                const DataCell(
-                    CircularProgressIndicator(color: Colors.transparent)),
               ]);
             } else if (item.id == lastItem.id && !isLoading && haveMoreData) {
               return const DataRow(cells: [
@@ -726,7 +503,6 @@ class _OrdersManagementState extends State<OrdersManagement>
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
                 DataCell(CircularProgressIndicator()),
-                DataCell(CircularProgressIndicator(color: Colors.transparent)),
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
               ]);
@@ -781,22 +557,6 @@ class _OrdersManagementState extends State<OrdersManagement>
                     style: TextStyle(color: primaryText),
                   ),
                 ),
-                DataCell(
-                  Container(
-                    height: 35,
-                    width: 35,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffE1FDE8),
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    child: Image.asset(
-                      "assets/hide.png",
-                      height: 15,
-                      width: 15,
-                      color: const Color(0xff00A600),
-                    ),
-                  ),
-                )
               ],
             );
           },

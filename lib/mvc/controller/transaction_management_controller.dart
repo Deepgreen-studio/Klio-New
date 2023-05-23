@@ -156,17 +156,17 @@ class TransactionsController extends GetxController with ErrorController{
     }
   }
 
-  Future<void> deleteBank({id =''}) async{
-    Utils.showLoading();
-    String endPoint = 'finance/bank/$id';
-    var response = await ApiClient()
-        .delete(endPoint, header: Utils.apiHeader)
-        .catchError(handleApiError);
-    bankPageNumber = 1;
-    haveMoreBank = true;
-    bankListDataList();
-    Utils.hidePopup();
-  }
+  // Future<void> deleteBank({id =''}) async{
+  //   Utils.showLoading();
+  //   String endPoint = 'finance/bank/$id';
+  //   var response = await ApiClient()
+  //       .delete(endPoint, header: Utils.apiHeader)
+  //       .catchError(handleApiError);
+  //   bankPageNumber = 1;
+  //   haveMoreBank = true;
+  //   bankListDataList();
+  //   Utils.hidePopup();
+  // }
 
   Future<void> transactionDataList({dynamic id = ''}) async{
     if(!haveMoreTransition){

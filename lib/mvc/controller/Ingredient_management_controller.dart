@@ -205,6 +205,7 @@ class IngredientController extends GetxController with ErrorController {
         .catchError(handleApiError);
     getIngredientDataList();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted Successfully");
   }
 
   Future<void> getSingleIngredientData({dynamic id = ''}) async {
@@ -217,7 +218,6 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   Future<void> getIngredientCategory({dynamic id = ''}) async {
-
     if (!haveMoreCategory) {
       return;
     }
@@ -250,7 +250,6 @@ class IngredientController extends GetxController with ErrorController {
     categoryPageNumber++;
     isLoading = false;
     update(["categoryTab"]);
-
   }
 
   void deleteIngredientCategory({id = ''}) async {
@@ -263,6 +262,7 @@ class IngredientController extends GetxController with ErrorController {
         .catchError(handleApiError);
     getIngredientCategory();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted Successfully");
   }
 
   Future<void> getIngredientUnit({dynamic id = ''}) async {
@@ -297,7 +297,6 @@ class IngredientController extends GetxController with ErrorController {
     unitPageNumber++;
     isLoading = false;
     update(["unitTab"]);
-
     /*ingredientUnitData.value = ingredineUnitModelFromJson(response);
     update();
     debugPrint("checkIngredientUnit${ingredientUnitData.value.data[0].id}");*/
@@ -313,6 +312,7 @@ class IngredientController extends GetxController with ErrorController {
         .catchError(handleApiError);
     getIngredientUnit();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted Successfully");
   }
 
   Future<void> getIngredientSupplier({dynamic id = ''}) async {
@@ -347,7 +347,6 @@ class IngredientController extends GetxController with ErrorController {
     isLoading = false;
     update(["supplierTab"]);
 
-
   /*  ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
     update();
     debugPrint(
@@ -374,6 +373,7 @@ class IngredientController extends GetxController with ErrorController {
         .catchError(handleApiError);
     getIngredientSupplier();
     Utils.hidePopup();
+    Utils.showSnackBar("Deleted Successfully");
   }
 
   Future addAndUpdateIngrediant(bool add, String name, String price, String code,
@@ -402,6 +402,7 @@ class IngredientController extends GetxController with ErrorController {
     if (response == null) return;
     getIngredientDataList();
     Utils.hidePopup();
+    Utils.showSnackBar("Successfully Added");
   }
 
   Future addAndUpdateIngrediantCategory(bool add, String name,
@@ -425,6 +426,7 @@ class IngredientController extends GetxController with ErrorController {
     if (response == null) return;
     getIngredientCategory();
     Utils.hidePopup();
+    Utils.showSnackBar("Successfully Added");
   }
 
   Future addAndUpdateIngrediantUnit(
@@ -447,10 +449,10 @@ class IngredientController extends GetxController with ErrorController {
           .catchError(handleApiError);
     }
     print(response);
-    print("4444444444444444444444444444444444444444 responseeeeeeeee");
     if (response == null) return print('No response...!!');
     await getIngredientUnit();
     Utils.hidePopup();
+    Utils.showSnackBar("Successfully Added");
   }
 
   Future addSupplierMethod(

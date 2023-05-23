@@ -90,44 +90,12 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
   }
 
   itemTitleHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 25),
-            child: Text(
-              'Reports',
-              style: TextStyle(fontSize: fontBig, color: primaryText),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(right: 25),
-            child: OutlinedButton.icon(
-              icon: Icon(
-                Icons.add,
-                color: primaryText,
-              ),
-              label: Text(
-                "Add New Reports",
-                style: TextStyle(
-                  color: primaryText,
-                ),
-              ),
-              onPressed: () {
-                // showCustomDialog(context, "Add New Ingredient",
-                //     addIngrediant(1), 30, 400);
-              },
-              style: ElevatedButton.styleFrom(
-                side: const BorderSide(width: 1.0, color: primaryColor),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-            ),
-          )
-        ],
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+      child: Text(
+        'Reports',
+        style: TextStyle(fontSize: fontBig, color: primaryText),
       ),
     );
   }
@@ -328,12 +296,6 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                         style: TextStyle(color: textSecondary),
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        'Action',
-                        style: TextStyle(color: textSecondary),
-                      ),
-                    ),
                   ],
                   rows: controller.saleRepData.value.data!.map(
                     (item) {
@@ -346,8 +308,6 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(Text('No Data',style: TextStyle(color: primaryText))),
-                          const DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
@@ -365,8 +325,6 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator()),
-                          DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
@@ -411,25 +369,6 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                               style: TextStyle(color: primaryText),
                             ),
                           ),
-                          DataCell(
-                            Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                color: const Color(0xffE1FDE8),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Image.asset(
-                                  "assets/hide.png",
-                                  height: 15,
-                                  width: 15,
-                                  color: const Color(0xff00A600),
-                                ),
-                              ),
-                            ),
-                          )
                         ],
                       );
                     },
