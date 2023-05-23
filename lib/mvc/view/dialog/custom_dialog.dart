@@ -2442,58 +2442,8 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                 })),
           ],
         ),
-        textRow('Select Menu Ingredient', ' '),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-                flex: 1,
-                child:
-                    GetBuilder<FoodManagementController>(builder: (controller) {
-                  return MultiSelectDropDown(
-                    backgroundColor: secondaryBackground,
-                    optionsBackgroundColor: secondaryBackground,
-                    selectedOptionTextColor: primaryText,
-                    selectedOptionBackgroundColor: primaryColor,
-                    optionTextStyle:
-                        TextStyle(color: primaryText, fontSize: 16),
-                    onOptionSelected: (List<ValueItem> selectedOptions) {
-                      foodCtlr.uploadMenuIngredientIdList = selectedOptions
-                          .map((ValueItem e) => int.parse(e.value!))
-                          .toList();
-                    },
-                    // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                    //   return ValueItem(
-                    //     label:e.name!,
-                    //     value: e.id.toString(),
-                    //   );
-                    // }).toList(),
-                    options: controller.ingredientData.value.data!
-                        .map((Ingrediant e) {
-                      return ValueItem(
-                        label: e.name!,
-                        value: e.id.toString(),
-                      );
-                    }).toList(),
-                    selectionType: SelectionType.single,
-                    chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                    dropdownHeight: 300,
-                    selectedOptionIcon: const Icon(Icons.check_circle),
-                    inputDecoration: BoxDecoration(
-                      color: secondaryBackground,
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                      border: Border.all(
-                        color: primaryBackground,
-                      ),
-                    ),
-                  );
-                })),
-            SizedBox(width: 20),
-          ],
-        ),
-        SizedBox(height: 10),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
+        const SizedBox(height: 10),
         textRow('Menu Description', ''),
         TextFormField(
             onChanged: (text) async {},
