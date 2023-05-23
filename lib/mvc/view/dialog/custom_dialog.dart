@@ -1523,8 +1523,6 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                         homeController.customerName.value);
                     Customer customer = Customer();
                     if(id != '0' && id.isNotEmpty){
-                      print(id);
-                      print("-----$id------------- idid");
                       customer =  await homeController.getCustomer(id);
                     }
 

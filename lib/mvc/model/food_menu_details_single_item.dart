@@ -63,7 +63,7 @@ class SingleMenuDetailsData {
     taxVat: json["tax_vat"],
     description: json["description"],
     addons: Addons.fromJson(json["addons"]),
-    variant: json["variant"]==null?" ": json["variant"],
+    variant: json["variant"] ?? " ",
   );
 
   Map<String, dynamic> toJson() => {

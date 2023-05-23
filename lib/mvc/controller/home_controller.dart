@@ -180,7 +180,11 @@ class HomeController extends GetxController with ErrorController {
     var response = await ApiClient()
         .get('pos/order/$id', header: Utils.apiHeader)
         .catchError(handleApiError);
-    if (response == null) return;
+    if (response == null) {
+      Utils.showSnackBar("Server error");
+      order.value.data = null;
+      return;
+    }
     order.value = orderFromJson(response);
   }
 

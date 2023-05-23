@@ -260,8 +260,11 @@ class _HomeState extends State<Home> {
                       .data![homeController.selectedOrder.value].id!
                       .toInt());
                   Utils.hidePopup();
-                  showCustomDialog(
-                      context, "Order Details", orderDetail(context), 50, 400);
+                  if(homeController.order.value.data != null){
+                    showCustomDialog(
+                        context, "Order Details", orderDetail(context), 50, 400);
+                  }
+
                 }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
