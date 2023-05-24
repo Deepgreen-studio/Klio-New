@@ -1522,8 +1522,8 @@ Widget orderDetail(BuildContext context, [bool kitchen = false]) {
                         homeController.customers.value.data!.toList(),
                         homeController.customerName.value);
                     Customer customer = Customer();
-                    if(id != '0' && id.isNotEmpty){
-                      customer =  await homeController.getCustomer(id);
+                    if (id != '0' && id.isNotEmpty) {
+                      customer = await homeController.getCustomer(id);
                     }
 
                     Utils.hidePopup();
@@ -2504,7 +2504,6 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                   foodCtlr.descriptionEditingCtlr.clear();
                   foodCtlr.menuStoreImage = null;
                 }
-
               }
             }),
           ],

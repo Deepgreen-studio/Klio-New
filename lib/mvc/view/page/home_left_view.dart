@@ -699,8 +699,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                         "assets/add.png", 'Add Misc', alternate, primaryText,
                         onPressed: () async {
                       showCustomDialog(context, "Add New menu",
-                              addNewMenuForm(foodCtlr), 30, 400)
-                          ;
+                          addNewMenuForm(foodCtlr), 30, 400);
 
                       // showCustomDialog(
                       //     context, "Add Food Menu", addMisc(context), 30, 400);

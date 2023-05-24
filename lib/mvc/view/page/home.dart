@@ -188,7 +188,9 @@ class _HomeState extends State<Home> {
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.zero,
-                itemCount: homeController.orders.value.data!.length,
+                itemCount: homeController.orders.value.data == null
+                    ? 0
+                    : homeController.orders.value.data!.length,
                 itemBuilder: (context, index) {
                   String value = homeController
                                   .orders.value.data![index].customerName !=
@@ -216,15 +218,17 @@ class _HomeState extends State<Home> {
                             homeController.selectedOrder.value = index;
                           });
                           Utils.showLoading();
-                          await homeController.getOrder(homeController.orders.value
-                              .data![homeController.selectedOrder.value].id!
+                          await homeController.getOrder(homeController
+                              .orders
+                              .value
+                              .data![homeController.selectedOrder.value]
+                              .id!
                               .toInt());
                           Utils.hidePopup();
-                          if(homeController.order.value.data != null){
-                            showCustomDialog(
-                                context, "Order Details", orderDetail(context), 50, 400);
+                          if (homeController.order.value.data != null) {
+                            showCustomDialog(context, "Order Details",
+                                orderDetail(context), 50, 400);
                           }
-
                         },
                         child: ListTile(
                           onTap: () {
@@ -232,7 +236,6 @@ class _HomeState extends State<Home> {
                               homeController.selectedOrder.value = index;
                             });
                           },
-
                           leading: Image.asset(
                             orderTypes[homeController
                                 .orders.value.data![index].type
@@ -247,13 +250,15 @@ class _HomeState extends State<Home> {
                                   fontSize: fontMedium,
                                   color: primaryText,
                                   fontWeight: FontWeight.bold)),
-                          subtitle: Text(homeController.orders.value.data![index].type== "Dine In" ?
-                                  'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n$value' :
-                          'Invoice : ${homeController.orders.value.data![index].invoice}\n$value',
-                                  style: TextStyle(
-                                    fontSize: fontVerySmall,
-                                    color: primaryText,
-                                  )),
+                          subtitle: Text(
+                              homeController.orders.value.data![index].type ==
+                                      "Dine In"
+                                  ? 'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n$value'
+                                  : 'Invoice : ${homeController.orders.value.data![index].invoice}\n$value',
+                              style: TextStyle(
+                                fontSize: fontVerySmall,
+                                color: primaryText,
+                              )),
                           tileColor: secondaryBackground,
                           dense: false,
                         ),
@@ -273,8 +278,8 @@ class _HomeState extends State<Home> {
                 bottomIconTextBtn(
                     'assets/search.png', 'Search order', primaryColor,
                     onPressed: () async {
-                          print("will implement search");
-                    }),
+                  print("will implement search");
+                }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/circle-error.png', 'Cancel Order', primaryColor,
@@ -320,37 +325,35 @@ class _HomeState extends State<Home> {
                                 price: order.price)
                           ]));
                       homeController.cardList.add(menuData);
-
                     }
                     homeController.isUpdate.value = true;
 
-
                     String type = "";
 
-
-                    if(homeController.order.value.data != null){
-                       type = homeController.order.value.data?.type ?? "";
-                      if(homeController.order.value.data!.customer != null){
-                         homeController.customerName.value = homeController.order.value.data!.customer!.name ?? "None";
+                    if (homeController.order.value.data != null) {
+                      type = homeController.order.value.data?.type ?? "";
+                      if (homeController.order.value.data!.customer != null) {
+                        homeController.customerName.value =
+                            homeController.order.value.data!.customer!.name ??
+                                "None";
                       }
                     }
 
-                    if(type == "Dine In"){
+                    if (type == "Dine In") {
                       homeController.topBtnPosition.value = 1;
                       homeController.orderTypeNumber = 1;
                       homeController.topBtnPosition.refresh();
-                    }else if(type == "Takeway"){
+                    } else if (type == "Takeway") {
                       homeController.topBtnPosition.value = 2;
                       homeController.orderTypeNumber = 2;
                       homeController.withoutTable.value = true;
                       homeController.topBtnPosition.refresh();
-
-                    }else if(type == "Delivery"){
+                    } else if (type == "Delivery") {
                       homeController.topBtnPosition.value = 3;
                       homeController.orderTypeNumber = 3;
                       homeController.withoutTable.value = true;
                       homeController.topBtnPosition.refresh();
-                    }else if(type == "Reservation"){
+                    } else if (type == "Reservation") {
                       homeController.topBtnPosition.value = 4;
                       homeController.orderTypeNumber = 4;
                       homeController.withoutTable.value = false;
@@ -558,7 +561,9 @@ class _HomeState extends State<Home> {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemCount: homeController.category.value.data!.length,
+                itemCount: homeController.category.value.data == null
+                    ? 0
+                    : homeController.category.value.data!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 15, 0),
@@ -635,7 +640,9 @@ class _HomeState extends State<Home> {
               children: [
                 Obx(() {
                   return Text(
-                    homeController.user.value.data!.name ?? '',
+                    homeController.user.value.data == null
+                        ? ""
+                        : homeController.user.value.data!.name ?? '',
                     style: TextStyle(
                         fontSize: fontMediumExtra,
                         fontWeight: FontWeight.bold,
@@ -736,8 +743,11 @@ class _HomeState extends State<Home> {
                           padding: const EdgeInsets.all(1),
                           child: Obx(() {
                             return Text(
-                              homeController.onlineOrder.value.data!.length
-                                  .toString(),
+                              homeController.onlineOrder.value.data == null
+                                  ? "?"
+                                  : homeController
+                                      .onlineOrder.value.data!.length
+                                      .toString(),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: fontVerySmall, color: Colors.white),
