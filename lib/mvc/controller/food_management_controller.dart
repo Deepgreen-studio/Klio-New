@@ -882,7 +882,7 @@ class FoodManagementController extends GetxController with ErrorController {
       {dynamic id = ''}) async {
     Utils.showLoading();
     var body = jsonEncode({
-      "menu": 24,
+      "menu": selectedMenu.toString(),
       "name": variantName,
       "price": variantPrice,
     });
@@ -899,7 +899,7 @@ class FoodManagementController extends GetxController with ErrorController {
     Get.back();
     Utils.hidePopup();
     // foodDataLoading();
-    Utils.showSnackBar("Customer added successfully");
+    Utils.showSnackBar("Variant added successfully");
   }
 
   void deleteVariant({id = ''}) async {

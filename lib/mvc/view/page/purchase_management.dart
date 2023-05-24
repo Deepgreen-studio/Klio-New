@@ -1336,7 +1336,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(controller.dateCtlr.value),
+                              Text(controller.dateCtlr.value, style: TextStyle(color: primaryText),),
                               const Icon(Icons.calendar_month)
                             ],
                           ),

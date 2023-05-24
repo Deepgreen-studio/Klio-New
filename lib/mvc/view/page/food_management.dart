@@ -2329,6 +2329,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealPeriodTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2408,6 +2409,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealPeriodUpdateTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2503,6 +2505,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealCategoryTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2579,6 +2582,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealCategoryUpdateTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2653,6 +2657,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAllergyTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2733,6 +2738,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAllergyUpdateTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2805,6 +2811,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAddonsNameTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2821,6 +2828,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAddonsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
@@ -2838,6 +2846,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.mealAddonsDetailsTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 minLines: 2,
                 maxLines: 3,
                 decoration: InputDecoration(
@@ -2920,6 +2929,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.udpateMealAddonsNameTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2936,6 +2946,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.updateMealAddonsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -2952,6 +2963,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.updateMealAddonsDetailsTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 minLines: 2,
                 maxLines: 3,
                 decoration: InputDecoration(
@@ -3068,6 +3080,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.uploadMealVariantsNameTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -3084,6 +3097,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.uploadMealVariantsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
@@ -3141,17 +3155,18 @@ class _FoodManagementState extends State<FoodManagement>
                       .map((ValueItem e) => int.parse(e.value!))
                       .toList();
                 },
-                selectedOptions:
-                    foodCtlr.updateSelectedVariant.map((SinlgeVariantData e) {
-                  return ValueItem(
-                    label: e.name!,
-                    value: e.id.toString(),
-                  );
-                }).toList(),
+                // selectedOptions:
+                // foodCtlr.updateSelectedVariant.map((SinlgeVariantData e) {
+                //   return ValueItem(
+                //     label: e.name!,
+                //     value: e.id.toString(),
+                //   );
+                // }).toList(),
                 hint: 'Menu Item Select',
-                options: controller.foodVariants.value.data!.map((Variant e) {
+                options: controller.menusData.value.data!
+                    .map((FoodMenuManagementDatum e) {
                   return ValueItem(
-                    label: e.name!,
+                    label: e.name??"",
                     value: e.id.toString(),
                   );
                 }).toList(),
@@ -3171,6 +3186,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.updateMealVariantsNameTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(
@@ -3187,6 +3203,7 @@ class _FoodManagementState extends State<FoodManagement>
             TextFormField(
                 controller: foodCtlr.updateMealVariantsPriceTextCtlr,
                 validator: foodCtlr.textValidator,
+                style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
                   fillColor: secondaryBackground,
                   label: Text(

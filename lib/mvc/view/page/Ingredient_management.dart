@@ -1798,7 +1798,7 @@ class _IngredientManagementState extends State<IngredientManagement>
               textInputType1: TextInputType.number,
               textInputType2: TextInputType.number),
           const SizedBox(height: 10),
-          textRow('Address', 'Status'),
+          textRow('Address', ''),
           textFieldRow(
             'Enter Address',
             '',

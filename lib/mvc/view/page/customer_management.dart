@@ -43,7 +43,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: 25),
+            margin: const EdgeInsets.only(right: 25),
             child: Row(
               children: [
                 OutlinedButton.icon(
@@ -62,7 +62,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                         addNewCustomer(), 30, 400);
                   },
                   style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: primaryColor),
+                    side: const BorderSide(width: 1.0, color: primaryColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -88,7 +88,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                     height:40,
                     width: 40,
                     margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                    child: CircularProgressIndicator()));
+                    child: const CircularProgressIndicator()));
               }
               return DataTable(
                 dataRowHeight: 70,
@@ -135,7 +135,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                               height: 35,
                               width:35,
                               decoration: BoxDecoration(
-                                color:Color(0xffFFE7E6),
+                                color:const Color(0xffFFE7E6),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                               child: GestureDetector(
@@ -150,16 +150,16 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                                   "assets/hide.png",
                                   height: 15,
                                   width: 15,
-                                  color: Color(0xff00A600),
+                                  color: const Color(0xff00A600),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 40),
+                            const SizedBox(width: 40),
                             Container(
                               height: 35,
                               width:35,
                               decoration: BoxDecoration(
-                                color:Color(0xffFFE7E6),
+                                color:const Color(0xffFFE7E6),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
                               child: GestureDetector(
@@ -175,7 +175,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                                   "assets/delete.png",
                                   height: 15,
                                   width: 15,
-                                  color: Color(0xffED0206),
+                                  color: const Color(0xffED0206),
                                 ),
                               ),
                             ),
@@ -195,12 +195,12 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
       Container(
           height: Size.infinite.height,
           width: Size.infinite.width,
-          padding: EdgeInsets.all(30),
+          padding: const EdgeInsets.all(30),
           child: Form(
             key: cusController.uploadCustomerFormKey,
             child: ListView(children: [
               textRow('First Name', 'Last Name'),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -209,6 +209,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                     child: TextFormField(
                          controller: cusController.fNameCtlr,
                         validator: cusController.textValidator,
+                        style: TextStyle(color: primaryText),
                         decoration: InputDecoration(
                           fillColor: secondaryBackground,
                           hintText: 'Enter First Name',
@@ -220,13 +221,14 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
 
                         ),keyboardType: TextInputType.text),
                   ),),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: SizedBox(
                       height:52,
                       child: TextFormField(
                           controller: cusController.lNameCtlr,
                           validator: cusController.textValidator,
+                          style: TextStyle(color: primaryText),
                           decoration: InputDecoration(
                             fillColor: secondaryBackground,
                             hintText: 'Enter Last Name',
@@ -241,7 +243,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               textRow('Email', 'Phone'),
               Row(
                 children: [
@@ -251,6 +253,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                       child: TextFormField(
                           controller: cusController.emailCtlr,
                           validator: cusController.textValidator,
+                          style: TextStyle(color: primaryText),
                           decoration: InputDecoration(
                             fillColor: secondaryBackground,
                             hintText: 'Enter Email',
@@ -262,13 +265,14 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
 
                           ),keyboardType: TextInputType.emailAddress),
                     ),),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: SizedBox(
                       height:52,
                       child: TextFormField(
                           controller: cusController.phoneCtlr,
                           validator: cusController.textValidator,
+                          style: TextStyle(color: primaryText),
                           decoration: InputDecoration(
                             fillColor: secondaryBackground,
                             hintText: 'Enter Phone Number',
@@ -277,13 +281,13 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
-
-                          ),keyboardType: TextInputType.number),
+                            ),
+                          keyboardType: TextInputType.number),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               textRow('Delivery Address', ''),
               Row(
                 children: [
@@ -293,6 +297,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                       child: TextFormField(
                           controller: cusController.addressCtlr,
                           validator: cusController.textValidator,
+                          style: TextStyle(color: primaryText),
                           decoration: InputDecoration(
                             fillColor: secondaryBackground,
                             hintText: 'Enter Delivery Address',
@@ -304,15 +309,15 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
 
                           ),keyboardType: TextInputType.text),
                     ),),
-                  SizedBox(width: 10),
-                  Expanded(
+                  const SizedBox(width: 10),
+                  const Expanded(
                     child: SizedBox(
                       height:52,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -341,7 +346,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
 
   Widget viewCustomer() {
     return Container(
-      padding: EdgeInsets.only(left: 40, right: 15),
+      padding: const EdgeInsets.only(left: 40, right: 15),
       child: ListView(
         children: [
           SizedBox(
@@ -373,7 +378,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -403,7 +408,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -433,7 +438,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -463,7 +468,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -493,7 +498,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -523,7 +528,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -553,7 +558,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
+          const SizedBox(height:10),
           SizedBox(
             height: 40,
             child: Row(
@@ -583,8 +588,8 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
               ],
             ),
           ),
-          SizedBox(height:10),
-          SizedBox(
+          const SizedBox(height:10),
+          const SizedBox(
             height: 40,
           ),
         ],
