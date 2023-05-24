@@ -423,8 +423,8 @@ class SumniPrinter {
         'Subtotal: ${homeController.settings.value.data![11].value}${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}');
     await SunmiPrinter.printText(
         'Discount: ${homeController.order.value.data!.discount.toString()}');
-    await SunmiPrinter.printText(
-        'Total Vat: ${Utils.vatCount(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}%');
+/*    await SunmiPrinter.printText(
+        'Total Vat: ${Utils.vatCount(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}%');*/
     await SunmiPrinter.printText(
         'Charges (Vat+Service+Delivery): ${Utils.vatTotal2(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}+${homeController.order.value.data!.serviceCharge}+${homeController.order.value.data!.deliveryCharge}');
     await SunmiPrinter.printText(
@@ -438,12 +438,12 @@ class SumniPrinter {
     if (double.parse(homeController.order.value.data!.grandTotal!) >
         homeController.giveAmount.value) {
       await SunmiPrinter.printText(
-          'Due: ${(double.parse(homeController.order.value.data!.grandTotal!) - homeController.giveAmount.value).toStringAsFixed(2)}');
+          'Due: ${homeController.settings.value.data![11].value}${(double.parse(homeController.order.value.data!.grandTotal!) - homeController.giveAmount.value).toStringAsFixed(2)}');
     }
     if (double.parse(homeController.order.value.data!.grandTotal!) <=
         homeController.giveAmount.value) {
       await SunmiPrinter.printText(
-          'Change: ${(homeController.giveAmount.value - double.parse(homeController.order.value.data!.grandTotal!)).toStringAsFixed(2)}');
+          'Change: ${homeController.settings.value.data![11].value}${(homeController.giveAmount.value - double.parse(homeController.order.value.data!.grandTotal!)).toStringAsFixed(2)}');
     }
 
     await SunmiPrinter.lineWrap(2);

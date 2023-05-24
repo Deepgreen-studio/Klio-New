@@ -1897,8 +1897,7 @@ Widget orderInvoice(BuildContext context, String method) {
                                       flex: 1,
                                       child: Text(
                                         homeController.order.value.data!
-                                            .orderDetails!.data![index].vat
-                                            .toString(),
+                                            .orderDetails!.data![index].vat!,
                                         style: TextStyle(
                                             fontSize: fontVerySmall,
                                             color: textSecondary,
@@ -1981,7 +1980,7 @@ Widget orderInvoice(BuildContext context, String method) {
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Subtotal",
-                    '${homeController.settings.value.data![11].value}${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toString()}',
+                    '${homeController.settings.value.data![11].value}${Utils.orderSubTotal(homeController.order.value.data!.orderDetails!.data!.toList()).toStringAsFixed(2)}',
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Discount",
@@ -1993,7 +1992,7 @@ Widget orderInvoice(BuildContext context, String method) {
                     Utils.vatTotal2(homeController
                             .order.value.data!.orderDetails!.data!
                             .toList())
-                        .toString(),
+                        .toStringAsFixed(2),
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Service",
@@ -2003,7 +2002,7 @@ Widget orderInvoice(BuildContext context, String method) {
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Give Amount",
-                    homeController.giveAmount.value.toString(),
+                    homeController.giveAmount.value.toStringAsFixed(2),
                     MainAxisAlignment.spaceBetween),
                 textMixer2(
                     "Due Amount",
@@ -2475,20 +2474,37 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            normalButton('Submit', primaryColor, white, onPressed: () {
+            normalButton('Submit', primaryColor, white, onPressed: () async {
               if (foodCtlr.uploadMenuFormKey.currentState!.validate()) {
-                foodCtlr.addMenu(
-                  foodCtlr.nameTextCtlr.text,
-                  foodCtlr.varinetPriceEditingCtlr.text,
-                  foodCtlr.processTimeEditingCtlr.text,
-                  foodCtlr.vatEditingCtlr.text,
-                  foodCtlr.caloriesEditingCtlr.text,
-                  foodCtlr.descriptionEditingCtlr.text,
-                  foodCtlr.uploadMealPeriodIdList,
-                  foodCtlr.uploadMenuAddonsIdList,
-                  foodCtlr.uploadMenuAllergyIdList,
-                  foodCtlr.uploadMenuCategoryIdList,
-                );
+                if (foodCtlr.uploadMenuCategoryIdList.isEmpty) {
+                  Utils.showSnackBar("Please select menu category");
+                } else if (foodCtlr.menuStoreImage == null) {
+                  Utils.showSnackBar("Please select menu image");
+                } else {
+                  await foodCtlr.addMenu(
+                    foodCtlr.nameTextCtlr.text,
+                    foodCtlr.varinetPriceEditingCtlr.text,
+                    foodCtlr.processTimeEditingCtlr.text,
+                    foodCtlr.vatEditingCtlr.text,
+                    foodCtlr.caloriesEditingCtlr.text,
+                    foodCtlr.descriptionEditingCtlr.text,
+                    foodCtlr.uploadMealPeriodIdList,
+                    foodCtlr.uploadMenuAddonsIdList,
+                    foodCtlr.uploadMenuAllergyIdList,
+                    foodCtlr.uploadMenuCategoryIdList,
+                  );
+
+                  await homeController.getMenuByKeyword();
+                  homeController.filteredMenu.refresh();
+                  foodCtlr.nameTextCtlr.clear();
+                  foodCtlr.varinetPriceEditingCtlr.clear();
+                  foodCtlr.vatEditingCtlr.clear();
+                  foodCtlr.processTimeEditingCtlr.clear();
+                  foodCtlr.caloriesEditingCtlr.clear();
+                  foodCtlr.descriptionEditingCtlr.clear();
+                  foodCtlr.menuStoreImage = null;
+                }
+
               }
             }),
           ],

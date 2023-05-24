@@ -118,13 +118,13 @@ class HomeController extends GetxController with ErrorController {
   }
 
   Future<void> getMenuByKeyword({String keyword = ''}) async {
+
     Map<String, String> qParams = {'keyword': keyword};
     String endPoint = "pos/menu";
-    print(endPoint);
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader, query: qParams);
     // .catchError(handleApiError);
-    print(response);
+
     menus.value = menuFromJson(response);
     filteredMenu.value = Utils.filterCategory(menus.value, -1)!;
   }
@@ -231,8 +231,11 @@ class HomeController extends GetxController with ErrorController {
     if (response == null) return;
     getCustomers();
     Utils.hidePopup();
-
-    Utils.showSnackBar("Customer added successfully");
+    if (add) {
+      Utils.showSnackBar("Customer added successfully");
+    } else {
+      Utils.showSnackBar("Customer updated successfully");
+    }
   }
 
   Future<void> addUpdateOrder() async {
@@ -300,7 +303,6 @@ class HomeController extends GetxController with ErrorController {
     } else {
       Utils.showSnackBar("Order added successfully");
     }
-
   }
 
   Future<bool> orderPayment() async {

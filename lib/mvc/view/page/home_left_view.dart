@@ -38,7 +38,6 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Obx(() {
-
                     print(homeController.topBtnPosition.value);
                     return Container(
                       decoration: BoxDecoration(
@@ -138,7 +137,6 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   value: homeController.customerName.toString(),
                                   onChanged: (value) {
                                     homeController.customerName.value = value!;
-
                                   },
                                 );
                               })),
@@ -196,11 +194,19 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   "Update Customer",
                                   addCustomer(context, false, onPressed: () {
                                     //perform validation
-                                    homeController.addUpdateCustomer(false,
-                                        id: Utils.findIdByListNearValue(
-                                            homeController.customers.value.data!
-                                                .toList(),
-                                            homeController.customerName.value));
+                                    homeController
+                                        .addUpdateCustomer(false,
+                                            id: Utils.findIdByListNearValue(
+                                                homeController
+                                                    .customers.value.data!
+                                                    .toList(),
+                                                homeController
+                                                    .customerName.value))
+                                        .then((value) {
+                                      if (Navigator.of(context).canPop()) {
+                                        Navigator.pop(context);
+                                      }
+                                    });
                                   }),
                                   60,
                                   400);
@@ -461,115 +467,122 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
           Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                margin: EdgeInsetsDirectional.only(top: 8),
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: alternate,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Text(
-                              'Sub Total',
-                              style: TextStyle(
-                                  color: primaryText, fontSize: fontVerySmall),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Text(
-                              'Service + Vat',
-                              style: TextStyle(
-                                  color: primaryText, fontSize: fontVerySmall),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Text(
-                              'Discount',
-                              style: TextStyle(
-                                  color: primaryText, fontSize: fontVerySmall),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Text(
-                              'Total',
-                              style: TextStyle(
-                                  color: primaryText,
-                                  fontSize: fontMedium,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
+              GetBuilder<HomeController>(
+                  id: "cardUpdate",
+                  builder: (context) {
+                    return Container(
+                      margin: EdgeInsetsDirectional.only(top: 8),
+                      width: double.infinity,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: alternate,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      Obx(() {
-                        return Column(
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
+                        child: Row(
                           mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              flex: 4,
-                              child: Text(
-                                '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList).toStringAsFixed(2)}'
-                                    .toString(),
-                                style: TextStyle(
-                                    color: primaryText,
-                                    fontSize: fontVerySmall,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    'Sub Total',
+                                    style: TextStyle(
+                                        color: primaryText,
+                                        fontSize: fontVerySmall),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    'Service + Vat',
+                                    style: TextStyle(
+                                        color: primaryText,
+                                        fontSize: fontVerySmall),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    'Discount',
+                                    style: TextStyle(
+                                        color: primaryText,
+                                        fontSize: fontVerySmall),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    'Total',
+                                    style: TextStyle(
+                                        color: primaryText,
+                                        fontSize: fontMedium,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              flex: 4,
-                              child: Text(
-                                '${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: primaryText,
-                                    fontSize: fontVerySmall,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: Text(
-                                '${homeController.settings.value.data![11].value}-${homeController.discount.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: primaryText,
-                                    fontSize: fontVerySmall,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: Text(
-                                '${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    fontSize: fontMedium,
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                            Obx(() {
+                              return Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList).toStringAsFixed(2)}'
+                                          .toString(),
+                                      style: TextStyle(
+                                          color: primaryText,
+                                          fontSize: fontVerySmall,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      '${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                          color: primaryText,
+                                          fontSize: fontVerySmall,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      '${homeController.settings.value.data![11].value}-${homeController.discount.value.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                          color: primaryText,
+                                          fontSize: fontVerySmall,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      '${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                          fontSize: fontMedium,
+                                          color: primaryColor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
                           ],
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
+                        ),
+                      ),
+                    );
+                  }),
               Obx(() {
                 return Padding(
                   padding: EdgeInsetsDirectional.only(top: 10),
@@ -685,10 +698,10 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     iconTextBtnWide(
                         "assets/add.png", 'Add Misc', alternate, primaryText,
                         onPressed: () async {
-                      await showCustomDialog(context, "Add New menu",
-                          addNewMenuForm(foodCtlr), 30, 400);
-                      await homeController.getMenuByKeyword();
-                      homeController.menus.refresh();
+                      showCustomDialog(context, "Add New menu",
+                              addNewMenuForm(foodCtlr), 30, 400)
+                          ;
+
                       // showCustomDialog(
                       //     context, "Add Food Menu", addMisc(context), 30, 400);
                     }),

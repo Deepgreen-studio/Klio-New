@@ -185,7 +185,6 @@ class _HomeState extends State<Home> {
           Expanded(
             flex: 3,
             child: Obx(() {
-              print("********************************************* 123321");
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.zero,
@@ -211,34 +210,53 @@ class _HomeState extends State<Home> {
                       width: 250,
                       alignment: Alignment.center,
                       color: alternate,
-                      child: ListTile(
-                        onTap: () {
+                      child: GestureDetector(
+                        onDoubleTap: () async {
                           setState(() {
                             homeController.selectedOrder.value = index;
                           });
+                          Utils.showLoading();
+                          await homeController.getOrder(homeController.orders.value
+                              .data![homeController.selectedOrder.value].id!
+                              .toInt());
+                          Utils.hidePopup();
+                          if(homeController.order.value.data != null){
+                            showCustomDialog(
+                                context, "Order Details", orderDetail(context), 50, 400);
+                          }
+
                         },
-                        leading: Image.asset(
-                          orderTypes[homeController
-                              .orders.value.data![index].type
-                              .toString()],
-                          color: primaryColor,
-                        ),
-                        title: Text(
-                            homeController.orders.value.data![index].type
-                                    .toString() ??
-                                '',
-                            style: TextStyle(
-                                fontSize: fontMedium,
-                                color: primaryText,
-                                fontWeight: FontWeight.bold)),
-                        subtitle:  Text(
-                                'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n $value',
-                                style: TextStyle(
-                                  fontSize: fontVerySmall,
+                        child: ListTile(
+                          onTap: () {
+                            setState(() {
+                              homeController.selectedOrder.value = index;
+                            });
+                          },
+
+                          leading: Image.asset(
+                            orderTypes[homeController
+                                .orders.value.data![index].type
+                                .toString()],
+                            color: primaryColor,
+                          ),
+                          title: Text(
+                              homeController.orders.value.data![index].type
+                                      .toString() ??
+                                  '',
+                              style: TextStyle(
+                                  fontSize: fontMedium,
                                   color: primaryText,
-                                )),
-                        tileColor: secondaryBackground,
-                        dense: false,
+                                  fontWeight: FontWeight.bold)),
+                          subtitle: Text(homeController.orders.value.data![index].type== "Dine In" ?
+                                  'Table : ${Utils.getTables(homeController.orders.value.data![index].tables!.data!)}\n$value' :
+                          'Invoice : ${homeController.orders.value.data![index].invoice}\n$value',
+                                  style: TextStyle(
+                                    fontSize: fontVerySmall,
+                                    color: primaryText,
+                                  )),
+                          tileColor: secondaryBackground,
+                          dense: false,
+                        ),
                       ),
                     ),
                   );
@@ -253,19 +271,10 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 bottomIconTextBtn(
-                    'assets/delivery.png', 'Order Detail', primaryColor,
+                    'assets/search.png', 'Search order', primaryColor,
                     onPressed: () async {
-                  Utils.showLoading();
-                  await homeController.getOrder(homeController.orders.value
-                      .data![homeController.selectedOrder.value].id!
-                      .toInt());
-                  Utils.hidePopup();
-                  if(homeController.order.value.data != null){
-                    showCustomDialog(
-                        context, "Order Details", orderDetail(context), 50, 400);
-                  }
-
-                }),
+                          print("will implement search");
+                    }),
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/circle-error.png', 'Cancel Order', primaryColor,
@@ -394,10 +403,6 @@ class _HomeState extends State<Home> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  if (homeController.cardList.isNotEmpty)
-                    print(homeController.cardList[0].quantity);
-                  print(
-                      "----------------------============================= 1");
                   MenuData data = homeController.filteredMenu[index];
                   print(data.toJson());
                   showCustomDialog(
