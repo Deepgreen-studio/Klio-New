@@ -1243,7 +1243,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: primaryBackground,
+                            color: textSecondary,
                           ),
                         ),
                       );
@@ -1284,7 +1284,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: primaryBackground,
+                            color: textSecondary,
                           ),
                         ),
                       );
@@ -1308,6 +1308,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             fillColor: secondaryBackground,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
                             ),
                             hintStyle: TextStyle(
                                 fontSize: fontVerySmall, color: primaryText),
@@ -1337,7 +1340,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(controller.dateCtlr.value, style: TextStyle(color: primaryText),),
-                              const Icon(Icons.calendar_month)
+                              Icon(Icons.calendar_month, color:textSecondary)
                             ],
                           ),
                         ),
@@ -1359,6 +1362,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       fillColor: secondaryBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: textSecondary)
                       ),
                       hintStyle: TextStyle(
                           fontSize: fontVerySmall, color: primaryText),
@@ -1454,7 +1460,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: primaryBackground,
+                            color: textSecondary,
                           ),
                         ),
                       );
@@ -1519,7 +1525,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: primaryBackground,
+                            color: textSecondary,
                           ),
                         ),
                       );
@@ -1544,6 +1550,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
+                            ),
                             hintStyle: TextStyle(
                                 fontSize: fontVerySmall, color: primaryText),
                             hintText: "Enter Amount")),
@@ -1562,7 +1571,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         child: Container(
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
-                            color: textSecondary,
+                            color: secondaryBackground,
                             borderRadius: const BorderRadius.all(Radius.circular(6)),
                             border: Border.all(
                               color: textSecondary,
@@ -1571,8 +1580,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(controller.dateCtlr.value),
-                              const Icon(Icons.calendar_month)
+                              Text(controller.dateCtlr.value, style: TextStyle(color: primaryText),),
+                               Icon(Icons.calendar_month, color: textSecondary)
                             ],
                           ),
                         ),
@@ -1594,6 +1603,9 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       fillColor: secondaryBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: textSecondary)
                       ),
                       hintStyle: TextStyle(
                           fontSize: fontVerySmall, color: primaryText),

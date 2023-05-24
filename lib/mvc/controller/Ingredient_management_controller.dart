@@ -35,7 +35,9 @@ class IngredientController extends GetxController with ErrorController {
   TextEditingController addIngrediantNameCtlr = TextEditingController();
   TextEditingController addIngredientPriceCtlr = TextEditingController();
   TextEditingController addIngredintCodeCtlr = TextEditingController();
-  TextEditingController addIngredintUnitCtlr = TextEditingController();
+  TextEditingController addIngredintQtyCtlr = TextEditingController();
+  List<int> addIngredintCatgoryList= [];
+  List<int> addIngredintUnitList= [];
 
   // update ingredinat//
   final updateIngredintFormKey = GlobalKey<FormState>();
@@ -44,6 +46,8 @@ class IngredientController extends GetxController with ErrorController {
   TextEditingController updateIngredintCodeCtlr = TextEditingController();
   TextEditingController updateIngredintUnitCtlr = TextEditingController();
   TextEditingController updateIngredintAlertQtyCtlr = TextEditingController();
+  List<int> updateIngredientCatgoryList = [];
+  List<int> updateIngredientUnitList = [];
 
   //add Ingredint Category
   final IngredintCategoryFormKey = GlobalKey<FormState>();
@@ -103,7 +107,7 @@ class IngredientController extends GetxController with ErrorController {
   ///
 
 
-  List<int> uploadIngredientIdList = [];
+
   final data = <Map<String, dynamic>>[].obs;
 
   Future<void> fetchData({dynamic id = ''})async{
@@ -377,7 +381,7 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   Future addAndUpdateIngrediant(bool add, String name, String price, String code,
-      String quantity, String categoryId, String unitId,
+      String quantity, int categoryId, int unitId,
       {String id = ''}) async {
     print(categoryId);
     Utils.showLoading();

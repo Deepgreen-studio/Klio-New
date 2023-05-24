@@ -1675,6 +1675,9 @@ class _FoodManagementState extends State<FoodManagement>
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: textSecondary)
+                        ),
                         hintStyle: TextStyle(
                             fontSize: fontVerySmall, color: textSecondary),
                       )),
@@ -1726,7 +1729,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1771,7 +1774,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1790,6 +1793,7 @@ class _FoodManagementState extends State<FoodManagement>
                     return MultiSelectDropDown(
                       backgroundColor: secondaryBackground,
                       optionsBackgroundColor: secondaryBackground,
+
                       selectedOptionTextColor: primaryText,
                       selectedOptionBackgroundColor: primaryColor,
                       optionTextStyle:
@@ -1822,7 +1826,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1867,7 +1871,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1889,6 +1893,9 @@ class _FoodManagementState extends State<FoodManagement>
                 fillColor: secondaryBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
+                ),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textSecondary)
                 ),
                 hintStyle:
                     TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2008,6 +2015,9 @@ class _FoodManagementState extends State<FoodManagement>
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: textSecondary)
+                      ),
                       hintStyle: TextStyle(
                         fontSize: fontVerySmall,
                         color: textSecondary,
@@ -2061,7 +2071,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -2106,7 +2116,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -2159,7 +2169,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -2204,7 +2214,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -2255,7 +2265,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -2278,6 +2288,9 @@ class _FoodManagementState extends State<FoodManagement>
                 fillColor: secondaryBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
+                ),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textSecondary)
                 ),
                 hintStyle:
                     TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2339,6 +2352,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter Meal period name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2419,6 +2435,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter Meal period name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2516,6 +2535,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2593,6 +2615,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2667,6 +2692,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter Menu Allergy name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2749,6 +2777,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2822,6 +2853,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2839,6 +2873,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter price',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2858,6 +2895,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter Details',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2940,6 +2980,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2956,6 +2999,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter price',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2975,6 +3021,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter Details',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -3072,7 +3121,7 @@ class _FoodManagementState extends State<FoodManagement>
                   color: secondaryBackground,
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   border: Border.all(
-                    color: primaryBackground,
+                    color: textSecondary,
                   ),
                 ),
               );
@@ -3091,6 +3140,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -3108,6 +3160,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter variant price',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -3178,7 +3233,7 @@ class _FoodManagementState extends State<FoodManagement>
                   color: secondaryBackground,
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   border: Border.all(
-                    color: primaryBackground,
+                    color: textSecondary,
                   ),
                 ),
               );
@@ -3197,6 +3252,9 @@ class _FoodManagementState extends State<FoodManagement>
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -3213,6 +3271,9 @@ class _FoodManagementState extends State<FoodManagement>
                   hintText: 'Enter variant price',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),

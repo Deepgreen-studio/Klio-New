@@ -216,6 +216,9 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: textSecondary)
+                          ),
                           hintStyle:
                           TextStyle(fontSize: fontVerySmall, color: textSecondary),
 
@@ -234,6 +237,9 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             hintText: 'Enter Last Name',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -260,6 +266,9 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
+                            ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
 
@@ -278,6 +287,9 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             hintText: 'Enter Phone Number',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -303,6 +315,9 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             hintText: 'Enter Delivery Address',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: textSecondary)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),

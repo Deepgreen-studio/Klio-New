@@ -38,8 +38,8 @@ class _SettingsState extends State<Settings> {
       child: Container(
         width: double.infinity,
         height: double.infinity,
-        margin: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
-        padding: EdgeInsetsDirectional.all(20),
+        margin: const EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
+        padding: const EdgeInsetsDirectional.all(20),
         decoration: BoxDecoration(
             color: secondaryBackground,
             borderRadius: BorderRadius.circular(8),
@@ -49,20 +49,20 @@ class _SettingsState extends State<Settings> {
             'Settings',
             style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           textRow1('Restaurant Name', 'Email'),
           textFieldRow1('Klio', 'info@deepgreen.studio',
               controller1: contResName, controller2: contEmail),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           textRow1('Timezone', 'Date Format'),
           timeDateDropDown(timeZones, dateFormats),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           textRow1('Phone', 'Copyright'),
           textFieldRow1('+880176456455', 'All rights reserved',
               controller1: contPhone, controller2: contRight),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           textRow1('Address', ''),
           SizedBox(
             height: 60,
@@ -75,9 +75,13 @@ class _SettingsState extends State<Settings> {
                     fillColor: secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6),
-                    ))),
+                    ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
+                )),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           textRow1('Restaurant Descriptions', ''),
           SizedBox(
             height: 60,
@@ -90,9 +94,13 @@ class _SettingsState extends State<Settings> {
                     fillColor: secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6),
-                    ))),
+                    ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textSecondary)
+                  ),
+                )),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -135,7 +143,7 @@ class _SettingsState extends State<Settings> {
             child: Container(
                 height: 40,
                 alignment: Alignment.center,
-                margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: textSecondary, width: 1)),
@@ -152,7 +160,7 @@ class _SettingsState extends State<Settings> {
                     );
                   }).toList(),
                   borderRadius: BorderRadius.circular(6),
-                  underline: SizedBox(),
+                  underline: const SizedBox(),
                   isExpanded: true,
                   dropdownColor: primaryBackground,
                   value: selectedTime,
@@ -161,13 +169,13 @@ class _SettingsState extends State<Settings> {
                     setState(() {});
                   },
                 ))),
-        SizedBox(width: 20),
+        const SizedBox(width: 20),
         Expanded(
             flex: 1,
             child: Container(
                 height: 40,
                 alignment: Alignment.center,
-                margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: textSecondary, width: 1)),
@@ -184,7 +192,7 @@ class _SettingsState extends State<Settings> {
                     );
                   }).toList(),
                   borderRadius: BorderRadius.circular(6),
-                  underline: SizedBox(),
+                  underline: const SizedBox(),
                   isExpanded: true,
                   dropdownColor: primaryBackground,
                   value: selectedDate,

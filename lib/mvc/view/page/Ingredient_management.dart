@@ -334,6 +334,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                                                 .value
                                                 .data!
                                                 .alertQty.toString();
+                                        _ingredientController.updateIngredientCatgoryList
+                                        .add(controller.singleIngredientData.value.data!.categoryName);
+                                            _ingredientController.updateIngredientUnitList
+                                        .add(controller.singleIngredientData.value.data!.unitName);
                                       });
                                     },
                                     child: Image.asset(
@@ -1192,7 +1196,7 @@ class _IngredientManagementState extends State<IngredientManagement>
           textRow('Code', 'Alert Qty'),
           textFieldRow('Enter Code', 'Enter Alert Qty',
               controller1: _ingredientController.addIngredintCodeCtlr,
-              controller2: _ingredientController.addIngredintUnitCtlr,
+              controller2: _ingredientController.addIngredintQtyCtlr,
               validator1: _ingredientController.textValidator,
               validator2: _ingredientController.textValidator,
               textInputType1: TextInputType.number,
@@ -1214,21 +1218,16 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        // foodCtlr.updateMealPeriodIdList = selectedOptions
-                        //     .map((ValueItem e) => int.parse(e.value!))
-                        //     .toList();
+                        controller.addIngredintCatgoryList= selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                        print(controller.addIngredintCatgoryList);
                       },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
                       options: _ingredientController
                           .ingredientCategoryData.value.data
                           .map((IngrediantCategory e) {
                         return ValueItem(
-                          label: e.name!,
+                          label: e.name,
                           value: e.id.toString(),
                         );
                       }).toList(),
@@ -1243,7 +1242,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1261,16 +1260,11 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        // foodCtlr.updateMenuCategoryIdList = selectedOptions
-                        //     .map((ValueItem e) => int.parse(e.value!))
-                        //     .toList();
+                        controller.addIngredintUnitList= selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
+                        print(controller.addIngredintUnitList);
                       },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
                       options: _ingredientController
                           .ingredientUnitData.value.data
                           .map((IngrediantUnit e) {
@@ -1289,7 +1283,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1305,12 +1299,6 @@ class _IngredientManagementState extends State<IngredientManagement>
                   onPressed: () async {
                 if (_ingredientController.addIngredintFormKey.currentState!
                     .validate()) {
-                  // foodCtlr.updateVariant(
-                  //   foodCtlr.updateSelectVariantMenuItem[0],
-                  //   foodCtlr.updateMealVariantsNameTextCtlr.text,
-                  //   foodCtlr.updateMealVariantsPriceTextCtlr.text,
-                  //   id:itemId,
-                  // );
                   _ingredientController.haveMoreIngredient = true;
                   _ingredientController.ingredientPageNumber = 1;
                   _ingredientController
@@ -1319,15 +1307,17 @@ class _IngredientManagementState extends State<IngredientManagement>
                     _ingredientController.addIngrediantNameCtlr.text,
                     _ingredientController.addIngredientPriceCtlr.text,
                     _ingredientController.addIngredintCodeCtlr.text,
-                    2.toString(),
-                    5.toString(),
-                    1.toString(),
+                    _ingredientController.addIngredintQtyCtlr.text,
+                    _ingredientController.addIngredintCatgoryList.first,
+                    _ingredientController.addIngredintUnitList.first,
                   )
                       .then((value) {
-                    _ingredientController.addIngredintUnitCtlr.clear();
+                    _ingredientController.addIngredintQtyCtlr.clear();
                     _ingredientController.addIngredintCodeCtlr.clear();
                     _ingredientController.addIngredientPriceCtlr.clear();
                     _ingredientController.addIngrediantNameCtlr.clear();
+                    _ingredientController.addIngredintCatgoryList.clear();
+                    _ingredientController.addIngredintUnitList.clear();
                     if (Navigator.of(context).canPop()) {
                       Navigator.pop(context);
                     }
@@ -1387,16 +1377,20 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        // foodCtlr.updateMealPeriodIdList = selectedOptions
-                        //     .map((ValueItem e) => int.parse(e.value!))
-                        //     .toList();
+                        controller.updateIngredientCatgoryList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
                       },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
+                      selectedOptions: controller.ingredientData.value.data!.
+                      map((e) {
+                        return ValueItem(
+                          label: _ingredientController.ingredientData.value.data
+                              ?.firstWhere((element) => element.id ==itemId).categoryName,
+                          value: _ingredientController.ingredientData.value.data
+                              ?.firstWhere((element) => element.id==itemId).id.toString(),
+                        );
+                      }).toList(),
+
                       options: _ingredientController
                           .ingredientCategoryData.value.data
                           .map((IngrediantCategory e) {
@@ -1405,7 +1399,9 @@ class _IngredientManagementState extends State<IngredientManagement>
                           value: e.id.toString(),
                         );
                       }).toList(),
-                      hint: 'Select Category',
+                      hint: controller.ingredientData.value.data
+                          ?.firstWhere((element) => element.id == itemId)
+                          .categoryName,
                       selectionType: SelectionType.single,
                       chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                       dropdownHeight: 300,
@@ -1415,7 +1411,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1433,16 +1429,20 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        // foodCtlr.updateMenuCategoryIdList = selectedOptions
-                        //     .map((ValueItem e) => int.parse(e.value!))
-                        //     .toList();
+                        controller.updateIngredientUnitList = selectedOptions
+                            .map((ValueItem e) => int.parse(e.value!))
+                            .toList();
                       },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
+                      selectedOptions: controller.ingredientData.value.data!.
+                      map((e) {
+                        return ValueItem(
+                          label: _ingredientController.ingredientData.value.data
+                              ?.firstWhere((element) => element.id ==itemId).unitName,
+                          value: _ingredientController.ingredientData.value.data
+                              ?.firstWhere((element) => element.id==itemId).id.toString(),
+                        );
+                      }).toList(),
+
                       options: _ingredientController
                           .ingredientUnitData.value.data
                           .map((IngrediantUnit e) {
@@ -1451,8 +1451,10 @@ class _IngredientManagementState extends State<IngredientManagement>
                           value: e.id.toString(),
                         );
                       }).toList(),
-                      hint: 'Select Unit',
-                      selectionType: SelectionType.multi,
+                      hint: controller.ingredientData.value.data
+                          ?.firstWhere((element) => element.id == itemId)
+                          .unitName,
+                      selectionType: SelectionType.single,
                       chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                       dropdownHeight: 300,
                       selectedOptionIcon: const Icon(Icons.check_circle),
@@ -1461,7 +1463,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: primaryBackground,
+                          color: textSecondary,
                         ),
                       ),
                     );
@@ -1486,12 +1488,12 @@ class _IngredientManagementState extends State<IngredientManagement>
                   _ingredientController.updateIngredientPriceCtlr.text,
                   _ingredientController.updateIngredintCodeCtlr.text,
                   _ingredientController.updateIngredintAlertQtyCtlr.text,
-                  5.toString(),
-                  1.toString(),
+                  _ingredientController.updateIngredientCatgoryList.first,
+                  _ingredientController.updateIngredientUnitList.first,
                   id: itemId.toString(),
                 )
                     .then((value) {
-                  _ingredientController.addIngredintUnitCtlr.clear();
+                  _ingredientController.addIngredintQtyCtlr.clear();
                   _ingredientController.addIngredintCodeCtlr.clear();
                   _ingredientController.addIngredientPriceCtlr.clear();
                   _ingredientController.addIngrediantNameCtlr.clear();
