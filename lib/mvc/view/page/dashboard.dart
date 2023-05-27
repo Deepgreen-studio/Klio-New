@@ -446,7 +446,7 @@ class _DashboardState extends State<Dashboard> {
         Expanded(
             flex: 1,
             child: Center(
-                child: Text(itemNumber!,
+                child: Text(itemNumber??"",
                     style: TextStyle(
                         color: color,
                         fontSize: fontBig,
@@ -485,7 +485,7 @@ class _DashboardState extends State<Dashboard> {
                               fontSize: fontMedium),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Expanded(
@@ -519,6 +519,7 @@ class _DashboardState extends State<Dashboard> {
                                       ),
                                     ],
                                     rows: [
+                                      if(homeController.dashData.value.data?.topItems?.data!=null)
                                       for (var item in homeController
                                           .dashData.value.data!.topItems!.data!)
                                         DataRow(cells: [
@@ -770,6 +771,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ],
                     rows: [
+                      if (homeController.dashData.value.data?.orderHistory?.data != null)
                       for (var item in homeController
                           .dashData.value.data!.orderHistory!.data!)
                         DataRow(cells: [

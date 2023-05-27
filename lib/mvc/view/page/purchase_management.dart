@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/constant/color.dart';
 import 'package:klio_staff/constant/value.dart';
+import 'package:klio_staff/mvc/controller/food_management_controller.dart';
 import 'package:klio_staff/mvc/controller/purchase_management_controller.dart';
 import 'package:klio_staff/mvc/model/purchase_list_model.dart';
 import 'package:klio_staff/mvc/model/expense_list_model.dart' as Expense;
@@ -32,6 +33,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
   @override
   void initState() {
     // TODO: implement initState
+    scrollController= ScrollController();
     controller = TabController(vsync: this, length: 3);
 
     controller.addListener((){
@@ -39,7 +41,6 @@ class _PurchaseManagementState extends State<PurchaseManagement>
       purchaseCtrl.update(['changeCustomTabBar']);
     });
 
-    scrollController= ScrollController();
 
     scrollController.addListener(() {
       if(scrollController.position.pixels >=
@@ -70,13 +71,15 @@ class _PurchaseManagementState extends State<PurchaseManagement>
       width: double.infinity,
       child: Column(
         children: [
-          itemTitleHeader(),
+          GetBuilder<PurchaseManagementController>(
+            id: "changeCustomTabBar",
+              builder: (controller)=>itemTitleHeader()) ,
           customTapbarHeader(controller),
           Expanded(
             child: TabBarView(controller: controller, children: [
-              purchaseDataTable(),
-              expenseDataTable(),
-              expenseCategoryDataTable(),
+              purchaseDataTable(context),
+              expenseDataTable(context),
+              expenseCategoryDataTable(context),
             ]),
           )
         ],
@@ -308,7 +311,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     );
   }
 
-  Widget purchaseDataTable() {
+  Widget purchaseDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
@@ -471,7 +474,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     );
   }
 
-  Widget expenseDataTable() {
+  Widget expenseDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
@@ -488,9 +491,12 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               columns: [
                 // column to set the name
                 DataColumn(
-                  label: Text(
-                    'SL NO',
-                    style: TextStyle(color: textSecondary),
+                  label: Container(
+                    width: 50,
+                    child: Text(
+                      'SL NO',
+                      style: TextStyle(color: textSecondary),
+                    ),
                   ),
                 ),
                 DataColumn(
@@ -501,7 +507,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                 ),
                 DataColumn(
                   label: Text(
-                    'Responsible person',
+                    'Responsible',
                     style: TextStyle(color: textSecondary),
                   ),
                 ),
@@ -733,7 +739,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     );
   }
 
-  Widget expenseCategoryDataTable() {
+  Widget expenseCategoryDataTable(BuildContext context) {
     return Card(
       color: secondaryBackground,
       child: SingleChildScrollView(
@@ -1243,7 +1249,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: textSecondary,
+                            color: alternate,
                           ),
                         ),
                       );
@@ -1284,7 +1290,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: textSecondary,
+                            color: alternate,
                           ),
                         ),
                       );
@@ -1310,7 +1316,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle: TextStyle(
                                 fontSize: fontVerySmall, color: primaryText),
@@ -1333,7 +1339,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             color: secondaryBackground,
                             borderRadius: const BorderRadius.all(Radius.circular(6)),
                             border: Border.all(
-                              color: textSecondary,
+                              color: alternate,
                             ),
                           ),
                           child: Row(
@@ -1364,7 +1370,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         borderRadius: BorderRadius.circular(6),
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: textSecondary)
+                          borderSide: BorderSide(color: alternate)
                       ),
                       hintStyle: TextStyle(
                           fontSize: fontVerySmall, color: primaryText),
@@ -1460,7 +1466,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: textSecondary,
+                            color: alternate,
                           ),
                         ),
                       );
@@ -1525,7 +1531,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                           color: secondaryBackground,
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           border: Border.all(
-                            color: textSecondary,
+                            color: alternate,
                           ),
                         ),
                       );
@@ -1551,7 +1557,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle: TextStyle(
                                 fontSize: fontVerySmall, color: primaryText),
@@ -1574,7 +1580,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             color: secondaryBackground,
                             borderRadius: const BorderRadius.all(Radius.circular(6)),
                             border: Border.all(
-                              color: textSecondary,
+                              color: alternate,
                             ),
                           ),
                           child: Row(
@@ -1605,7 +1611,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                         borderRadius: BorderRadius.circular(6),
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: textSecondary)
+                          borderSide: BorderSide(color: alternate)
                       ),
                       hintStyle: TextStyle(
                           fontSize: fontVerySmall, color: primaryText),
@@ -1642,6 +1648,8 @@ class _PurchaseManagementState extends State<PurchaseManagement>
         child: ListView(children: [
           textRow('Name', ''),
           normalTextField(
+            hint: "Enter Expence Category Name",
+
              purchaseCtrl.expenseCategoryNameCtlr.value,
           ),
           const SizedBox(height: 10),

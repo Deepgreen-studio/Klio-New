@@ -140,12 +140,13 @@ Widget normalTextField(TextEditingController controller, {String? hint}) {
       style: TextStyle(fontSize: fontSmall, color: primaryText),
       decoration: InputDecoration(
         hintText: hint ?? "",
+        hintStyle: TextStyle(color: textSecondary),
         fillColor: secondaryBackground,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
         enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: textSecondary)
+            borderSide: BorderSide(color: alternate)
         ),
       ));
 }
@@ -234,7 +235,7 @@ Widget textFieldRow1(String text1, String text2,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: textSecondary)
+                        borderSide: BorderSide(color: alternate)
                     ),
                     hintStyle: TextStyle(
                         fontSize: fontVerySmall, color: textSecondary),
@@ -255,7 +256,7 @@ Widget textFieldRow1(String text1, String text2,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: textSecondary)
+                        borderSide: BorderSide(color: alternate)
                     ),
                     hintStyle: TextStyle(
                         fontSize: fontVerySmall, color: textSecondary),
@@ -348,7 +349,7 @@ Widget textFieldRow(
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                     ),
                     hintStyle:
                         TextStyle(fontSize: fontVerySmall, color: primaryText),
@@ -371,7 +372,7 @@ Widget textFieldRow(
                         borderRadius: BorderRadius.circular(6),
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: textSecondary)
+                          borderSide: BorderSide(color: alternate)
                       ),
                       hintStyle: TextStyle(
                           fontSize: fontVerySmall, color: primaryText),

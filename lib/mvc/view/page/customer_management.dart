@@ -217,7 +217,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                             borderRadius: BorderRadius.circular(6),
                           ),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: textSecondary)
+                              borderSide: BorderSide(color: alternate)
                           ),
                           hintStyle:
                           TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -239,7 +239,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -267,7 +267,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -289,7 +289,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -317,7 +317,7 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                               borderRadius: BorderRadius.circular(6),
                             ),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: textSecondary)
+                                borderSide: BorderSide(color: alternate)
                             ),
                             hintStyle:
                             TextStyle(fontSize: fontVerySmall, color: textSecondary),

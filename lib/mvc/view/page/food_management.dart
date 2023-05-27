@@ -1676,7 +1676,7 @@ class _FoodManagementState extends State<FoodManagement>
                           borderRadius: BorderRadius.circular(6),
                         ),
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: textSecondary)
+                            borderSide: BorderSide(color: alternate)
                         ),
                         hintStyle: TextStyle(
                             fontSize: fontVerySmall, color: textSecondary),
@@ -1729,7 +1729,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1774,7 +1774,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1826,7 +1826,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1871,7 +1871,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1895,8 +1895,9 @@ class _FoodManagementState extends State<FoodManagement>
                   borderRadius: BorderRadius.circular(6),
                 ),
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: textSecondary)
+                    borderSide: BorderSide(color: alternate)
                 ),
+                hintText:'Enter Menu Description',
                 hintStyle:
                     TextStyle(fontSize: fontVerySmall, color: textSecondary),
               )),
@@ -2016,7 +2017,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius: BorderRadius.circular(6),
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: textSecondary)
+                          borderSide: BorderSide(color: alternate)
                       ),
                       hintStyle: TextStyle(
                         fontSize: fontVerySmall,
@@ -2071,7 +2072,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2116,7 +2117,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2169,7 +2170,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2214,7 +2215,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2265,7 +2266,7 @@ class _FoodManagementState extends State<FoodManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2290,7 +2291,7 @@ class _FoodManagementState extends State<FoodManagement>
                   borderRadius: BorderRadius.circular(6),
                 ),
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: textSecondary)
+                    borderSide: BorderSide(color: alternate)
                 ),
                 hintStyle:
                     TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2354,7 +2355,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2437,7 +2438,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2536,7 +2537,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2616,7 +2617,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2694,7 +2695,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2778,7 +2779,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -2836,123 +2837,129 @@ class _FoodManagementState extends State<FoodManagement>
       margin: const EdgeInsets.all(20),
       child: Form(
         key: foodCtlr.uploadMealAddonsKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextFormField(
-                controller: foodCtlr.mealAddonsNameTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter Addons name',
-                    style: TextStyle(color: primaryText),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height:10),
+              TextFormField(
+                  controller: foodCtlr.mealAddonsNameTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter Addons name',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter Addons name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              TextFormField(
+                  controller: foodCtlr.mealAddonsPriceTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter price',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter price',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              TextFormField(
+                  controller: foodCtlr.mealAddonsDetailsTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  minLines: 2,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter Details',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter Details',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              Container(
+                height: 40,
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  icon: const Icon(
+                    Icons.cloud_upload_outlined,
+                    color: primaryColor,
                   ),
-                  hintText: 'Enter Addons name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            TextFormField(
-                controller: foodCtlr.mealAddonsPriceTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter price',
-                    style: TextStyle(color: primaryText),
-                  ),
-                  hintText: 'Enter price',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            TextFormField(
-                controller: foodCtlr.mealAddonsDetailsTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                minLines: 2,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter Details',
-                    style: TextStyle(color: primaryText),
-                  ),
-                  hintText: 'Enter Details',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            Container(
-              height: 40,
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                icon: const Icon(
-                  Icons.cloud_upload_outlined,
-                  color: primaryColor,
-                ),
-                label: GetBuilder<FoodManagementController>(builder: (context) {
-                  return Text(
-                    foodCtlr.mealAddonsStoreImage == null
-                        ? "Upload Image"
-                        : foodCtlr.mealAddonsStoreImage!.path
-                            .split(Platform.pathSeparator)
-                            .last,
-                    style: TextStyle(color: textSecondary, fontSize: fontSmall),
-                  );
-                }),
-                onPressed: () async {
-                  foodCtlr.mealAddonsStoreImage = await foodCtlr.getImage();
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: primaryBackground,
-                  side: BorderSide(width: 1.0, color: textSecondary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
+                  label: GetBuilder<FoodManagementController>(builder: (context) {
+                    return Text(
+                      foodCtlr.mealAddonsStoreImage == null
+                          ? "Upload Image"
+                          : foodCtlr.mealAddonsStoreImage!.path
+                              .split(Platform.pathSeparator)
+                              .last,
+                      style: TextStyle(color: textSecondary, fontSize: fontSmall),
+                    );
+                  }),
+                  onPressed: () async {
+                    foodCtlr.mealAddonsStoreImage = await foodCtlr.getImage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: primaryBackground,
+                    side: BorderSide(width: 1.0, color: textSecondary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-                height: 40,
-                width: 200,
-                child:
-                    normalButton('Submit', primaryColor, white, onPressed: () {
-                  if (foodCtlr.uploadMealAddonsKey.currentState!.validate()) {
-                    foodCtlr
-                        .addMealAddons(
-                            foodCtlr.mealAddonsNameTextCtlr.text,
-                            foodCtlr.mealAddonsPriceTextCtlr.text,
-                            foodCtlr.mealAddonsDetailsTextCtlr.text,
-                            foodCtlr.mealAddonsStoreImage)
-                        .then((value) {
-                      foodCtlr.mealAddonsNameTextCtlr.clear();
-                      foodCtlr.mealAddonsPriceTextCtlr.clear();
-                      foodCtlr.mealAddonsDetailsTextCtlr.clear();
-                      foodCtlr.mealAddonsStoreImage = null;
-                    });
-                  }
-                })),
-          ],
+              SizedBox(height:30),
+              Container(
+                  height: 40,
+                  width: 200,
+                  child:
+                      normalButton('Submit', primaryColor, white, onPressed: () {
+                    if (foodCtlr.uploadMealAddonsKey.currentState!.validate()) {
+                      foodCtlr
+                          .addMealAddons(
+                              foodCtlr.mealAddonsNameTextCtlr.text,
+                              foodCtlr.mealAddonsPriceTextCtlr.text,
+                              foodCtlr.mealAddonsDetailsTextCtlr.text,
+                              foodCtlr.mealAddonsStoreImage)
+                          .then((value) {
+                        foodCtlr.mealAddonsNameTextCtlr.clear();
+                        foodCtlr.mealAddonsPriceTextCtlr.clear();
+                        foodCtlr.mealAddonsDetailsTextCtlr.clear();
+                        foodCtlr.mealAddonsStoreImage = null;
+                      });
+                    }
+                  })),
+            ],
+          ),
         ),
       ),
     );
@@ -2963,117 +2970,123 @@ class _FoodManagementState extends State<FoodManagement>
       margin: const EdgeInsets.all(40),
       child: Form(
         key: foodCtlr.updateMealAddonsKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextFormField(
-                controller: foodCtlr.udpateMealAddonsNameTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter Addons name',
-                    style: TextStyle(color: primaryText),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height:10),
+              TextFormField(
+                  controller: foodCtlr.udpateMealAddonsNameTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter Addons name',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter Addons name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              TextFormField(
+                  controller: foodCtlr.updateMealAddonsPriceTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter price',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter price',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              TextFormField(
+                  controller: foodCtlr.updateMealAddonsDetailsTextCtlr,
+                  validator: foodCtlr.textValidator,
+                  style: TextStyle(color: primaryText),
+                  minLines: 2,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    fillColor: secondaryBackground,
+                    label: Text(
+                      'Enter Details',
+                      style: TextStyle(color: primaryText),
+                    ),
+                    hintText: 'Enter Details',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: alternate)
+                    ),
+                    hintStyle:
+                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                  )),
+              SizedBox(height:30),
+              Container(
+                height: 40,
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  icon: const Icon(
+                    Icons.cloud_upload_outlined,
+                    color: primaryColor,
                   ),
-                  hintText: 'Enter Addons name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            TextFormField(
-                controller: foodCtlr.updateMealAddonsPriceTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter price',
-                    style: TextStyle(color: primaryText),
-                  ),
-                  hintText: 'Enter price',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            TextFormField(
-                controller: foodCtlr.updateMealAddonsDetailsTextCtlr,
-                validator: foodCtlr.textValidator,
-                style: TextStyle(color: primaryText),
-                minLines: 2,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  fillColor: secondaryBackground,
-                  label: Text(
-                    'Enter Details',
-                    style: TextStyle(color: primaryText),
-                  ),
-                  hintText: 'Enter Details',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
-                  ),
-                  hintStyle:
-                      TextStyle(fontSize: fontVerySmall, color: textSecondary),
-                )),
-            Container(
-              height: 40,
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                icon: const Icon(
-                  Icons.cloud_upload_outlined,
-                  color: primaryColor,
-                ),
-                label: GetBuilder<FoodManagementController>(builder: (context) {
-                  return Text(
-                    foodCtlr.updateMealAddonsStoreImage == null
-                        ? "Upload Image"
-                        : foodCtlr.updateMealAddonsStoreImage!.path
-                            .split(Platform.pathSeparator)
-                            .last,
-                    style: TextStyle(color: textSecondary, fontSize: fontSmall),
-                  );
-                }),
-                onPressed: () async {
-                  foodCtlr.updateMealAddonsStoreImage =
-                      await foodCtlr.getImage();
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: primaryBackground,
-                  side: BorderSide(width: 1.0, color: textSecondary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
+                  label: GetBuilder<FoodManagementController>(builder: (context) {
+                    return Text(
+                      foodCtlr.updateMealAddonsStoreImage == null
+                          ? "Upload Image"
+                          : foodCtlr.updateMealAddonsStoreImage!.path
+                              .split(Platform.pathSeparator)
+                              .last,
+                      style: TextStyle(color: textSecondary, fontSize: fontSmall),
+                    );
+                  }),
+                  onPressed: () async {
+                    foodCtlr.updateMealAddonsStoreImage =
+                        await foodCtlr.getImage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: primaryBackground,
+                    side: BorderSide(width: 1.0, color: textSecondary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-                height: 40,
-                width: 200,
-                child:
-                    normalButton('Submit', primaryColor, white, onPressed: () {
-                  if (foodCtlr.updateMealAddonsKey.currentState!.validate()) {
-                    foodCtlr.updateMealAddons(
-                      foodCtlr.udpateMealAddonsNameTextCtlr.text,
-                      foodCtlr.updateMealAddonsPriceTextCtlr.text,
-                      foodCtlr.updateMealAddonsDetailsTextCtlr.text,
-                      id: itemId,
-                    );
-                  }
-                })),
-          ],
+              SizedBox(height:30),
+              Container(
+                  height: 40,
+                  width: 200,
+                  child:
+                      normalButton('Submit', primaryColor, white, onPressed: () {
+                    if (foodCtlr.updateMealAddonsKey.currentState!.validate()) {
+                      foodCtlr.updateMealAddons(
+                        foodCtlr.udpateMealAddonsNameTextCtlr.text,
+                        foodCtlr.updateMealAddonsPriceTextCtlr.text,
+                        foodCtlr.updateMealAddonsDetailsTextCtlr.text,
+                        id: itemId,
+                      );
+                    }
+                  })),
+            ],
+          ),
         ),
       ),
     );
@@ -3121,7 +3134,7 @@ class _FoodManagementState extends State<FoodManagement>
                   color: secondaryBackground,
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   border: Border.all(
-                    color: textSecondary,
+                    color: alternate,
                   ),
                 ),
               );
@@ -3141,7 +3154,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -3162,7 +3175,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -3217,7 +3230,17 @@ class _FoodManagementState extends State<FoodManagement>
                 //     value: e.id.toString(),
                 //   );
                 // }).toList(),
-                hint: 'Menu Item Select',
+
+                // selectedOptions: foodCtlr.foodVariants.value.data!
+                //     .map((e) {
+                //   return ValueItem(
+                //       label: '',
+                //     value: ''
+                //   );
+                // }).toList(),
+
+                hint: foodCtlr.foodVariants.value.data!
+                    .firstWhere((element) => element.id==itemId).food!.name,
                 options: controller.menusData.value.data!
                     .map((FoodMenuManagementDatum e) {
                   return ValueItem(
@@ -3233,7 +3256,7 @@ class _FoodManagementState extends State<FoodManagement>
                   color: secondaryBackground,
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   border: Border.all(
-                    color: textSecondary,
+                    color: alternate,
                   ),
                 ),
               );
@@ -3253,7 +3276,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
@@ -3273,7 +3296,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),

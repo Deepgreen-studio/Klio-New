@@ -77,7 +77,7 @@ class _SettingsState extends State<Settings> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                 )),
           ),
@@ -96,7 +96,7 @@ class _SettingsState extends State<Settings> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: textSecondary)
+                      borderSide: BorderSide(color: alternate)
                   ),
                 )),
           ),
@@ -146,7 +146,7 @@ class _SettingsState extends State<Settings> {
                 margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: textSecondary, width: 1)),
+                    border: Border.all(color: alternate, width: 1)),
                 child: DropdownButton<String>(
                   items: time.map((dynamic val) {
                     return DropdownMenuItem<String>(
@@ -178,7 +178,7 @@ class _SettingsState extends State<Settings> {
                 margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: textSecondary, width: 1)),
+                    border: Border.all(color: alternate, width: 1)),
                 child: DropdownButton<String>(
                   items: date.map((dynamic val) {
                     return DropdownMenuItem<String>(

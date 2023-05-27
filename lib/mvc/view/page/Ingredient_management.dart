@@ -1242,7 +1242,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1283,7 +1283,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1411,7 +1411,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -1463,7 +1463,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                         borderRadius:
                             const BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
-                          color: textSecondary,
+                          color: alternate,
                         ),
                       ),
                     );
@@ -2169,4 +2169,5 @@ class _IngredientManagementState extends State<IngredientManagement>
           ],
         ));
   }
+
 }
