@@ -10,7 +10,6 @@ import '../../../service/printer/customer_display.dart';
 import '../../../service/printer/print_service.dart';
 import '../../controller/food_management_controller.dart';
 import '../../controller/home_controller.dart';
-import '../../model/Ingredient_list_model.dart';
 import '../../model/Meal_period_model.dart';
 import '../../model/food_menu_addons.dart';
 import '../../model/food_menu_allergy.dart';
@@ -1112,6 +1111,72 @@ Widget tableBody(BuildContext context, bool showOnly) {
               ],
             ),
     ]),
+  );
+}
+
+Widget searchOrderDialog(BuildContext context) {
+  return Padding(
+    padding: EdgeInsets.all(20),
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          TextFormField(
+              style: TextStyle(color: primaryText),
+              decoration: InputDecoration(
+                fillColor: secondaryBackground,
+                label: Text(
+                  'Search Order by Name or Table',
+                  style: TextStyle(color: primaryText),
+                ),
+                //hintText: "Search Order by Name or Table",
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 20,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: textSecondary,
+                  ),
+                  onPressed: () {
+                  },
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderSide: BorderSide(color: textSecondary)
+                ),
+                hintStyle:
+                TextStyle(fontSize: fontVerySmall, color: textSecondary),
+              )),
+          Column(
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.all(10),
+                leading: Image.asset(
+                  orderTypes[homeController
+                      .orders.value.data![2].type
+                      .toString()],
+                  color: primaryColor,
+                ),
+                title: Text('Order Name'),
+                subtitle: Text('Table No \nC Name'),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.all(10),
+                leading: Image.asset(
+                  orderTypes[homeController
+                      .orders.value.data![3].type
+                      .toString()],
+                  color: primaryColor,
+                ),
+                title: Text('Order Name'),
+                subtitle: Text('Table No \nC Name'),
+              ),
+            ],
+          )
+        ],
+      ),
+    )
   );
 }
 

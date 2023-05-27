@@ -52,6 +52,7 @@ class _HomeState extends State<Home> {
   int selectedCategory = -1;
   bool gridImage = true;
   FoodManagementController foodCtlr = Get.put(FoodManagementController());
+  TextEditingController searchText = TextEditingController();
 
   @override
   void initState() {
@@ -278,8 +279,11 @@ class _HomeState extends State<Home> {
                 bottomIconTextBtn(
                     'assets/search.png', 'Search order', primaryColor,
                     onPressed: () async {
+                      showCustomDialog(context, "Search Order",
+                          searchOrderDialog(context), 100, 800);
                   print("will implement search");
                 }),
+
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/circle-error.png', 'Cancel Order', primaryColor,
@@ -801,4 +805,5 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
 }

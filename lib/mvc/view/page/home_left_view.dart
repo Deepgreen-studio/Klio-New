@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/model/Customer.dart';
-import 'package:sunmi_printer_plus/column_maker.dart';
-import 'package:sunmi_printer_plus/enums.dart';
-import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
 import '../../../service/printer/customer_display.dart';
-import '../../../service/printer/print_service.dart';
 import '../../../utils/utils.dart';
 import '../../controller/food_management_controller.dart';
 import '../../controller/home_controller.dart';
