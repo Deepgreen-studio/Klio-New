@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/view/page/kitchen.dart';
+import 'package:klio_staff/mvc/view/page/nfc_test.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'constant/value.dart';
 import 'mvc/view/page/home.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Nunito'),
+          //home:  NfcTest(),
           home: const Home(),
         );
       }

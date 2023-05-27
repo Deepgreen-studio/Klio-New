@@ -281,6 +281,7 @@ class _FoodManagementState extends State<FoodManagement>
                                     foodCtlr
                                         .getSingleMenuDetails(id: item.id)
                                         .then((value) {
+                                      addDropdownValuesBeforeUpdate();
                                       foodCtlr.nameUpdateTextCtlr.text =
                                           foodCtlr.foodSingleItemDetails.value
                                               .data!.name!;
@@ -303,6 +304,7 @@ class _FoodManagementState extends State<FoodManagement>
                                           foodCtlr.foodSingleItemDetails.value
                                               .data!.processingTime!;
                                       /*foodCtlr.updateMenuAllergyIdList = */
+
                                       showCustomDialogResponsive(
                                           context,
                                           "Update menu",
@@ -363,6 +365,38 @@ class _FoodManagementState extends State<FoodManagement>
             }),
       ),
     );
+  }
+
+  addDropdownValuesBeforeUpdate() {
+    if (foodCtlr.foodSingleItemDetails.value.data != null) {
+      var tempData = foodCtlr.foodSingleItemDetails.value.data;
+      if (tempData!.mealPeriods != null && tempData.mealPeriods?.data != null) {
+        for (int i = 0; i < tempData.mealPeriods!.data.length; i++) {
+          if (tempData.mealPeriods!.data[i].id != null) {
+            foodCtlr.updateMealPeriodIdList
+                .add(tempData.mealPeriods!.data[i].id!);
+          }
+        }
+      }
+      if (tempData.allergies != null && tempData.allergies?.data != null) {
+        for (int i = 0; i < tempData.allergies!.data!.length; i++) {
+          if (tempData.allergies!.data![i].id != null) {
+            foodCtlr.updateMenuAllergyIdList
+                .add(tempData.allergies!.data![i].id!);
+          }
+        }
+      }
+      if (tempData.addons != null && tempData.addons?.data != null) {
+        for (int i = 0; i < tempData.addons!.data!.length; i++) {
+          if (tempData.addons!.data![i].id != null) {
+            foodCtlr.updateMenuAddonsIdList
+                .add(tempData.addons!.data![i].id ?? -1);
+          }
+        }
+      }
+
+      //foodCtlr.update(["refreshUpdateMenuForm"]);
+    }
   }
 
   Widget MealPeriodDataTable(BuildContext context) {
@@ -1676,8 +1710,7 @@ class _FoodManagementState extends State<FoodManagement>
                           borderRadius: BorderRadius.circular(6),
                         ),
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: alternate)
-                        ),
+                            borderSide: BorderSide(color: alternate)),
                         hintStyle: TextStyle(
                             fontSize: fontVerySmall, color: textSecondary),
                       )),
@@ -1895,9 +1928,8 @@ class _FoodManagementState extends State<FoodManagement>
                   borderRadius: BorderRadius.circular(6),
                 ),
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: alternate)
-                ),
-                hintText:'Enter Menu Description',
+                    borderSide: BorderSide(color: alternate)),
+                hintText: 'Enter Menu Description',
                 hintStyle:
                     TextStyle(fontSize: fontVerySmall, color: textSecondary),
               )),
@@ -1943,393 +1975,476 @@ class _FoodManagementState extends State<FoodManagement>
   }
 
   Widget updateMenuForm(dynamic itemId) {
-    return Container(
-      height: Size.infinite.height,
-      width: Size.infinite.width,
-      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-      child: Form(
-        key: foodCtlr.updateMenuFormKey,
-        child: ListView(children: [
-          textRow('Name', 'Variant Price'),
-          textFieldRow('Enter menu name', 'Enter variant price',
-              controller1: foodCtlr.nameUpdateTextCtlr,
-              controller2: foodCtlr.varinetUpdatePricEditingCtlr,
-              validator1: foodCtlr.textValidator,
-              validator2: foodCtlr.textValidator,
-              textInputType1: TextInputType.text,
-              textInputType2: TextInputType.number),
-          const SizedBox(height: 10),
-          textRow('Vat (%)', 'Processing Time'),
-          textFieldRow('Enter VAT', 'Enter food processing time',
-              controller1: foodCtlr.vatUpdateEditingCtlr,
-              controller2: foodCtlr.processTimeUpdateEditingCtlr,
-              validator1: foodCtlr.textValidator,
-              validator2: foodCtlr.textValidator,
-              textInputType1: TextInputType.number,
-              textInputType2: TextInputType.number),
-          const SizedBox(height: 10),
-          textRow('Image (130x130)', 'Calorie'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                      height: 35,
-                      child: MaterialButton(
-                        elevation: 0,
-                        color: primaryBackground,
-                        onPressed: () async {
-                          foodCtlr.menuUpdateImage = await foodCtlr.getImage();
-                        },
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      foodCtlr.update(["refreshUpdateMenuForm"]);
+    });
+    return GetBuilder<FoodManagementController>(
+        id: "refreshUpdateMenuForm",
+        builder: (context) {
+
+          return Container(
+            height: Size.infinite.height,
+            width: Size.infinite.width,
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+            child: Form(
+              key: foodCtlr.updateMenuFormKey,
+              child: ListView(children: [
+                textRow('Name', 'Variant Price'),
+                textFieldRow('Enter menu name', 'Enter variant price',
+                    controller1: foodCtlr.nameUpdateTextCtlr,
+                    controller2: foodCtlr.varinetUpdatePricEditingCtlr,
+                    validator1: foodCtlr.textValidator,
+                    validator2: foodCtlr.textValidator,
+                    textInputType1: TextInputType.text,
+                    textInputType2: TextInputType.number),
+                const SizedBox(height: 10),
+                textRow('Vat (%)', 'Processing Time'),
+                textFieldRow('Enter VAT', 'Enter food processing time',
+                    controller1: foodCtlr.vatUpdateEditingCtlr,
+                    controller2: foodCtlr.processTimeUpdateEditingCtlr,
+                    validator1: foodCtlr.textValidator,
+                    validator2: foodCtlr.textValidator,
+                    textInputType1: TextInputType.number,
+                    textInputType2: TextInputType.number),
+                const SizedBox(height: 10),
+                textRow('Image (130x130)', 'Calorie'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                            height: 35,
+                            child: MaterialButton(
+                              elevation: 0,
+                              color: primaryBackground,
+                              onPressed: () async {
+                                foodCtlr.menuUpdateImage =
+                                    await foodCtlr.getImage();
+                              },
+                              child: GetBuilder<FoodManagementController>(
+                                  builder: (context) {
+                                return Text(
+                                  foodCtlr.menuUpdateImage == null
+                                      ? 'No file chosen'
+                                      : basename(foodCtlr.menuUpdateImage!.path
+                                          .split(Platform.pathSeparator.tr)
+                                          .last),
+                                  style: TextStyle(
+                                      color: textSecondary,
+                                      fontSize: fontSmall),
+                                );
+                              }),
+                            )
+                            // child: normalButton('No file chosen', primaryColor, primaryColor),
+                            )),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        //  height: 45,
+                        child: TextFormField(
+                          onChanged: (text) async {},
+                          controller: foodCtlr.caloriesUpdateEditingCtlr,
+                          onEditingComplete: () async {},
+                          keyboardType: TextInputType.number,
+                          maxLines: 1,
+                          validator: foodCtlr.textValidator,
+                          style: TextStyle(
+                              fontSize: fontSmall, color: textSecondary),
+                          decoration: InputDecoration(
+                            hintText: "Enter Calories",
+                            fillColor: secondaryBackground,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: alternate)),
+                            hintStyle: TextStyle(
+                              fontSize: fontVerySmall,
+                              color: textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                textRow('Select Menu Meal Period', 'Select Menu Category'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 1,
                         child: GetBuilder<FoodManagementController>(
-                            builder: (context) {
-                          return Text(
-                            foodCtlr.menuUpdateImage == null
-                                ? 'No file chosen'
-                                : basename(foodCtlr.menuUpdateImage!.path
-                                    .split(Platform.pathSeparator.tr)
-                                    .last),
-                            style: TextStyle(
-                                color: textSecondary, fontSize: fontSmall),
+                            builder: (controller) {
+                          return MultiSelectDropDown(
+
+                            backgroundColor: secondaryBackground,
+                            optionsBackgroundColor: secondaryBackground,
+                            selectedOptionTextColor: primaryText,
+                            selectedOptionBackgroundColor: primaryColor,
+
+                            selectedOptions: foodCtlr
+                                .foodSingleItemDetails.value.data!.mealPeriods!.data
+                                .map((MenuAddon e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            optionTextStyle:
+                                TextStyle(color: primaryText, fontSize: 16),
+                            onOptionSelected:
+                                (List<ValueItem> selectedOptions) {
+                              foodCtlr.updateMealPeriodIdList = selectedOptions
+                                  .map((ValueItem e) => int.parse(e.value!))
+                                  .toList();
+                            },
+                            // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                            //   return ValueItem(
+                            //     label:e.name!,
+                            //     value: e.id.toString(),
+                            //   );
+                            // }).toList(),
+                            options:
+                                controller.mealPeriod.value.data!.map((Meal e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            hint: 'Select Meal Period',
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            inputDecoration: BoxDecoration(
+                              color: secondaryBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(
+                                color: alternate,
+                              ),
+                            ),
                           );
-                        }),
-                      )
-                      // child: normalButton('No file chosen', primaryColor, primaryColor),
-                      )),
-              const SizedBox(width: 20),
-              Expanded(
-                flex: 1,
-                child: SizedBox(
-                  //  height: 45,
-                  child: TextFormField(
+                        })),
+                    const SizedBox(width: 20),
+                    Expanded(
+                        flex: 1,
+                        child: GetBuilder<FoodManagementController>(
+                            builder: (controller) {
+                          return MultiSelectDropDown(
+
+                            backgroundColor: secondaryBackground,
+                            optionsBackgroundColor: secondaryBackground,
+                            selectedOptionTextColor: primaryText,
+                            selectedOptionBackgroundColor: primaryColor,
+                            optionTextStyle:
+                                TextStyle(color: primaryText, fontSize: 16),
+                            onOptionSelected:
+                                (List<ValueItem> selectedOptions) {
+                              foodCtlr.updateMenuCategoryIdList =
+                                  selectedOptions
+                                      .map((ValueItem e) => int.parse(e.value!))
+                                      .toList();
+                            },
+                            // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                            //   return ValueItem(
+                            //     label:e.name!,
+                            //     value: e.id.toString(),
+                            //   );
+                            // }).toList(),
+                            options: controller.foodMenuCategory.value.data!
+                                .map((MenuCategory e) {
+                              return ValueItem(
+                                label: e.name.toString(),
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            hint: 'Select Menu Category',
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            inputDecoration: BoxDecoration(
+                              color: secondaryBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(
+                                color: alternate,
+                              ),
+                            ),
+                          );
+                        })),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                textRow('Select Menu Addons', 'Select Menu Allergies '),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: GetBuilder<FoodManagementController>(
+                            builder: (controller) {
+                              List<ValueItem> selectedAdonsItems = [];
+                              for (int j = 0;
+                              j < foodCtlr.updateMenuAllergyIdList.length;
+                              j++) {
+                                for (int i = 0;
+                                i <
+                                    controller
+                                        .foodMenuAllergy.value.data!.length;
+                                i++) {
+                                  if (foodCtlr.updateMenuAllergyIdList[j] ==
+                                      controller
+                                          .foodMenuAllergy.value.data![i].id) {
+                                    selectedAdonsItems.add(ValueItem(
+                                      label: controller
+                                          .foodMenuAllergy.value.data![i].name
+                                          .toString(),
+                                      value: controller
+                                          .foodMenuAllergy.value.data![i]
+                                          .toString(),
+                                    ));
+                                  }
+                                }
+                              }
+                          return MultiSelectDropDown(
+                            backgroundColor: secondaryBackground,
+                            optionsBackgroundColor: secondaryBackground,
+                            selectedOptionTextColor: primaryText,
+                            selectedOptionBackgroundColor: primaryColor,
+                            optionTextStyle:
+                                TextStyle(color: primaryText, fontSize: 16),
+                            onOptionSelected:
+                                (List<ValueItem> selectedOptions) {
+                              foodCtlr.updateMenuAddonsIdList = selectedOptions
+                                  .map((ValueItem e) => int.parse(e.value!))
+                                  .toList();
+                            },
+                            selectedOptions: foodCtlr
+                                .foodSingleItemDetails.value.data!.addons!.data!
+                                .map((MenuAddon e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            options: controller.foodAddons.value.data!
+                                .map((MenuAddon e) {
+                              return ValueItem(
+                                label: e.name.toString(),
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            hint: 'Select Menu Addons',
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            inputDecoration: BoxDecoration(
+                              color: secondaryBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(
+                                color: alternate,
+                              ),
+                            ),
+                          );
+                        })),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 1,
+                      child: GetBuilder<FoodManagementController>(
+                        builder: (controller) {
+
+
+                          return MultiSelectDropDown(
+                            backgroundColor: secondaryBackground,
+                            optionsBackgroundColor: secondaryBackground,
+                            selectedOptionTextColor: primaryText,
+                            selectedOptionBackgroundColor: primaryColor,
+                            optionTextStyle:
+                                TextStyle(color: primaryText, fontSize: 16),
+                            selectedOptions: foodCtlr
+                                .foodSingleItemDetails.value.data!.allergies!.data!
+                                .map((MenuAddon e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            onOptionSelected:
+                                (List<ValueItem> selectedOptions) {
+                              foodCtlr.updateMenuAllergyIdList = selectedOptions
+                                  .map((ValueItem e) => int.parse(e.value!))
+                                  .toList();
+                            },
+                            // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
+                            //   return ValueItem(
+                            //     label:e.name!,
+                            //     value: e.id.toString(),
+                            //   );
+                            // }).toList(),
+                            options: controller.foodMenuAllergy.value.data!
+                                .map((Allergy e) {
+                              return ValueItem(
+                                label: e.name.toString(),
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            hint: 'Select Menu Allergies',
+                            selectionType: SelectionType.multi,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            inputDecoration: BoxDecoration(
+                              color: secondaryBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(
+                                color: alternate,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                textRow('Select Menu Ingredient', ' '),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: GetBuilder<FoodManagementController>(
+                            builder: (controller) {
+                          return MultiSelectDropDown(
+                            backgroundColor: secondaryBackground,
+                            optionsBackgroundColor: secondaryBackground,
+                            selectedOptionTextColor: primaryText,
+                            selectedOptionBackgroundColor: primaryColor,
+                            optionTextStyle:
+                                TextStyle(color: primaryText, fontSize: 16),
+                            onOptionSelected:
+                                (List<ValueItem> selectedOptions) {
+                              foodCtlr.updateMenuIngredientIdList =
+                                  selectedOptions
+                                      .map((ValueItem e) => int.parse(e.value!))
+                                      .toList();
+                            },
+                            selectedOptions: foodCtlr
+                                .updateMealIngrediantSelectMeal
+                                .map((SingleMenuDetailsData e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            options: controller.ingredientData.value.data!
+                                .map((Ingrediant e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
+                            selectionType: SelectionType.single,
+                            chipConfig:
+                                const ChipConfig(wrapType: WrapType.wrap),
+                            dropdownHeight: 300,
+                            selectedOptionIcon: const Icon(Icons.check_circle),
+                            inputDecoration: BoxDecoration(
+                              color: secondaryBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(
+                                color: alternate,
+                              ),
+                            ),
+                          );
+                        })),
+                    const SizedBox(width: 20),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const SizedBox(height: 10),
+                textRow('Menu Description', ''),
+                TextFormField(
                     onChanged: (text) async {},
-                    controller: foodCtlr.caloriesUpdateEditingCtlr,
                     onEditingComplete: () async {},
-                    keyboardType: TextInputType.number,
-                    maxLines: 1,
+                    keyboardType: TextInputType.text,
                     validator: foodCtlr.textValidator,
+                    controller: foodCtlr.descriptionUpdateEditingCtlr,
+                    maxLines: 2,
                     style: TextStyle(fontSize: fontSmall, color: textSecondary),
                     decoration: InputDecoration(
-                      hintText: "Enter Calories",
                       fillColor: secondaryBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: alternate)
-                      ),
+                          borderSide: BorderSide(color: alternate)),
                       hintStyle: TextStyle(
-                        fontSize: fontVerySmall,
-                        color: textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          textRow('Select Menu Meal Period', 'Select Menu Category'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: GetBuilder<FoodManagementController>(
-                      builder: (controller) {
-                    return MultiSelectDropDown(
-                      backgroundColor: secondaryBackground,
-                      optionsBackgroundColor: secondaryBackground,
-                      selectedOptionTextColor: primaryText,
-                      selectedOptionBackgroundColor: primaryColor,
-                      optionTextStyle:
-                          TextStyle(color: primaryText, fontSize: 16),
-                      onOptionSelected: (List<ValueItem> selectedOptions) {
-                        foodCtlr.updateMealPeriodIdList = selectedOptions
-                            .map((ValueItem e) => int.parse(e.value!))
-                            .toList();
-                      },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
-                      options: controller.mealPeriod.value.data!.map((Meal e) {
-                        return ValueItem(
-                          label: e.name!,
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      hint: 'Select Meal Period',
-                      selectionType: SelectionType.multi,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 300,
-                      selectedOptionIcon: const Icon(Icons.check_circle),
-                      inputDecoration: BoxDecoration(
-                        color: secondaryBackground,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                          color: alternate,
-                        ),
-                      ),
-                    );
-                  })),
-              const SizedBox(width: 20),
-              Expanded(
-                  flex: 1,
-                  child: GetBuilder<FoodManagementController>(
-                      builder: (controller) {
-                    return MultiSelectDropDown(
-                      backgroundColor: secondaryBackground,
-                      optionsBackgroundColor: secondaryBackground,
-                      selectedOptionTextColor: primaryText,
-                      selectedOptionBackgroundColor: primaryColor,
-                      optionTextStyle:
-                          TextStyle(color: primaryText, fontSize: 16),
-                      onOptionSelected: (List<ValueItem> selectedOptions) {
-                        foodCtlr.updateMenuCategoryIdList = selectedOptions
-                            .map((ValueItem e) => int.parse(e.value!))
-                            .toList();
-                      },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
-                      options: controller.foodMenuCategory.value.data!
-                          .map((MenuCategory e) {
-                        return ValueItem(
-                          label: e.name.toString(),
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      hint: 'Select Menu Category',
-                      selectionType: SelectionType.multi,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 300,
-                      selectedOptionIcon: const Icon(Icons.check_circle),
-                      inputDecoration: BoxDecoration(
-                        color: secondaryBackground,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                          color: alternate,
-                        ),
-                      ),
-                    );
-                  })),
-            ],
-          ),
-          const SizedBox(height: 10),
-          textRow('Select Menu Addons', 'Select Menu Allergies '),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: GetBuilder<FoodManagementController>(
-                      builder: (controller) {
-                    return MultiSelectDropDown(
-                      backgroundColor: secondaryBackground,
-                      optionsBackgroundColor: secondaryBackground,
-                      selectedOptionTextColor: primaryText,
-                      selectedOptionBackgroundColor: primaryColor,
-                      optionTextStyle:
-                          TextStyle(color: primaryText, fontSize: 16),
-                      onOptionSelected: (List<ValueItem> selectedOptions) {
-                        foodCtlr.updateMenuAddonsIdList = selectedOptions
-                            .map((ValueItem e) => int.parse(e.value!))
-                            .toList();
-                      },
-                      selectedOptions: foodCtlr
-                          .foodSingleItemDetails.value.data!.addons!.data!
-                          .map((MenuAddon e) {
-                        return ValueItem(
-                          label: e.name!,
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      options:
-                          controller.foodAddons.value.data!.map((MenuAddon e) {
-                        return ValueItem(
-                          label: e.name.toString(),
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      hint: 'Select Menu Addons',
-                      selectionType: SelectionType.multi,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 300,
-                      selectedOptionIcon: const Icon(Icons.check_circle),
-                      inputDecoration: BoxDecoration(
-                        color: secondaryBackground,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                          color: alternate,
-                        ),
-                      ),
-                    );
-                  })),
-              const SizedBox(width: 20),
-              Expanded(
-                  flex: 1,
-                  child: GetBuilder<FoodManagementController>(
-                      builder: (controller) {
-                    return MultiSelectDropDown(
-                      backgroundColor: secondaryBackground,
-                      optionsBackgroundColor: secondaryBackground,
-                      selectedOptionTextColor: primaryText,
-                      selectedOptionBackgroundColor: primaryColor,
-                      optionTextStyle:
-                          TextStyle(color: primaryText, fontSize: 16),
-                      onOptionSelected: (List<ValueItem> selectedOptions) {
-                        foodCtlr.updateMenuAllergyIdList = selectedOptions
-                            .map((ValueItem e) => int.parse(e.value!))
-                            .toList();
-                      },
-                      // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
-                      //   return ValueItem(
-                      //     label:e.name!,
-                      //     value: e.id.toString(),
-                      //   );
-                      // }).toList(),
-                      options: controller.foodMenuAllergy.value.data!
-                          .map((Allergy e) {
-                        return ValueItem(
-                          label: e.name.toString(),
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      hint: 'Select Menu Allergies',
-                      selectionType: SelectionType.multi,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 300,
-                      selectedOptionIcon: const Icon(Icons.check_circle),
-                      inputDecoration: BoxDecoration(
-                        color: secondaryBackground,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                          color: alternate,
-                        ),
-                      ),
-                    );
-                  })),
-            ],
-          ),
-          textRow('Select Menu Ingredient', ' '),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: GetBuilder<FoodManagementController>(
-                      builder: (controller) {
-                    return MultiSelectDropDown(
-                      backgroundColor: secondaryBackground,
-                      optionsBackgroundColor: secondaryBackground,
-                      selectedOptionTextColor: primaryText,
-                      selectedOptionBackgroundColor: primaryColor,
-                      optionTextStyle:
-                          TextStyle(color: primaryText, fontSize: 16),
-                      onOptionSelected: (List<ValueItem> selectedOptions) {
-                        foodCtlr.updateMenuIngredientIdList = selectedOptions
-                            .map((ValueItem e) => int.parse(e.value!))
-                            .toList();
-                      },
-                      selectedOptions: foodCtlr.updateMealIngrediantSelectMeal
-                          .map((SingleMenuDetailsData e) {
-                        return ValueItem(
-                          label: e.name!,
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      options: controller.ingredientData.value.data!
-                          .map((Ingrediant e) {
-                        return ValueItem(
-                          label: e.name!,
-                          value: e.id.toString(),
-                        );
-                      }).toList(),
-                      selectionType: SelectionType.single,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 300,
-                      selectedOptionIcon: const Icon(Icons.check_circle),
-                      inputDecoration: BoxDecoration(
-                        color: secondaryBackground,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                          color: alternate,
-                        ),
-                      ),
-                    );
-                  })),
-              const SizedBox(width: 20),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const SizedBox(height: 10),
-          textRow('Menu Description', ''),
-          TextFormField(
-              onChanged: (text) async {},
-              onEditingComplete: () async {},
-              keyboardType: TextInputType.text,
-              validator: foodCtlr.textValidator,
-              controller: foodCtlr.descriptionUpdateEditingCtlr,
-              maxLines: 2,
-              style: TextStyle(fontSize: fontSmall, color: textSecondary),
-              decoration: InputDecoration(
-                fillColor: secondaryBackground,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: alternate)
-                ),
-                hintStyle:
-                    TextStyle(fontSize: fontVerySmall, color: textSecondary),
-              )),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              normalButton('Submit', primaryColor, white, onPressed: () {
-                if (foodCtlr.updateMenuFormKey.currentState!.validate()) {
-                  foodCtlr.updateMenu(
-                    foodCtlr.nameUpdateTextCtlr.text,
-                    foodCtlr.varinetUpdatePricEditingCtlr.text,
-                    foodCtlr.processTimeUpdateEditingCtlr.text,
-                    foodCtlr.vatUpdateEditingCtlr.text,
-                    foodCtlr.caloriesUpdateEditingCtlr.text,
-                    foodCtlr.descriptionUpdateEditingCtlr.text,
-                    foodCtlr.updateMenuIngredientIdList.isNotEmpty
-                        ? foodCtlr.updateMenuIngredientIdList.first.toString()
-                        : null,
-                    foodCtlr.updateMealPeriodIdList,
-                    foodCtlr.updateMenuAddonsIdList,
-                    foodCtlr.updateMenuAllergyIdList,
-                    foodCtlr.updateMenuCategoryIdList,
-                    id: itemId,
-                  );
-                  /*if (foodCtlr.updateMenuCategoryIdList.isEmpty) {
-                    Utils.showSnackBar("Please select menu category");
-                  } else {
+                          fontSize: fontVerySmall, color: textSecondary),
+                    )),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    normalButton('Submit', primaryColor, white, onPressed: () {
+                      if (foodCtlr.updateMenuFormKey.currentState!.validate()) {
+                        foodCtlr
+                            .updateMenu(
+                          foodCtlr.nameUpdateTextCtlr.text,
+                          foodCtlr.varinetUpdatePricEditingCtlr.text,
+                          foodCtlr.processTimeUpdateEditingCtlr.text,
+                          foodCtlr.vatUpdateEditingCtlr.text,
+                          foodCtlr.caloriesUpdateEditingCtlr.text,
+                          foodCtlr.descriptionUpdateEditingCtlr.text,
+                          foodCtlr.updateMenuIngredientIdList.isNotEmpty
+                              ? foodCtlr.updateMenuIngredientIdList.first
+                                  .toString()
+                              : null,
+                          foodCtlr.updateMealPeriodIdList,
+                          foodCtlr.updateMenuAddonsIdList,
+                          foodCtlr.updateMenuAllergyIdList,
+                          foodCtlr.updateMenuCategoryIdList,
+                          id: itemId,
+                        )
+                            .then((value) {
+                          foodCtlr.nameTextCtlr.clear();
+                          foodCtlr.varinetPriceEditingCtlr.clear();
+                          foodCtlr.vatEditingCtlr.clear();
+                          foodCtlr.processTimeEditingCtlr.clear();
+                          foodCtlr.caloriesEditingCtlr.clear();
+                          foodCtlr.descriptionEditingCtlr.clear();
+                          foodCtlr.menuStoreImage = null;
+                          foodCtlr.updateMealPeriodIdList.clear();
+                          foodCtlr.updateMenuAllergyIdList.clear();
+                          foodCtlr.updateMenuAddonsIdList.clear();
+                        });
+                        /*if (foodCtlr.updateMenuCategoryIdList.isEmpty) {
+                        Utils.showSnackBar("Please select menu category");
+                      } else {
 
-                  }*/
-                }
-              }),
-            ],
-          ),
-        ]),
-      ),
-    );
+                      }*/
+                      }
+                    }),
+                  ],
+                ),
+              ]),
+            ),
+          );
+        });
   }
 
   Widget addMealPeriodForm() {
@@ -2355,8 +2470,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2438,8 +2552,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2537,8 +2650,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2617,8 +2729,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2695,8 +2806,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2779,8 +2889,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -2840,7 +2949,7 @@ class _FoodManagementState extends State<FoodManagement>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height:10),
+              SizedBox(height: 10),
               TextFormField(
                   controller: foodCtlr.mealAddonsNameTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -2856,12 +2965,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               TextFormField(
                   controller: foodCtlr.mealAddonsPriceTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -2878,12 +2986,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               TextFormField(
                   controller: foodCtlr.mealAddonsDetailsTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -2901,12 +3008,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               Container(
                 height: 40,
                 width: double.infinity,
@@ -2915,14 +3021,16 @@ class _FoodManagementState extends State<FoodManagement>
                     Icons.cloud_upload_outlined,
                     color: primaryColor,
                   ),
-                  label: GetBuilder<FoodManagementController>(builder: (context) {
+                  label:
+                      GetBuilder<FoodManagementController>(builder: (context) {
                     return Text(
                       foodCtlr.mealAddonsStoreImage == null
                           ? "Upload Image"
                           : foodCtlr.mealAddonsStoreImage!.path
                               .split(Platform.pathSeparator)
                               .last,
-                      style: TextStyle(color: textSecondary, fontSize: fontSmall),
+                      style:
+                          TextStyle(color: textSecondary, fontSize: fontSmall),
                     );
                   }),
                   onPressed: () async {
@@ -2937,12 +3045,12 @@ class _FoodManagementState extends State<FoodManagement>
                   ),
                 ),
               ),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               Container(
                   height: 40,
                   width: 200,
-                  child:
-                      normalButton('Submit', primaryColor, white, onPressed: () {
+                  child: normalButton('Submit', primaryColor, white,
+                      onPressed: () {
                     if (foodCtlr.uploadMealAddonsKey.currentState!.validate()) {
                       foodCtlr
                           .addMealAddons(
@@ -2973,7 +3081,7 @@ class _FoodManagementState extends State<FoodManagement>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height:10),
+              SizedBox(height: 10),
               TextFormField(
                   controller: foodCtlr.udpateMealAddonsNameTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -2989,12 +3097,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               TextFormField(
                   controller: foodCtlr.updateMealAddonsPriceTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -3010,12 +3117,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               TextFormField(
                   controller: foodCtlr.updateMealAddonsDetailsTextCtlr,
                   validator: foodCtlr.textValidator,
@@ -3033,12 +3139,11 @@ class _FoodManagementState extends State<FoodManagement>
                       borderRadius: BorderRadius.circular(6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: alternate)
-                    ),
-                    hintStyle:
-                        TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                        borderSide: BorderSide(color: alternate)),
+                    hintStyle: TextStyle(
+                        fontSize: fontVerySmall, color: textSecondary),
                   )),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               Container(
                 height: 40,
                 width: double.infinity,
@@ -3047,14 +3152,16 @@ class _FoodManagementState extends State<FoodManagement>
                     Icons.cloud_upload_outlined,
                     color: primaryColor,
                   ),
-                  label: GetBuilder<FoodManagementController>(builder: (context) {
+                  label:
+                      GetBuilder<FoodManagementController>(builder: (context) {
                     return Text(
                       foodCtlr.updateMealAddonsStoreImage == null
                           ? "Upload Image"
                           : foodCtlr.updateMealAddonsStoreImage!.path
                               .split(Platform.pathSeparator)
                               .last,
-                      style: TextStyle(color: textSecondary, fontSize: fontSmall),
+                      style:
+                          TextStyle(color: textSecondary, fontSize: fontSmall),
                     );
                   }),
                   onPressed: () async {
@@ -3070,12 +3177,12 @@ class _FoodManagementState extends State<FoodManagement>
                   ),
                 ),
               ),
-              SizedBox(height:30),
+              SizedBox(height: 30),
               Container(
                   height: 40,
                   width: 200,
-                  child:
-                      normalButton('Submit', primaryColor, white, onPressed: () {
+                  child: normalButton('Submit', primaryColor, white,
+                      onPressed: () {
                     if (foodCtlr.updateMealAddonsKey.currentState!.validate()) {
                       foodCtlr.updateMealAddons(
                         foodCtlr.udpateMealAddonsNameTextCtlr.text,
@@ -3154,8 +3261,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -3175,8 +3281,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -3240,11 +3345,13 @@ class _FoodManagementState extends State<FoodManagement>
                 // }).toList(),
 
                 hint: foodCtlr.foodVariants.value.data!
-                    .firstWhere((element) => element.id==itemId).food!.name,
+                    .firstWhere((element) => element.id == itemId)
+                    .food!
+                    .name,
                 options: controller.menusData.value.data!
                     .map((FoodMenuManagementDatum e) {
                   return ValueItem(
-                    label: e.name??"",
+                    label: e.name ?? "",
                     value: e.id.toString(),
                   );
                 }).toList(),
@@ -3276,8 +3383,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),
@@ -3296,8 +3402,7 @@ class _FoodManagementState extends State<FoodManagement>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: alternate)
-                  ),
+                      borderSide: BorderSide(color: alternate)),
                   hintStyle:
                       TextStyle(fontSize: fontVerySmall, color: textSecondary),
                 )),

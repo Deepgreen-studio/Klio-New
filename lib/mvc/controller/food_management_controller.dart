@@ -229,6 +229,8 @@ class FoodManagementController extends GetxController with ErrorController {
 
     menusData.value.data?.addAll(datums);
 
+
+
     menuPageNumber++;
 
     var res = json.decode(response);
@@ -480,7 +482,7 @@ class FoodManagementController extends GetxController with ErrorController {
     }
   }
 
-  void updateMenu(
+  Future updateMenu(
       String name,
       String price,
       String processingTime,
@@ -925,7 +927,6 @@ class FoodManagementController extends GetxController with ErrorController {
         .catchError(handleApiError);
     foodSingleItemDetails.value = fooodMenueDetailsSingleItemFromJson(response);
     update();
-    print('checkResponseDetails${foodSingleItemDetails.value.data!.name!}');
   }
 
   Future<void> deleteMenu({dynamic id = ''}) async {

@@ -44,6 +44,7 @@ dependencies:
   multiselect: ^0.0.7
   multi_dropdown: ^1.0.6
   flutter_timer_countdown: ^1.0.5
+  nfc_manager: ^3.2.0
 
 
 dev_dependencies:

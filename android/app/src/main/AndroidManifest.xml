@@ -2,6 +2,7 @@
     package="tech.klio.staff.klio_staff">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission."/>
 
     <application
         android:label="Klio Staff"
