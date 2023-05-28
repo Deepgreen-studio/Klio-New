@@ -2402,42 +2402,42 @@ class _FoodManagementState extends State<FoodManagement>
                   children: [
                     normalButton('Submit', primaryColor, white, onPressed: () {
                       if (foodCtlr.updateMenuFormKey.currentState!.validate()) {
-                        foodCtlr
-                            .updateMenu(
-                          foodCtlr.nameUpdateTextCtlr.text,
-                          foodCtlr.varinetUpdatePricEditingCtlr.text,
-                          foodCtlr.processTimeUpdateEditingCtlr.text,
-                          foodCtlr.vatUpdateEditingCtlr.text,
-                          foodCtlr.caloriesUpdateEditingCtlr.text,
-                          foodCtlr.descriptionUpdateEditingCtlr.text,
-                          foodCtlr.updateMenuIngredientIdList.isNotEmpty
-                              ? foodCtlr.updateMenuIngredientIdList.first
-                                  .toString()
-                              : null,
-                          foodCtlr.updateMealPeriodIdList,
-                          foodCtlr.updateMenuAddonsIdList,
-                          foodCtlr.updateMenuAllergyIdList,
-                          foodCtlr.updateMenuCategoryIdList,
-                          id: itemId,
-                        )
-                            .then((value) {
-                          foodCtlr.nameTextCtlr.clear();
-                          foodCtlr.varinetPriceEditingCtlr.clear();
-                          foodCtlr.vatEditingCtlr.clear();
-                          foodCtlr.processTimeEditingCtlr.clear();
-                          foodCtlr.caloriesEditingCtlr.clear();
-                          foodCtlr.descriptionEditingCtlr.clear();
-                          foodCtlr.menuStoreImage = null;
-                          foodCtlr.updateMealPeriodIdList.clear();
-                          foodCtlr.updateMenuAllergyIdList.clear();
-                          foodCtlr.updateMenuAddonsIdList.clear();
-                        });
-                        /*if (foodCtlr.updateMenuCategoryIdList.isEmpty) {
-                        Utils.showSnackBar("Please select menu category");
-                      } else {
-
-                      }*/
+                        if (foodCtlr.updateMenuCategoryIdList.isEmpty) {
+                          Utils.showSnackBar("Please select menu category");
+                        } else {
+                          foodCtlr
+                              .updateMenu(
+                            foodCtlr.nameUpdateTextCtlr.text,
+                            foodCtlr.varinetUpdatePricEditingCtlr.text,
+                            foodCtlr.processTimeUpdateEditingCtlr.text,
+                            foodCtlr.vatUpdateEditingCtlr.text,
+                            foodCtlr.caloriesUpdateEditingCtlr.text,
+                            foodCtlr.descriptionUpdateEditingCtlr.text,
+                            foodCtlr.updateMenuIngredientIdList.isNotEmpty
+                                ? foodCtlr.updateMenuIngredientIdList.first
+                                .toString()
+                                : null,
+                            foodCtlr.updateMealPeriodIdList,
+                            foodCtlr.updateMenuAddonsIdList,
+                            foodCtlr.updateMenuAllergyIdList,
+                            foodCtlr.updateMenuCategoryIdList,
+                            id: itemId,
+                          )
+                              .then((value) {
+                            foodCtlr.nameTextCtlr.clear();
+                            foodCtlr.varinetPriceEditingCtlr.clear();
+                            foodCtlr.vatEditingCtlr.clear();
+                            foodCtlr.processTimeEditingCtlr.clear();
+                            foodCtlr.caloriesEditingCtlr.clear();
+                            foodCtlr.descriptionEditingCtlr.clear();
+                            foodCtlr.menuStoreImage = null;
+                            foodCtlr.updateMealPeriodIdList.clear();
+                            foodCtlr.updateMenuAllergyIdList.clear();
+                            foodCtlr.updateMenuAddonsIdList.clear();
+                          });
+                        }
                       }
+
                     }),
                   ],
                 ),
