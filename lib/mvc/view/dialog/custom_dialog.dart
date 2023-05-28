@@ -337,30 +337,28 @@ Widget addCustomer(BuildContext context, bool isDetail,
 }
 
 Widget foodMenuBody(BuildContext context, MenuData data) {
-  if (homeController.cardList.isNotEmpty)
-    print(homeController.cardList[0].quantity);
-  print("----------------------============================= init");
+
   homeController.tables.value.data = [];
   homeController.menuData.value = data;
   homeController.menuData.value.quantity = 1;
+
   for (int i = 0; i < homeController.menuData.value.addons!.data!.length; i++) {
     homeController.menuData.value.addons!.data![i].quantity = 0;
     homeController.menuData.value.addons!.data![i].isChecked = false;
   }
   // homeController.variantPrice.value = 0;
   double unitPrice = 0;
-  // if (data.variants!.data!.isEmpty){
-  //   unitPrice = double.parse(homeController.menuData.value.price.toString());
-  //   homeController.menuData.value.variant = '0';
-  // }else{
-  //   unitPrice = double.parse(data.variants!.data!.first.price.toString());
-  //   homeController.menuData.value.variant = data.variants!.data![0].id.toString();
-  // }
-  unitPrice = double.parse(data.variants!.data!.first.price.toString());
-  homeController.menuData.value.variant = data.variants!.data![0].id.toString();
-  if (homeController.cardList.isNotEmpty)
-    print(homeController.cardList[0].quantity);
-  print("----------------------============================= 1.2");
+
+   if (data.variants!.data!.isEmpty){
+     unitPrice = double.parse(homeController.menuData.value.price.toString());
+     homeController.menuData.value.variant = '0';
+   }else{
+     unitPrice = double.parse(data.variants!.data!.first.price.toString());
+     homeController.menuData.value.variant = data.variants!.data![0].id.toString();
+   }
+  //unitPrice = double.parse(data.variants!.data!.first.price.toString());
+  //homeController.menuData.value.variant = data.variants!.data![0].id.toString();
+
   return Padding(
     padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
     child: Row(
@@ -474,7 +472,7 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                           underline: SizedBox(),
                           isExpanded: true,
                           dropdownColor: primaryBackground,
-                          value: data.variants!.data![0].name,
+                          value:data.variants!.data!.isEmpty? "Normal" : data.variants!.data![0].name,
                           onChanged: (value) {
                             unitPrice = double.parse(
                                 Utils.findPriceByListNearValue(
