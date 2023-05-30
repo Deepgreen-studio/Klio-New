@@ -311,8 +311,6 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                     child: GetBuilder<HomeController>(
                         id: "cardUpdate",
                         builder: (context) {
-                          print(
-                              " ============================================ cardUpdate");
                           return ListView.builder(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
@@ -427,29 +425,35 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      for (AddonsDatum addons in homeController
-                                          .cardList[index].addons!.data!)
-                                        addons.isChecked == true
-                                            ? Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8, vertical: 4),
-                                                margin:
-                                                    EdgeInsets.only(right: 5),
-                                                decoration: BoxDecoration(
-                                                    color: alternate,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Text(
-                                                    '${addons.name}  ${addons.quantity}x${addons.price}',
-                                                    style: TextStyle(
-                                                        fontSize: fontVerySmall,
-                                                        color: primaryText)))
-                                            : SizedBox(),
-                                    ],
-                                  ),
+                                  if (homeController
+                                          .cardList[index].addons?.data !=
+                                      null)
+                                    Row(
+                                      children: [
+                                        for (AddonsDatum addons
+                                            in homeController
+                                                .cardList[index].addons!.data!)
+                                          addons.isChecked == true
+                                              ? Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                                  margin:
+                                                      EdgeInsets.only(right: 5),
+                                                  decoration: BoxDecoration(
+                                                      color: alternate,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: Text(
+                                                      '${addons.name}  ${addons.quantity}x${addons.price}',
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              fontVerySmall,
+                                                          color: primaryText)))
+                                              : SizedBox(),
+                                      ],
+                                    ),
                                 ],
                               );
                             },
@@ -525,6 +529,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               ],
                             ),
                             Obx(() {
+
                               return Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,

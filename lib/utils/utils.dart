@@ -16,6 +16,7 @@ class Utils {
   static String getTables(List list) {
     String tables = '';
     for (var element in list) {
+
       tables = '${element.number},$tables';
     }
     return tables;
@@ -103,18 +104,20 @@ class Utils {
 
 
   static String findPriceByListId(List list, String id) {
+
     for (var element in list) {
+
       if (element.id == int.parse(id)) {
         return element.price.toString();
       }
     }
-    return '';
+    return '0';
   }
 
   static double calcSubTotal(List<dynamic> list) {
     double itemTotal = 0;
     double adTotal = 0;
-    list.forEach((element) {
+    for (var element in list) {
       itemTotal = itemTotal +
           (element.quantity! *
               double.parse(Utils.findPriceByListId(
@@ -123,7 +126,7 @@ class Utils {
         adTotal =
             adTotal + (addon.quantity! * double.parse(addon.price.toString()));
       });
-    });
+    }
     return itemTotal + adTotal;
   }
 

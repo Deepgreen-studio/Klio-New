@@ -62,6 +62,9 @@ class DefaultPrinter {
   }
 
   static pw.Widget invoicePage(String method) {
+    bool isTableAvailable  = (homeController
+        .order.value.data!.tables!.data != null && homeController
+        .order.value.data!.tables!.data!.isNotEmpty);
     return pw.Padding(
         padding: pw.EdgeInsets.symmetric(horizontal: 30),
         child: pw.Column(children: [
@@ -81,12 +84,15 @@ class DefaultPrinter {
           ),
           pw.SizedBox(height: 10),
           pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+
+            mainAxisAlignment: isTableAvailable ? pw.MainAxisAlignment.spaceBetween : pw.MainAxisAlignment.center,
             children: [
-              textMixerPw(
-                  "Table: ",
-                  Utils.getTables(
-                      homeController.order.value.data!.tables!.data!.toList())),
+              if (isTableAvailable)
+                textMixerPw(
+                    "Table: ",
+                    Utils.getTables(homeController
+                        .order.value.data!.tables!.data!
+                        .toList())),
               textMixerPw("Order Number: ",
                   homeController.order.value.data!.invoice.toString()),
             ],
@@ -381,7 +387,8 @@ class SumniPrinter {
     await SunmiPrinter.printText('Order Summary');
 
     await SunmiPrinter.setFontSize(SunmiFontSize.MD);
-    await SunmiPrinter.printText('SL    -    Name -   V. Name  -  Qty  -  Total');
+    await SunmiPrinter.printText(
+        'SL    -    Name -   V. Name  -  Qty  -  Total');
     // await SunmiPrinter.printRow(cols: [
     //   ColumnMaker(text: 'SL', width: 1, align: SunmiPrintAlign.LEFT),
     //   ColumnMaker(text: 'Name', width: 3, align: SunmiPrintAlign.LEFT),

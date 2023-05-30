@@ -281,7 +281,7 @@ class _HomeState extends State<Home> {
                     onPressed: () async {
                       showCustomDialog(context, "Search Order",
                           searchOrderDialog(context), 100, 800);
-                  print("will implement search");
+
                 }),
 
                 const SizedBox(width: 8),

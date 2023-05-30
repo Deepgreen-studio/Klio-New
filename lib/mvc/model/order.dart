@@ -307,7 +307,7 @@ class TablesDatum {
 
   factory TablesDatum.fromJson(Map<String, dynamic> json) => TablesDatum(
     tableId: json["table_id"],
-    number: json["number"],
+    number: json["table_number"],
     totalPerson: json["total_person"],
   );
 

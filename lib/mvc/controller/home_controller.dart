@@ -30,6 +30,7 @@ class HomeController extends GetxController with ErrorController {
   Rx<Menus> menus = Menus().obs;
   Rx<Customers> customers = Customers().obs;
   Rx<Orders> orders = Orders().obs;
+  Rx<Orders> searchedOrders = Orders().obs;
   Rx<Order> order = Order().obs;
   Rx<OnlineOrder> onlineOrder = OnlineOrder().obs;
   Rx<Settings> settings = Settings().obs;
@@ -118,7 +119,6 @@ class HomeController extends GetxController with ErrorController {
   }
 
   Future<void> getMenuByKeyword({String keyword = ''}) async {
-
     Map<String, String> qParams = {'keyword': keyword};
     String endPoint = "pos/menu";
     var response = await ApiClient()
@@ -152,13 +152,23 @@ class HomeController extends GetxController with ErrorController {
     return cusFromJson(response);
   }
 
-  void getOrders() async {
+  Future<void> getOrders() async {
     var response = await ApiClient()
         .get('pos/order', header: Utils.apiHeader)
         .catchError(handleApiError);
     if (response == null) return;
     orders.value = ordersFromJson(response);
+    searchedOrders.value = orders.value;
     orders.refresh();
+  }
+
+  Future<void> searchOrders(String keyword) async {
+    var response = await ApiClient()
+        .get('pos/order?keyword=$keyword', header: Utils.apiHeader)
+        .catchError(handleApiError);
+    if (response == null) return;
+    searchedOrders.value = ordersFromJson(response);
+    searchedOrders.refresh();
   }
 
   Future<void> cancelOrder(int id) async {
@@ -260,14 +270,15 @@ class HomeController extends GetxController with ErrorController {
       );
     }
     items.removeAt(0);
+    String customerId = Utils.findIdByListNearValue(
+        customers.value.data!.toList(), customerName.value);
     var body = jsonEncode({
       "order_type": orderTypes.entries.elementAt(topBtnPosition.value - 1).key,
-      "customer": Utils.findIdByListNearValue(
-          customers.value.data!.toList(), customerName.value),
+      "customer": customerId == "0" ? "" : customerId,
       "items": items,
       "discount": discount.value ?? 0,
       "tables": [
-        for (var i in tables.value!.data!.toList())
+        for (var i in tables.value.data!.toList())
           if (i.person != 0)
             {"id": i.id, "person": int.parse(i.person.toString())}
       ]
@@ -284,7 +295,10 @@ class HomeController extends GetxController with ErrorController {
           .post('pos/order', body, header: Utils.apiHeader)
           .catchError(handleApiError);
     }
+    print(response);
+    print("                            json.decode(response)");
     if (response == null) return;
+
     cardList.clear();
     tables.value.data!.clear();
     discount.value = 0;

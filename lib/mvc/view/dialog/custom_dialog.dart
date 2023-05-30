@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/model/Customer.dart';
@@ -21,7 +23,7 @@ import 'dart:io';
 HomeController homeController = Get.find();
 
 Future<void> showCustomDialog(BuildContext context, String title, Widget widget,
-    int heightReduce, int widthReduce) async {
+    int heightReduce, int widthReduce, {bool reducePop = false}) async {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -36,7 +38,7 @@ Future<void> showCustomDialog(BuildContext context, String title, Widget widget,
             ),
             child: Column(
               children: [
-                dialogHeader(title, context),
+                dialogHeader(title, context, reducePop: reducePop),
                 // Divider(color: textSecondary, thickness: 1),
                 const SizedBox(height: 10),
                 Expanded(
@@ -50,7 +52,7 @@ Future<void> showCustomDialog(BuildContext context, String title, Widget widget,
 }
 
 Future<void> showCustomDialogResponsive(BuildContext context, String title,
-    Widget widget, double height, double width) async {
+    Widget widget, double height, double width, ) async {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -247,7 +249,7 @@ void showDiscountDialog(String title, TextEditingController controller,
   );
 }
 
-Widget dialogHeader(String title, BuildContext context) {
+Widget dialogHeader(String title, BuildContext context, {bool reducePop = false}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
     child: Row(
@@ -261,8 +263,8 @@ Widget dialogHeader(String title, BuildContext context) {
         IconButton(
           onPressed: () {
             Get.back();
-            Utils.hidePopup();
-            Utils.hidePopup();
+            if(reducePop)Utils.hidePopup();
+            if(reducePop)Utils.hidePopup();
           },
           icon: Icon(
             Icons.close,
@@ -337,7 +339,6 @@ Widget addCustomer(BuildContext context, bool isDetail,
 }
 
 Widget foodMenuBody(BuildContext context, MenuData data) {
-
   homeController.tables.value.data = [];
   homeController.menuData.value = data;
   homeController.menuData.value.quantity = 1;
@@ -349,13 +350,14 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
   // homeController.variantPrice.value = 0;
   double unitPrice = 0;
 
-   if (data.variants!.data!.isEmpty){
-     unitPrice = double.parse(homeController.menuData.value.price.toString());
-     homeController.menuData.value.variant = '0';
-   }else{
-     unitPrice = double.parse(data.variants!.data!.first.price.toString());
-     homeController.menuData.value.variant = data.variants!.data![0].id.toString();
-   }
+  if (data.variants!.data!.isEmpty) {
+    unitPrice = double.parse(homeController.menuData.value.price.toString());
+    homeController.menuData.value.variant = '0';
+  } else {
+    unitPrice = double.parse(data.variants!.data!.first.price.toString());
+    homeController.menuData.value.variant =
+        data.variants!.data![0].id.toString();
+  }
   //unitPrice = double.parse(data.variants!.data!.first.price.toString());
   //homeController.menuData.value.variant = data.variants!.data![0].id.toString();
 
@@ -472,7 +474,9 @@ Widget foodMenuBody(BuildContext context, MenuData data) {
                           underline: SizedBox(),
                           isExpanded: true,
                           dropdownColor: primaryBackground,
-                          value:data.variants!.data!.isEmpty? "Normal" : data.variants!.data![0].name,
+                          value: data.variants!.data!.isEmpty
+                              ? "Normal"
+                              : data.variants!.data![0].name,
                           onChanged: (value) {
                             unitPrice = double.parse(
                                 Utils.findPriceByListNearValue(
@@ -1088,6 +1092,17 @@ Widget tableBody(BuildContext context, bool showOnly) {
                       break;
                     }
                   }
+
+/*
+                  for(int i=0; i<homeController.tables.value.data!.length; i++){
+                    print(homeController.tables.value.data![i].number);
+                    print(homeController.tables.value.data![i].name);
+                    print(homeController.tables.value.data![i].person);
+                    print("======================== 222222222222222222222222222");
+                  }
+
+                  print("======================== 222222222222222222222222222  enddddddddddddddd");*/
+
                   if (error) {
                     Utils.showSnackBar("Check the person filed is valid!");
                   } else {
@@ -1113,13 +1128,25 @@ Widget tableBody(BuildContext context, bool showOnly) {
 }
 
 Widget searchOrderDialog(BuildContext context) {
+  TextEditingController searchController = TextEditingController();
+  Timer? searchOnStoppedTyping;
   return Padding(
-    padding: EdgeInsets.all(20),
-    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
           TextFormField(
+              controller: searchController,
               style: TextStyle(color: primaryText),
+              onChanged: (text) {
+                const duration = Duration(
+                    seconds:
+                        1); // set the duration that you want call search() after that.
+                if (searchOnStoppedTyping != null) {
+                  searchOnStoppedTyping!.cancel(); // clear timer
+                }
+                searchOnStoppedTyping =
+                    Timer(duration, () => homeController.searchOrders(text));
+              },
               decoration: InputDecoration(
                 fillColor: secondaryBackground,
                 label: Text(
@@ -1137,45 +1164,104 @@ Widget searchOrderDialog(BuildContext context) {
                     color: textSecondary,
                   ),
                   onPressed: () {
+                    searchController.clear();
+                    homeController.searchOrders("");
                   },
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                    borderSide: BorderSide(color: textSecondary)
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderSide: BorderSide(color: textSecondary)),
                 hintStyle:
-                TextStyle(fontSize: fontVerySmall, color: textSecondary),
+                    TextStyle(fontSize: fontVerySmall, color: textSecondary),
               )),
-          Column(
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.all(10),
-                leading: Image.asset(
-                  orderTypes[homeController
-                      .orders.value.data![2].type
-                      .toString()],
-                  color: primaryColor,
-                ),
-                title: Text('Order Name'),
-                subtitle: Text('Table No \nC Name'),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.all(10),
-                leading: Image.asset(
-                  orderTypes[homeController
-                      .orders.value.data![3].type
-                      .toString()],
-                  color: primaryColor,
-                ),
-                title: Text('Order Name'),
-                subtitle: Text('Table No \nC Name'),
-              ),
-            ],
+          const SizedBox(height: 10),
+          Expanded(
+            child: Obx(() {
+              return ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: homeController.searchedOrders.value.data == null
+                    ? 0
+                    : homeController.searchedOrders.value.data!.length,
+                itemBuilder: (context, index) {
+                  String value = homeController.searchedOrders.value
+                                  .data![index].customerName !=
+                              null &&
+                          homeController.searchedOrders.value.data![index]
+                              .customerName!.isNotEmpty
+                      ? "C Name : ${homeController.searchedOrders.value.data![index].customerName}"
+                      : "Invoice : ${homeController.searchedOrders.value.data![index].invoice.toString()}";
+                  return Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: alternate,
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: homeController.selectedOrder == index
+                            ? const BorderSide(width: 2, color: primaryColor)
+                            : BorderSide.none),
+                    child: Container(
+                      width: 250,
+                      alignment: Alignment.center,
+                      color: alternate,
+                      child: GestureDetector(
+                        onDoubleTap: () async {
+                          homeController.selectedOrder.value = index;
+                          homeController.searchedOrders.refresh();
+                          Utils.showLoading();
+                          await homeController.getOrder(homeController
+                              .searchedOrders
+                              .value
+                              .data![homeController.selectedOrder.value]
+                              .id!
+                              .toInt());
+                          Utils.hidePopup();
+                          if (homeController.order.value.data != null) {
+                            showCustomDialog(context, "Order Details",
+                                orderDetail(context), 50, 400);
+                          }
+                        },
+                        child: ListTile(
+                          onTap: () {
+                            homeController.selectedOrder.value = index;
+                            homeController.searchedOrders.refresh();
+                          },
+                          leading: Image.asset(
+                            orderTypes[homeController
+                                .searchedOrders.value.data![index].type
+                                .toString()],
+                            color: primaryColor,
+                          ),
+                          title: Text(
+                              homeController
+                                      .searchedOrders.value.data![index].type
+                                      .toString() ??
+                                  '',
+                              style: TextStyle(
+                                  fontSize: fontMedium,
+                                  color: primaryText,
+                                  fontWeight: FontWeight.bold)),
+                          subtitle: Text(
+                              homeController.searchedOrders.value.data![index]
+                                          .type ==
+                                      "Dine In"
+                                  ? 'Table : ${Utils.getTables(homeController.searchedOrders.value.data![index].tables!.data!)}\n$value'
+                                  : 'Invoice : ${homeController.searchedOrders.value.data![index].invoice}\n$value',
+                              style: TextStyle(
+                                fontSize: fontVerySmall,
+                                color: primaryText,
+                              )),
+                          tileColor: secondaryBackground,
+                          dense: false,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
           )
         ],
-      ),
-    )
-  );
+      ));
 }
 
 Widget orderDetail(BuildContext context, [bool kitchen = false]) {
@@ -1739,7 +1825,7 @@ finalizeOrder(BuildContext context, Customer customer) {
               // showCustomDialog(
               //     context, "", orderInvoice(context, homeController.payMethod.value), 0, 800);
               bool done = await homeController.orderPayment();
-              homeController.getOrders();
+              await homeController.getOrders();
               if (done) {
                 showCustomDialog(
                     context,
@@ -1758,6 +1844,9 @@ finalizeOrder(BuildContext context, Customer customer) {
 }
 
 Widget orderInvoice(BuildContext context, String method) {
+  bool isTableAvailable =
+      (homeController.order.value.data!.tables!.data != null &&
+          homeController.order.value.data!.tables!.data!.isNotEmpty);
   return Column(
     children: [
       Expanded(
@@ -1786,14 +1875,17 @@ Widget orderInvoice(BuildContext context, String method) {
                 ),
                 SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: isTableAvailable
+                      ? MainAxisAlignment.spaceBetween
+                      : MainAxisAlignment.center,
                   children: [
-                    textMixer(
-                        "Table: ",
-                        Utils.getTables(homeController
-                            .order.value.data!.tables!.data!
-                            .toList()),
-                        MainAxisAlignment.start),
+                    if (isTableAvailable)
+                      textMixer(
+                          "Table: ",
+                          Utils.getTables(homeController
+                              .order.value.data!.tables!.data!
+                              .toList()),
+                          MainAxisAlignment.start),
                     textMixer(
                         "Order Number: ",
                         homeController.order.value.data!.invoice.toString(),
