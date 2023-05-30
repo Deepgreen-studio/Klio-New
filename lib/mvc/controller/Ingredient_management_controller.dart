@@ -36,8 +36,8 @@ class IngredientController extends GetxController with ErrorController {
   TextEditingController addIngredientPriceCtlr = TextEditingController();
   TextEditingController addIngredintCodeCtlr = TextEditingController();
   TextEditingController addIngredintQtyCtlr = TextEditingController();
-  List<int> addIngredintCatgoryList= [];
-  List<int> addIngredintUnitList= [];
+  List<int> addIngredintCatgoryList = [];
+  List<int> addIngredintUnitList = [];
 
   // update ingredinat//
   final updateIngredintFormKey = GlobalKey<FormState>();
@@ -63,54 +63,47 @@ class IngredientController extends GetxController with ErrorController {
   final addIngredintSupplierFormKey = GlobalKey<FormState>();
   TextEditingController addIngrediantSupplierNameCtlr = TextEditingController();
   TextEditingController addIngredientSupplierEmailCtlr =
-  TextEditingController();
+      TextEditingController();
   TextEditingController addIngredintSupplierPhoneCtlr = TextEditingController();
   TextEditingController addIngredintSupplierRefCtlr = TextEditingController();
   TextEditingController addIngredintSupplierAddressCtlr =
-  TextEditingController();
+      TextEditingController();
   TextEditingController addIngredintSupplierStatusCtlr =
-  TextEditingController();
+      TextEditingController();
   File? idCardFront;
   File? idCardBack;
 
   // update supplier//
   final updateSupplierFormKey = GlobalKey<FormState>();
   TextEditingController updateSupplierNameCtlr =
-  TextEditingController(text: 'Update Name');
+      TextEditingController(text: 'Update Name');
   TextEditingController updateSupplierEmailCtlr =
-  TextEditingController(text: 'Update Email');
+      TextEditingController(text: 'Update Email');
   TextEditingController updateSupplierPhoneCtlr =
-  TextEditingController(text: 'Update Phone');
+      TextEditingController(text: 'Update Phone');
   TextEditingController updateSupplierRefCtlr =
-  TextEditingController(text: 'Update Reference');
+      TextEditingController(text: 'Update Reference');
   TextEditingController updateSupplierAddressCtlr =
-  TextEditingController(text: 'Update Address');
-
-
+      TextEditingController(text: 'Update Address');
 
   int ingredientPageNumber = 1;
   int categoryPageNumber = 1;
   int unitPageNumber = 1;
   int supplierPageNumber = 1;
 
-
   bool isLoading = false;
-
 
   bool haveMoreIngredient = true;
   bool haveMoreCategory = true;
   bool haveMoreUnit = true;
   bool haveMoreSupplier = true;
 
-
   ///
   ///
-
-
 
   final data = <Map<String, dynamic>>[].obs;
 
-  Future<void> fetchData({dynamic id = ''})async{
+  Future<void> fetchData({dynamic id = ''}) async {
     String endPoint = 'master/ingredient/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -119,7 +112,6 @@ class IngredientController extends GetxController with ErrorController {
     data.add(decodedData);
     print(data);
   }
-
 
   @override
   Future<void> onInit() async {
@@ -148,7 +140,7 @@ class IngredientController extends GetxController with ErrorController {
   Future<File> getIdCardImage() async {
     File? imageFile;
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       File menuStoreImage = File(pickedFile.path);
@@ -173,7 +165,7 @@ class IngredientController extends GetxController with ErrorController {
     if (!haveMoreIngredient) {
       return;
     }
-    if (ingredientPageNumber == 1 &&  ingredientData.value.data!.isNotEmpty) {
+    if (ingredientPageNumber == 1 && ingredientData.value.data!.isNotEmpty) {
       ingredientData.value.data!.clear();
     }
     isLoading = true;
@@ -226,7 +218,8 @@ class IngredientController extends GetxController with ErrorController {
       return;
     }
 
-    if (categoryPageNumber == 1 &&  ingredientCategoryData.value.data.isNotEmpty) {
+    if (categoryPageNumber == 1 &&
+        ingredientCategoryData.value.data.isNotEmpty) {
       ingredientCategoryData.value.data.clear();
     }
     isLoading = true;
@@ -273,20 +266,20 @@ class IngredientController extends GetxController with ErrorController {
     if (!haveMoreUnit) {
       return;
     }
-    if (unitPageNumber == 1 &&  ingredientUnitData.value.data.isNotEmpty) {
+    if (unitPageNumber == 1 && ingredientUnitData.value.data.isNotEmpty) {
       ingredientUnitData.value.data.clear();
     }
     isLoading = true;
 
-    String endPoint =
-    id == '' ? 'master/ingredient-unit?page=$unitPageNumber' : 'master/ingredient-unit/$id';
+    String endPoint = id == ''
+        ? 'master/ingredient-unit?page=$unitPageNumber'
+        : 'master/ingredient-unit/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
 
-
     var temp = ingredineUnitModelFromJson(response);
-    List<IngrediantUnit> ingredientUnit= temp.data;
+    List<IngrediantUnit> ingredientUnit = temp.data;
 
     ingredientUnitData.value.data.addAll(ingredientUnit);
 
@@ -323,7 +316,8 @@ class IngredientController extends GetxController with ErrorController {
     if (!haveMoreSupplier) {
       return;
     }
-    if (supplierPageNumber == 1 &&  ingredientSupplierData.value.data.isNotEmpty) {
+    if (supplierPageNumber == 1 &&
+        ingredientSupplierData.value.data.isNotEmpty) {
       ingredientSupplierData.value.data.clear();
     }
     isLoading = true;
@@ -333,9 +327,8 @@ class IngredientController extends GetxController with ErrorController {
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
 
-
     var temp = ingredineSupplierModelFromJson(response);
-    List<Datum> ingredientUnit= temp.data;
+    List<Datum> ingredientUnit = temp.data;
 
     ingredientSupplierData.value.data.addAll(ingredientUnit);
 
@@ -351,20 +344,22 @@ class IngredientController extends GetxController with ErrorController {
     isLoading = false;
     update(["supplierTab"]);
 
-  /*  ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
+    /*  ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
     update();
     debugPrint(
         "checkIngredinetSupplierData${ingredientSupplierData.value.data[0].id}");*/
   }
 
-  Future<void> getSupplierSingleDetails({dynamic id = ''})async{
+  Future<void> getSupplierSingleDetails({dynamic id = ''}) async {
     String endPoint = 'master/supplier/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    ingredientSupplierSingleItem.value = ingredientSupplierSingleItemFromJson(response);
+    ingredientSupplierSingleItem.value =
+        ingredientSupplierSingleItemFromJson(response);
     update();
-    print('checkResponseDetails${ingredientSupplierSingleItem.value.data!.name}');
+    print(
+        'checkResponseDetails${ingredientSupplierSingleItem.value.data!.name}');
   }
 
   void deleteIngredientSupplier({id = ''}) async {
@@ -372,7 +367,7 @@ class IngredientController extends GetxController with ErrorController {
     haveMoreSupplier = true;
     supplierPageNumber = 1;
     String endPoint = 'master/supplier/$id';
-     await ApiClient()
+    await ApiClient()
         .delete(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     getIngredientSupplier();
@@ -380,8 +375,8 @@ class IngredientController extends GetxController with ErrorController {
     Utils.showSnackBar("Deleted Successfully");
   }
 
-  Future addAndUpdateIngrediant(bool add, String name, String price, String code,
-      String quantity, int categoryId, int unitId,
+  Future addAndUpdateIngrediant(bool add, String name, String price,
+      String code, String quantity, int categoryId, int unitId,
       {String id = ''}) async {
     print(categoryId);
     Utils.showLoading();
@@ -414,7 +409,6 @@ class IngredientController extends GetxController with ErrorController {
     Utils.showLoading();
     var body = jsonEncode({
       "name": name,
-
     });
     var response;
     if (add) {
@@ -474,32 +468,32 @@ class IngredientController extends GetxController with ErrorController {
     try {
       var responseData;
 
-           http.MultipartRequest request = http.MultipartRequest('POST', uri);
-        request.headers.addAll(Utils.apiHeader);
-        if (idCardFront != null) {
-          http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-              'id_card_front', idCardFront.path);
-          request.files.add(multipartFile);
-        }
-        if (idCardBack != null) {
-          http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-              'id_card_back', idCardFront!.path);
-          request.files.add(multipartFile);
-        }
-        Map<String, String> _fields = Map();
-        _fields.addAll(<String, String>{
-          "name": name,
-          "email": email,
-          "phone": phone,
-          "reference": reference,
-          "address": address,
-          "status": status,
-        });
-        request.fields.addAll(_fields);
-        http.StreamedResponse response = await request.send();
-        responseData = await http.Response.fromStream(response);
-        print(response.statusCode);
-        print(responseData);
+      http.MultipartRequest request = http.MultipartRequest('POST', uri);
+      request.headers.addAll(Utils.apiHeader);
+      if (idCardFront != null) {
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'id_card_front', idCardFront.path);
+        request.files.add(multipartFile);
+      }
+      if (idCardBack != null) {
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'id_card_back', idCardFront!.path);
+        request.files.add(multipartFile);
+      }
+      Map<String, String> _fields = Map();
+      _fields.addAll(<String, String>{
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "reference": reference,
+        "address": address,
+        "status": status,
+      });
+      request.fields.addAll(_fields);
+      http.StreamedResponse response = await request.send();
+      responseData = await http.Response.fromStream(response);
+      print(response.statusCode);
+      print(responseData);
       Utils.hidePopup();
       Get.back();
       _processResponse(responseData);
@@ -511,14 +505,8 @@ class IngredientController extends GetxController with ErrorController {
     }
   }
 
-
-  Future updateSupplierMethod(
-      String name,
-      String email,
-      String phone,
-      String reference,
-      String address,
-      String status,
+  Future updateSupplierMethod(String name, String email, String phone,
+      String reference, String address, String status,
       // File? idCardFront,
       // File? idCardBack,
       {id = ''}) async {
@@ -541,11 +529,11 @@ class IngredientController extends GetxController with ErrorController {
       Map<String, String> _fields = Map();
       _fields.addAll(<String, String>{
         "name": name,
-        "email":email,
+        "email": email,
         "phone": phone,
         "reference": reference,
-        "address":address,
-        '_method':'PUT',
+        "address": address,
+        '_method': 'PUT',
       });
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
@@ -561,6 +549,53 @@ class IngredientController extends GetxController with ErrorController {
     }
   }
 
+
+  /// search methods for all items....
+   Future<void> getIngredientByKeyword({String keyword=''})async{
+     String endPoint = keyword.isNotEmpty?
+     "master/ingredient?keyword=$keyword"
+         :"master/ingredient";
+     var response = await ApiClient()
+      .get(endPoint, header: Utils.apiHeader)
+     .catchError(handleApiError);
+     print(response);
+     ingredientData.value =  ingredinetListModelFromJson(response);
+     update(["ingredientTab"]);
+   }
+
+   Future <void> getIngredientCategoryByKeyword({String keyword=''})async{
+      String endPoint= keyword.isNotEmpty?
+          "master/ingredient-category?keyword=$keyword":
+           "master/ingredient-category" ;
+      var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+      .catchError(handleApiError);
+      print(response);
+      ingredientCategoryData.value = ingredineCategoryModelFromJson(response);
+      update(['categoryTab']);
+   }
+  Future <void> getIngredientUnitByKeyword({String keyword=''})async{
+    String endPoint= keyword.isNotEmpty?
+    "master/ingredient-unit?keyword=$keyword":
+    "master/ingredient-unit" ;
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    ingredientUnitData.value = ingredineUnitModelFromJson(response);
+    update(['unitTab']);
+  }
+  Future <void> getIngredientSupplierByKeyword({String keyword=''})async{
+    String endPoint= keyword.isNotEmpty?
+    "master/supplier?keyword=$keyword":
+    "master/supplier" ;
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
+    update(['supplierTab']);
+  }
 
   dynamic _processResponse(http.Response response) {
     var jsonResponse = utf8.decode(response.bodyBytes);

@@ -207,8 +207,11 @@ class _TransactionManagementState extends State<TransactionManagement>
                       height: 40,
                       child: TextField(
                           onChanged: (text) async {
-                            _transactionsController.getBankByKeyword(
-                                keyword: text);
+                            if(_currentSelection==0){
+                              _transactionsController.getBankByKeyword(keyword: text);
+                            }else{
+                              _transactionsController.getBankTransactionByKeyword(keyword: text);
+                            }
                           },
                           keyboardType: TextInputType.text,
                           controller: textController,
@@ -232,10 +235,18 @@ class _TransactionManagementState extends State<TransactionManagement>
                                 color: textSecondary,
                               ),
                               onPressed: () {
-                                setState(() {
-                                  textController!.text = '';
-                                  _transactionsController.getBankByKeyword();
-                                });
+                                if(_currentSelection==0){
+                                  setState(() {
+                                    textController!.text = '';
+                                    _transactionsController.getBankByKeyword();
+                                  });
+                                }else{
+                                  setState(() {
+                                    textController!.text = '';
+                                    _transactionsController.getBankTransactionByKeyword();
+                                  });
+                                }
+
                               },
                             ),
                             hintText: "Search Item",
@@ -469,10 +480,10 @@ class _TransactionManagementState extends State<TransactionManagement>
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          const DataCell(CircularProgressIndicator(
-                              color: Colors.transparent)),
                           DataCell(Text('No Data',
                               style: TextStyle(color: primaryText))),
+                          const DataCell(CircularProgressIndicator(
+                              color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                         ]);
@@ -485,9 +496,9 @@ class _TransactionManagementState extends State<TransactionManagement>
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(CircularProgressIndicator()),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                         ]);

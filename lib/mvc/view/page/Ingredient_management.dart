@@ -333,11 +333,16 @@ class _IngredientManagementState extends State<IngredientManagement>
                                                 .singleIngredientData
                                                 .value
                                                 .data!
-                                                .alertQty.toString();
-                                        _ingredientController.updateIngredientCatgoryList
-                                        .add(controller.singleIngredientData.value.data!.categoryName);
-                                            _ingredientController.updateIngredientUnitList
-                                        .add(controller.singleIngredientData.value.data!.unitName);
+                                                .alertQty
+                                                .toString();
+                                        _ingredientController
+                                            .updateIngredientCatgoryList
+                                            .add(controller.singleIngredientData
+                                                .value.data!.categoryName);
+                                        _ingredientController
+                                            .updateIngredientUnitList
+                                            .add(controller.singleIngredientData
+                                                .value.data!.unitName);
                                       });
                                     },
                                     child: Image.asset(
@@ -399,7 +404,15 @@ class _IngredientManagementState extends State<IngredientManagement>
             builder: (controller) {
               List<IngrediantCategory> data =
                   controller.ingredientCategoryData.value.data;
-
+              if (controller.ingredientCategoryData.value.data.isEmpty) {
+                return Center(
+                    child: Container(
+                        height: 40,
+                        width: 40,
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.3),
+                        child: CircularProgressIndicator()));
+              }
               if (!controller.haveMoreCategory && data.last.id != 0) {
                 data.add(IngrediantCategory(id: 0, name: ''));
               }
@@ -1125,7 +1138,23 @@ class _IngredientManagementState extends State<IngredientManagement>
                       width: 300,
                       height: 40,
                       child: TextField(
-                          onChanged: (text) async {},
+                          onChanged: (text) async {
+                            if (_currentSelection == 0) {
+                              _ingredientController.getIngredientByKeyword(
+                                  keyword: text);
+                            } else if (_currentSelection == 1) {
+                              _ingredientController
+                                  .getIngredientCategoryByKeyword(
+                                      keyword: text);
+                            } else if (_currentSelection == 2) {
+                              _ingredientController.getIngredientUnitByKeyword(
+                                  keyword: text);
+                            } else if (_currentSelection == 3) {
+                              _ingredientController
+                                  .getIngredientSupplierByKeyword(
+                                      keyword: text);
+                            } else {}
+                          },
                           controller: textController,
                           style: const TextStyle(
                             fontSize: fontSmall,
@@ -1142,7 +1171,31 @@ class _IngredientManagementState extends State<IngredientManagement>
                             ),
                             suffixIcon: IconButton(
                                 onPressed: () {
-                                  textController.text = '';
+                                  if (_currentSelection == 0) {
+                                    setState(() {
+                                      textController.text = '';
+                                      _ingredientController
+                                          .getIngredientByKeyword();
+                                    });
+                                  } else if (_currentSelection == 1) {
+                                    setState(() {
+                                      textController.text = '';
+                                      _ingredientController
+                                          .getIngredientCategoryByKeyword();
+                                    });
+                                  } else if (_currentSelection == 2) {
+                                    setState(() {
+                                      textController.text = '';
+                                      _ingredientController
+                                          .getIngredientUnitByKeyword();
+                                    });
+                                  } else if (_currentSelection == 3) {
+                                    setState(() {
+                                      textController.text = '';
+                                      _ingredientController
+                                          .getIngredientSupplierByKeyword();
+                                    });
+                                  }
                                 },
                                 icon: Icon(Icons.close, color: textSecondary)),
                             hintText: "Search Item",
@@ -1218,7 +1271,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        controller.addIngredintCatgoryList= selectedOptions
+                        controller.addIngredintCatgoryList = selectedOptions
                             .map((ValueItem e) => int.parse(e.value!))
                             .toList();
                         print(controller.addIngredintCatgoryList);
@@ -1260,7 +1313,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                       optionTextStyle:
                           TextStyle(color: primaryText, fontSize: 16),
                       onOptionSelected: (List<ValueItem> selectedOptions) {
-                        controller.addIngredintUnitList= selectedOptions
+                        controller.addIngredintUnitList = selectedOptions
                             .map((ValueItem e) => int.parse(e.value!))
                             .toList();
                         print(controller.addIngredintUnitList);
@@ -1381,16 +1434,18 @@ class _IngredientManagementState extends State<IngredientManagement>
                             .map((ValueItem e) => int.parse(e.value!))
                             .toList();
                       },
-                      selectedOptions: controller.ingredientData.value.data!.
-                      map((e) {
+                      selectedOptions:
+                          controller.ingredientData.value.data!.map((e) {
                         return ValueItem(
                           label: _ingredientController.ingredientData.value.data
-                              ?.firstWhere((element) => element.id ==itemId).categoryName,
+                              ?.firstWhere((element) => element.id == itemId)
+                              .categoryName,
                           value: _ingredientController.ingredientData.value.data
-                              ?.firstWhere((element) => element.id==itemId).id.toString(),
+                              ?.firstWhere((element) => element.id == itemId)
+                              .id
+                              .toString(),
                         );
                       }).toList(),
-
                       options: _ingredientController
                           .ingredientCategoryData.value.data
                           .map((IngrediantCategory e) {
@@ -1433,16 +1488,18 @@ class _IngredientManagementState extends State<IngredientManagement>
                             .map((ValueItem e) => int.parse(e.value!))
                             .toList();
                       },
-                      selectedOptions: controller.ingredientData.value.data!.
-                      map((e) {
+                      selectedOptions:
+                          controller.ingredientData.value.data!.map((e) {
                         return ValueItem(
                           label: _ingredientController.ingredientData.value.data
-                              ?.firstWhere((element) => element.id ==itemId).unitName,
+                              ?.firstWhere((element) => element.id == itemId)
+                              .unitName,
                           value: _ingredientController.ingredientData.value.data
-                              ?.firstWhere((element) => element.id==itemId).id.toString(),
+                              ?.firstWhere((element) => element.id == itemId)
+                              .id
+                              .toString(),
                         );
                       }).toList(),
-
                       options: _ingredientController
                           .ingredientUnitData.value.data
                           .map((IngrediantUnit e) {
@@ -1750,15 +1807,16 @@ class _IngredientManagementState extends State<IngredientManagement>
                         _ingredientController.idCardBack,
                       )
                           .then((value) {
-                        _ingredientController
-                            .addIngrediantSupplierNameCtlr.clear();
-                        _ingredientController
-                            .addIngredientSupplierEmailCtlr.clear();
-                        _ingredientController
-                            .addIngredintSupplierPhoneCtlr.clear();
-                        _ingredientController.addIngredintSupplierRefCtlr.clear();
-                        _ingredientController
-                            .addIngredintSupplierAddressCtlr.clear();
+                        _ingredientController.addIngrediantSupplierNameCtlr
+                            .clear();
+                        _ingredientController.addIngredientSupplierEmailCtlr
+                            .clear();
+                        _ingredientController.addIngredintSupplierPhoneCtlr
+                            .clear();
+                        _ingredientController.addIngredintSupplierRefCtlr
+                            .clear();
+                        _ingredientController.addIngredintSupplierAddressCtlr
+                            .clear();
                         _ingredientController.idCardFront = null;
                         _ingredientController.idCardBack = null;
                         if (Navigator.of(context).canPop()) {
@@ -2169,5 +2227,4 @@ class _IngredientManagementState extends State<IngredientManagement>
           ],
         ));
   }
-
 }

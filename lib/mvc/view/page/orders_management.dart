@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
@@ -120,6 +122,7 @@ class _OrdersManagementState extends State<OrdersManagement>
   }
 
   customTapBarHeader(TabController controller) {
+    Timer? stopOnSearch;
     return Padding(
         padding: const EdgeInsets.all(15.0),
         child: Row(
@@ -218,7 +221,58 @@ class _OrdersManagementState extends State<OrdersManagement>
                         width: 300,
                         height: 40,
                         child: TextField(
-                            onChanged: (text) async {},
+                            onChanged: (text) async {
+                              if (_currentSelection == 0) {
+                                const duration = Duration(seconds: 1);
+                                if (stopOnSearch != null) {
+                                  stopOnSearch?.cancel();
+                                }
+                                stopOnSearch = Timer(
+                                    duration,
+                                    () => _ordersManagementController
+                                        .getAllOrderByKeyword(keyword: text));
+                              } else if (_currentSelection == 1) {
+                                const duration = Duration(seconds: 1);
+                                if (stopOnSearch != null) {
+                                  stopOnSearch?.cancel();
+                                }
+                                stopOnSearch = Timer(
+                                    duration,
+                                    () => _ordersManagementController
+                                        .getSuccessOrderByKeyword(
+                                            keyword: text));
+                              } else if (_currentSelection == 2) {
+                                const duration = Duration(seconds: 1);
+                                if (stopOnSearch != null) {
+                                  stopOnSearch?.cancel();
+                                }
+                                stopOnSearch = Timer(
+                                    duration,
+                                    () => _ordersManagementController
+                                        .getProcessingOrderByKeyword(
+                                            keyword: text));
+                              } else if (_currentSelection == 3) {
+                                const duration = Duration(seconds: 1);
+                                if (stopOnSearch != null) {
+                                  stopOnSearch?.cancel();
+                                }
+                                stopOnSearch = Timer(
+                                    duration,
+                                    () => _ordersManagementController
+                                        .getPendingOrderByKeyword(
+                                            keyword: text));
+                              } else if (_currentSelection == 4) {
+                                const duration = Duration(seconds: 1);
+                                if (stopOnSearch != null) {
+                                  stopOnSearch?.cancel();
+                                }
+                                stopOnSearch = Timer(
+                                    duration,
+                                    () => _ordersManagementController
+                                        .getCancelOrderByKeyword(
+                                            keyword: text));
+                              } else {}
+                            },
                             controller: textController,
                             style: const TextStyle(
                               fontSize: fontSmall,
@@ -235,7 +289,57 @@ class _OrdersManagementState extends State<OrdersManagement>
                               ),
                               suffixIcon: IconButton(
                                   onPressed: () {
-                                    textController.text = '';
+                                    if (_currentSelection == 0) {
+                                      setState(() {
+                                        textController.text = '';
+                                        _ordersManagementController
+                                            .getAllOrderByKeyword();
+                                        _ordersManagementController
+                                            .haveMoreAllOrder = true;
+                                        _ordersManagementController
+                                            .allOrderPageNumber = 2;
+                                      });
+                                    } else if (_currentSelection == 1) {
+                                      setState(() {
+                                        textController.text = '';
+                                        _ordersManagementController
+                                            .getSuccessOrderByKeyword();
+                                        _ordersManagementController
+                                            .haveMoreSuccessOrder = true;
+                                        _ordersManagementController
+                                            .successOrderPageNumber = 2;
+                                      });
+                                    } else if (_currentSelection == 2) {
+                                      setState(() {
+                                        textController.text = '';
+                                        _ordersManagementController
+                                            .getProcessingOrderByKeyword();
+                                        _ordersManagementController
+                                            .haveMoreProcessingOrder = true;
+                                        _ordersManagementController
+                                            .processingOrderPageNumber = 2;
+                                      });
+                                    } else if (_currentSelection == 3) {
+                                      setState(() {
+                                        textController.text = '';
+                                        _ordersManagementController
+                                            .getPendingOrderByKeyword();
+                                        _ordersManagementController
+                                            .haveMorePendingOrder = true;
+                                        _ordersManagementController
+                                            .pendingOrderPageNumber = 2;
+                                      });
+                                    } else if (_currentSelection == 4) {
+                                      setState(() {
+                                        textController.text = '';
+                                        _ordersManagementController
+                                            .getCancelOrderByKeyword();
+                                        _ordersManagementController
+                                            .haveMoreCancelOrder = true;
+                                        _ordersManagementController
+                                            .cancelOrderPageNumber = 2;
+                                      });
+                                    }
                                   },
                                   icon:
                                       Icon(Icons.close, color: textSecondary)),
@@ -507,6 +611,16 @@ class _OrdersManagementState extends State<OrdersManagement>
                 DataCell(CircularProgressIndicator(color: Colors.transparent)),
               ]);
             }
+            // else if (item.id == lastItem.id && !isLoading && haveMoreData) {
+            //   return const DataRow(cells: [
+            //     DataCell(CircularProgressIndicator(color: Colors.transparent)),
+            //     DataCell(CircularProgressIndicator(color: Colors.transparent)),
+            //     DataCell(CircularProgressIndicator(color: Colors.transparent)),
+            //     DataCell(CircularProgressIndicator()),
+            //     DataCell(CircularProgressIndicator(color: Colors.transparent)),
+            //     DataCell(CircularProgressIndicator(color: Colors.transparent)),
+            //   ]);
+            // }
             return DataRow(
               cells: [
                 DataCell(

@@ -180,7 +180,15 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                           width: 300,
                           height: 40,
                           child: TextField(
-                              onChanged: (text)async{},
+                              onChanged: (text)async{
+                                if(_currentSelection==0){
+                                  _reportController.getSaleReportByKeyword(keyword: text);
+                                }else if(_currentSelection==1){
+                                  _reportController.getStockReportByKeyword(keyword: text);
+                                }else if(_currentSelection==3){
+                                  _reportController.getWasteReportByKeyword(keyword: text);
+                                }else{}
+                              },
                               controller: textController,
                               style: const TextStyle(
                                 fontSize: fontSmall,
@@ -195,9 +203,26 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                                   Icons.search,
                                   size: 20,
                                 ),
-                                suffixIcon: IconButton(onPressed: (){
-                                  textController.text= '';
-                                },
+                                suffixIcon: IconButton(
+                                    onPressed: (){
+                                      if(_currentSelection==0){
+                                        setState(() {
+                                          textController.text= '';
+                                          _reportController.getSaleReportByKeyword();
+                                        });
+                                      }else if(_currentSelection==1){
+                                        setState(() {
+                                          textController.text= '';
+                                          _reportController.getStockReportByKeyword();
+                                        });
+                                      }else if(_currentSelection==3){
+                                        setState(() {
+                                          textController.text= '';
+                                          _reportController.getWasteReportByKeyword();
+                                        });
+                                      }else{}
+
+                                    },
                                     icon: Icon(
                                       Icons.close,
                                       color:textSecondary,

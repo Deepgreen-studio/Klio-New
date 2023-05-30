@@ -129,57 +129,28 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
                           )
                       ),
                       DataCell(
-                        Row(
-                          children:[
-                            Container(
-                              height: 35,
-                              width:35,
-                              decoration: BoxDecoration(
-                                color:const Color(0xffFFE7E6),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  cusController.getSingleCustomerDetails(item.id)
-                                  .then((value) {
-                                    showCustomDialog(context, 'View Customer Details',
-                                        viewCustomer(), 100, 300);
-                                  });
-                                },
-                                child: Image.asset(
-                                  "assets/hide.png",
-                                  height: 15,
-                                  width: 15,
-                                  color: const Color(0xff00A600),
-                                ),
-                              ),
+                        Container(
+                          height: 35,
+                          width:35,
+                          decoration: BoxDecoration(
+                            color:const Color(0xffFFE7E6),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              cusController.getSingleCustomerDetails(item.id)
+                              .then((value) {
+                                showCustomDialog(context, 'View Customer Details',
+                                    viewCustomer(), 100, 300);
+                              });
+                            },
+                            child: Image.asset(
+                              "assets/hide.png",
+                              height: 15,
+                              width: 15,
+                              color: const Color(0xff00A600),
                             ),
-                            const SizedBox(width: 40),
-                            Container(
-                              height: 35,
-                              width:35,
-                              decoration: BoxDecoration(
-                                color:const Color(0xffFFE7E6),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  showWarningDialog("Do you wan to delete this item?",
-                                      onAccept: () async {
-                                        cusController.deleteCustomerData(id: item.id);
-                                        Get.back();
-                                      }
-                                  );
-                                },
-                                child: Image.asset(
-                                  "assets/delete.png",
-                                  height: 15,
-                                  width: 15,
-                                  color: const Color(0xffED0206),
-                                ),
-                              ),
-                            ),
-                          ]
+                          ),
                         ),
                       )
                     ])) .toList(),
@@ -611,6 +582,5 @@ class _CustomerManagementState extends State<CustomerManagement> with SingleTick
       ),
     );
   }
-
 
 }

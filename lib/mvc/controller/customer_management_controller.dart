@@ -101,14 +101,14 @@ class CustomerController extends GetxController with ErrorController{
     Utils.showSnackBar("Customer added successfully");
   }
 
-  Future <void> deleteCustomerData({id = ''})async {
-    Utils.showLoading();
-    String endPoint = 'pos/customer/$id';
-    var response = await ApiClient()
-        .delete(endPoint, header: Utils.apiHeader)
-        .catchError(handleApiError);
-    customerDataLoading();
-    Utils.hidePopup();
-  }
+  // Future <void> deleteCustomerData({id = ''})async {
+  //   Utils.showLoading();
+  //   String endPoint = 'pos/customer/$id';
+  //   var response = await ApiClient()
+  //       .delete(endPoint, header: Utils.apiHeader)
+  //       .catchError(handleApiError);
+  //   customerDataLoading();
+  //   Utils.hidePopup();
+  // }
 
 }

@@ -195,14 +195,25 @@ class TransactionsController extends GetxController with ErrorController{
 
   }
 
+  /// Search methods for bank and bank transaction....
+
   Future<void> getBankByKeyword({String keyword = ''})async{
-    Map<String, String> qParams = {'keyword': keyword};
-    String endPoint = "finance/bank";
-    // print(endPoint);
-    // var response= await ApiClient()
-    //   .get(endPoint, header: Utils.apiHeader, query: qParams);
-    // print(response);
-    // bankListData.value= bankListModelFromJson(response);
+    String endPoint= keyword.isNotEmpty? "finance/bank?keyword=$keyword": "finance/bank";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    bankListData.value = bankListModelFromJson(response);
+    update(["bankId"]);
+  }
+  Future<void> getBankTransactionByKeyword({String keyword = ''})async{
+    String endPoint= keyword.isNotEmpty? "finance/bank-transaction?keyword=$keyword": "finance/bank-transaction";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    transactionListData.value = transactionListModelFromJson(response);
+    update(["transId"]);
   }
 
 

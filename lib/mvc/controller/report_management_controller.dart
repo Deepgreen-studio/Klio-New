@@ -142,5 +142,40 @@ class ReportManagementController extends GetxController with ErrorController{
     update(['wasteId']);
   }
 
+  ///Search methods for all reports.....
+
+  Future<void> getSaleReportByKeyword({String keyword=''})async{
+    String endPoint= keyword.isNotEmpty?
+        "report/sale?keyword=$keyword":
+        "report/sale";
+    var response = await ApiClient()
+      .get(endPoint,header: Utils.apiHeader)
+      .catchError(handleApiError);
+    print(response);
+    saleRepData.value = saleReportListModelFromJson(response);
+    update(['saleId']);
+  }
+  Future<void> getStockReportByKeyword({String keyword=''})async{
+    String endPoint= keyword.isNotEmpty?
+        "report/stock?keyword=$keyword":
+        "report/stock";
+    var response = await ApiClient()
+      .get(endPoint,header: Utils.apiHeader)
+      .catchError(handleApiError);
+    print(response);
+    stockRepData.value = stockReportListModelFromJson(response);
+    update(['stockId']);
+  }
+  Future<void> getWasteReportByKeyword({String keyword=''})async{
+    String endPoint= keyword.isNotEmpty?
+        "report/waste?keyword=$keyword":
+        "report/waste";
+    var response = await ApiClient()
+      .get(endPoint,header: Utils.apiHeader)
+      .catchError(handleApiError);
+    print(response);
+    wasteRepData.value = wasteReportListModelFromJson(response);
+    update(['wasteId']);
+  }
 
 }

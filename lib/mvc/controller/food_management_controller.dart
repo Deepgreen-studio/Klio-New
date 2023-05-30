@@ -171,13 +171,13 @@ class FoodManagementController extends GetxController with ErrorController {
   Future<void> foodDataLoading() async {
     token = (await SharedPref().getValue('token'))!;
     debugPrint('checkToken\n$token');
-    getIngredientDataList();
+    //getIngredientDataList();
     getFoodDataList();
-    getFoodMealPeriod();
-    getFoodMenuCategory();
-    getFoodMenuAllergy();
-    getFoodMenuAddons();
-    getFoodMenuVariants();
+    // getFoodMealPeriod();
+    // getFoodMenuCategory();
+    // getFoodMenuAllergy();
+    // getFoodMenuAddons();
+    // getFoodMenuVariants();
   }
 
   // Validator
@@ -228,8 +228,6 @@ class FoodManagementController extends GetxController with ErrorController {
     List<FoodMenuManagementDatum> datums = temp.data ?? [];
 
     menusData.value.data?.addAll(datums);
-
-
 
     menuPageNumber++;
 
@@ -543,7 +541,6 @@ class FoodManagementController extends GetxController with ErrorController {
 
       Get.back();
       _processResponse(res);
-
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {
@@ -1024,6 +1021,74 @@ class FoodManagementController extends GetxController with ErrorController {
     singleVariantDetails.value = singleVariantDetailsFromJson(response);
     // updateSelectedVariant.add(singleVariantDetails.value.data!);
     update();
+  }
+
+  ///Serch methods of all items...
+  Future<void> getFoodMenuByKeyword({String keyword = ''}) async {
+    String endPoint =
+        keyword.isNotEmpty ? "food/menu?keyword=$keyword" : "food/menu";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    menusData.value = foodMenuManagementFromJson(response);
+    update(["menuDataTable"]);
+  }
+
+  Future<void> getMealPeriodByKeyword({String keyword = ''}) async {
+    String endPoint = keyword.isNotEmpty
+        ? "food/meal-period?keyword=$keyword"
+        : "food/meal-period";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    mealPeriod.value = mealPeriodFromJson(response);
+    update(["mealPeriodTable"]);
+  }
+
+  Future<void> getMenuCategoryByKeyword({String keyword = ''}) async {
+    String endPoint =
+        keyword.isNotEmpty ? "food/category?keyword=$keyword" : "food/category";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    foodMenuCategory.value = foodMenuCategoryFromJson(response);
+    update(["categoryDataTable"]);
+  }
+
+  Future<void> getMenuAllergyByKeyword({String keyword = ''}) async {
+    String endPoint =
+        keyword.isNotEmpty ? "food/allergy?keyword=$keyword" : "food/allergy";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    foodMenuAllergy.value = foodMenuAllergyFromJson(response);
+    update(["allergyDataTable"]);
+  }
+
+  Future<void> getMenuAddonsByKeyword({String keyword = ''}) async {
+    String endPoint =
+        keyword.isNotEmpty ? "food/addon?keyword=$keyword" : "food/addon";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    foodAddons.value = foodMenuAddonsFromJson(response);
+    update(["addonsDataTable"]);
+  }
+
+  Future<void> getMenuVariantsByKeyword({String keyword = ''}) async {
+    String endPoint =
+        keyword.isNotEmpty ? "food/variant?keyword=$keyword" : "food/variant";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    foodVariants.value = foodMenuVariantsFromJson(response);
+    update(["variantDataTable"]);
   }
 
   dynamic _processResponse(http.Response response) {

@@ -160,10 +160,13 @@ class OrdersManagementController extends GetxController with ErrorController {
     allOrdersData.value.data?.addAll(datums);
     allOrdersData.value.meta = temp.meta;
     allOrderPageNumber++;
-    if (allOrdersData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
+
+    if (allOrdersData.value.meta!.total <= (allOrdersData.value.meta!.to ?? 0)) {
       haveMoreAllOrder = false;
     }
-
+    print(allOrdersData.value.meta!.total);
+    print(allOrdersData.value.meta!.to);
+    print(haveMoreAllOrder);
     isLoadingAllOrder = false;
     update(['allOrders']);
   }
@@ -185,7 +188,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     }
     allSuccessData.value.data?.addAll(datums);
     allSuccessData.value.meta = temp.meta;
-    if (allSuccessData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
+    if (allSuccessData.value.meta!.total <= (allSuccessData.value.meta!.to ?? 0)) {
       haveMoreSuccessOrder = false;
     }
     successOrderPageNumber++;
@@ -212,7 +215,7 @@ class OrdersManagementController extends GetxController with ErrorController {
     allProcessingData.value.data?.addAll(datums);
     allProcessingData.value.meta = temp.meta;
     if (allProcessingData.value.meta!.total <=
-        (allCancelData.value.meta!.to ?? 0)) {
+        (allProcessingData.value.meta!.to ?? 0)) {
       haveMoreProcessingOrder = false;
     }
     processingOrderPageNumber++;
@@ -250,7 +253,7 @@ class OrdersManagementController extends GetxController with ErrorController {
 
     allPendingData.value.meta = temp.meta;
 
-    if (allPendingData.value.meta!.total <= (allCancelData.value.meta!.to ?? 0)) {
+    if (allPendingData.value.meta!.total <= (allPendingData.value.meta!.to ?? 0)) {
       haveMorePendingOrder = false;
     }
     print(haveMorePendingOrder);
@@ -285,4 +288,68 @@ class OrdersManagementController extends GetxController with ErrorController {
 
     update(["allCancelOrders"]);
   }
+
+  ///Search methods for all orders item...
+
+    Future<void> getAllOrderByKeyword({String keyword = ''})async{
+      String endPoint = keyword.isNotEmpty?
+          "orders/order?keyword=$keyword":
+          "orders/order" ;
+      haveMoreAllOrder=false;
+      var response = await ApiClient()
+        .get(endPoint,header: Utils.apiHeader)
+          .catchError(handleApiError);
+      print(response);
+      allOrdersData.value= allOrdersModelFromJson(response);
+      update(['allOrders']);
+    }
+  Future<void> getSuccessOrderByKeyword({String keyword = ''})async{
+    String endPoint = keyword.isNotEmpty?
+    "orders/order?status=success&keyword=$keyword":
+    "orders/order?status=success";
+    haveMoreSuccessOrder=false;
+    var response = await ApiClient()
+        .get(endPoint,header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    allSuccessData.value= allOrdersModelFromJson(response);
+    update(['allSuccessOrders']);
+  }
+  Future<void> getProcessingOrderByKeyword({String keyword = ''})async{
+    String endPoint = keyword.isNotEmpty?
+    "orders/order?status=processing&keyword=$keyword":
+    "orders/order?status=processing";
+    haveMoreProcessingOrder=false;
+    var response = await ApiClient()
+        .get(endPoint,header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    allProcessingData.value= allOrdersModelFromJson(response);
+    update(['allProcessingOrders']);
+  }
+  Future<void> getPendingOrderByKeyword({String keyword = ''})async{
+    String endPoint = keyword.isNotEmpty?
+    "orders/order?status=pending&keyword=$keyword":
+    "orders/order?status=pending";
+    haveMorePendingOrder=false;
+    var response = await ApiClient()
+        .get(endPoint,header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    allPendingData.value= allOrdersModelFromJson(response);
+    update(['allPendingOrders']);
+  }
+  Future<void> getCancelOrderByKeyword({String keyword = ''})async{
+    String endPoint = keyword.isNotEmpty?
+    "orders/order?status=cancel&keyword=$keyword":
+    "orders/order?status=cancel";
+    haveMoreCancelOrder=false;
+    var response = await ApiClient()
+        .get(endPoint,header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    allCancelData.value= allOrdersModelFromJson(response);
+    update(['allCancelOrders']);
+  }
+
 }

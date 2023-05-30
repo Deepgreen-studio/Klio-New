@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,6 +45,13 @@ class _FoodManagementState extends State<FoodManagement>
   @override
   void initState() {
     // TODO: implement initState
+
+    foodCtlr.getIngredientDataList();
+    foodCtlr.getFoodMealPeriod();
+    foodCtlr.getFoodMenuCategory();
+    foodCtlr.getFoodMenuAllergy();
+    foodCtlr.getFoodMenuAddons();
+    foodCtlr.getFoodMenuVariants();
 
     scrollController = ScrollController();
     controller = TabController(vsync: this, length: 6);
@@ -1495,6 +1503,7 @@ class _FoodManagementState extends State<FoodManagement>
   }
 
   Widget customTapbarHeader(TabController controller) {
+    Timer ? stopOnSearch;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Row(
@@ -1579,7 +1588,54 @@ class _FoodManagementState extends State<FoodManagement>
                       width: 300,
                       height: 40,
                       child: TextField(
-                          onChanged: (text) async {},
+                          onChanged: (text) async {
+                            if(_currentSelection==0){
+
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getFoodMenuByKeyword(keyword: text));
+
+                            }else if(_currentSelection==1){
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getMealPeriodByKeyword(keyword: text));
+                            }else if(_currentSelection==2){
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getMenuCategoryByKeyword(keyword: text));
+                            }else if(_currentSelection==3){
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getMenuAllergyByKeyword(keyword: text));
+                            }else if(_currentSelection==4){
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getMenuAddonsByKeyword(keyword: text));
+                            }else if(_currentSelection==5){
+                              const duration = Duration(seconds: 1);
+                              if(stopOnSearch!=null){
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch= Timer(duration,()=>
+                                  foodCtlr.getMenuVariantsByKeyword(keyword: text));
+                            }
+                            else{}
+                          },
                           controller: textController,
                           style: const TextStyle(
                             fontSize: fontSmall,
@@ -1600,7 +1656,47 @@ class _FoodManagementState extends State<FoodManagement>
                                 color: textSecondary,
                               ),
                               onPressed: () {
-                                textController.text = '';
+                                if(_currentSelection==0){
+                                    setState(() {
+                                      textController.text = '';
+                                      foodCtlr.getFoodMenuByKeyword();
+                                    });
+                                }
+                                else if(_currentSelection==1){
+                                    setState(() {
+                                      textController.text = '';
+                                      foodCtlr.getMealPeriodByKeyword();
+                                    });
+                                }
+                                else if(_currentSelection==2){
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getMenuCategoryByKeyword();
+                                  });
+                                }
+                                else if(_currentSelection==3){
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getMenuAllergyByKeyword();
+                                  });
+                                }
+                                else if(_currentSelection==4){
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getMenuAddonsByKeyword();
+                                  });
+                                }
+                                else if(_currentSelection==5){
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getMenuVariantsByKeyword();
+                                  });
+                                }
+
+                                else{
+
+                                }
+
                               },
                             ),
                             hintText: "Search Item",
@@ -2317,62 +2413,6 @@ class _FoodManagementState extends State<FoodManagement>
                         },
                       ),
                     ),
-                  ],
-                ),
-                textRow('Select Menu Ingredient', ' '),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: GetBuilder<FoodManagementController>(
-                            builder: (controller) {
-                          return MultiSelectDropDown(
-                            backgroundColor: secondaryBackground,
-                            optionsBackgroundColor: secondaryBackground,
-                            selectedOptionTextColor: primaryText,
-                            selectedOptionBackgroundColor: primaryColor,
-                            optionTextStyle:
-                                TextStyle(color: primaryText, fontSize: 16),
-                            onOptionSelected:
-                                (List<ValueItem> selectedOptions) {
-                              foodCtlr.updateMenuIngredientIdList =
-                                  selectedOptions
-                                      .map((ValueItem e) => int.parse(e.value!))
-                                      .toList();
-                            },
-                            selectedOptions: foodCtlr
-                                .updateMealIngrediantSelectMeal
-                                .map((SingleMenuDetailsData e) {
-                              return ValueItem(
-                                label: e.name!,
-                                value: e.id.toString(),
-                              );
-                            }).toList(),
-                            options: controller.ingredientData.value.data!
-                                .map((Ingrediant e) {
-                              return ValueItem(
-                                label: e.name!,
-                                value: e.id.toString(),
-                              );
-                            }).toList(),
-                            selectionType: SelectionType.single,
-                            chipConfig:
-                                const ChipConfig(wrapType: WrapType.wrap),
-                            dropdownHeight: 300,
-                            selectedOptionIcon: const Icon(Icons.check_circle),
-                            inputDecoration: BoxDecoration(
-                              color: secondaryBackground,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(6)),
-                              border: Border.all(
-                                color: alternate,
-                              ),
-                            ),
-                          );
-                        })),
-                    const SizedBox(width: 20),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -3816,4 +3856,5 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
+
 }
