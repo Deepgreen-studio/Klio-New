@@ -27,7 +27,7 @@ import 'error_controller.dart';
 class HomeController extends GetxController with ErrorController {
   Rx<User> user = User().obs;
   Rx<Category> category = Category().obs;
-  Rx<Menus> menus = Menus().obs;
+  Rx<Menus> menus = Menus(data: []).obs;
   Rx<Customers> customers = Customers().obs;
   Rx<Orders> orders = Orders().obs;
   Rx<Orders> searchedOrders = Orders().obs;
@@ -66,6 +66,10 @@ class HomeController extends GetxController with ErrorController {
   RxBool reward = false.obs;
   RxInt selectedOrder = (-1).obs;
   RxInt currentPage = 0.obs;
+
+  bool haveMoreMenu = true;
+  int menuPageNumber = 1;
+  bool isLoading = false;
 
   Future<void> loadHomeData() async {
     token = (await SharedPref().getValue('token'))!;
@@ -119,14 +123,45 @@ class HomeController extends GetxController with ErrorController {
   }
 
   Future<void> getMenuByKeyword({String keyword = ''}) async {
-    Map<String, String> qParams = {'keyword': keyword};
-    String endPoint = "pos/menu";
+    if (!haveMoreMenu) {
+      return;
+    }
+    if(keyword != ''){
+      menus.value.data!.clear();
+    }
+    isLoading = true;
+    //Map<String, String> qParams = {'keyword': keyword};
+    //String endPoint = "pos/menu?page=$menuPageNumber";
+    String endPoint = keyword == '' ? "pos/menu?page=$menuPageNumber" : "pos/menu?page=$menuPageNumber&keyword=$keyword";
     var response = await ApiClient()
-        .get(endPoint, header: Utils.apiHeader, query: qParams);
+        .get(endPoint, header: Utils.apiHeader);
     // .catchError(handleApiError);
 
-    menus.value = menuFromJson(response);
+    var temp = menuFromJson(response);
+    List<MenuData> menuItem = temp.data!;
+
+    menus.value.data?.addAll(menuItem);
+
+    //menus.value = menuFromJson(response);
+
     filteredMenu.value = Utils.filterCategory(menus.value, -1)!;
+    print("++++++++++++++++++++++++++++++++++++++++++");
+    print(menus.value.data!.length);
+    print(filteredMenu.length);
+
+
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+
+
+    if (total <= to) {
+      haveMoreMenu = false;
+    }
+    print(haveMoreMenu);
+    menuPageNumber++;
+    isLoading = false;
+    filteredMenu.refresh();
   }
 
   Future<void> getCustomers() async {

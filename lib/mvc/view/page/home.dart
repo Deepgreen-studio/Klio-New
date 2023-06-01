@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -53,15 +55,24 @@ class _HomeState extends State<Home> {
   bool gridImage = true;
   FoodManagementController foodCtlr = Get.put(FoodManagementController());
   TextEditingController searchText = TextEditingController();
+  late ScrollController menuScrollController;
 
   @override
   void initState() {
     super.initState();
-
+    menuScrollController = ScrollController();
     applyThem(darkMode);
     if (widget.refresh) {
       homeController.loadHomeData();
     }
+
+    menuScrollController.addListener(() {
+      if (menuScrollController.position.pixels >=
+              menuScrollController.position.maxScrollExtent * 0.95 &&
+          !homeController.isLoading) {
+        homeController.getMenuByKeyword();
+      }
+    });
   }
 
   @override
@@ -279,11 +290,9 @@ class _HomeState extends State<Home> {
                 bottomIconTextBtn(
                     'assets/search.png', 'Search order', primaryColor,
                     onPressed: () async {
-                      showCustomDialog(context, "Search Order",
-                          searchOrderDialog(context), 100, 800);
-
+                  showCustomDialog(context, "Search Order",
+                      searchOrderDialog(context), 100, 800);
                 }),
-
                 const SizedBox(width: 8),
                 bottomIconTextBtn(
                     'assets/circle-error.png', 'Cancel Order', primaryColor,
@@ -392,7 +401,13 @@ class _HomeState extends State<Home> {
   Expanded buildMenuItems(Size size) {
     return Expanded(
       child: Obx(() {
+        if (!homeController.haveMoreMenu &&
+            homeController.filteredMenu.isNotEmpty &&
+            homeController.filteredMenu.last.id != 0) {
+          homeController.filteredMenu.add(MenuData(id: 0));
+        }
         return GridView.builder(
+          controller: menuScrollController,
           padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: size.width > size.height ? 3 : 2,
@@ -403,6 +418,26 @@ class _HomeState extends State<Home> {
           scrollDirection: Axis.vertical,
           itemCount: homeController.filteredMenu.length,
           itemBuilder: (BuildContext context, int index) {
+            if (homeController.filteredMenu[index].id == 0 &&
+                !homeController.haveMoreMenu &&
+                selectedCategory == -1) {
+              return const Center(
+                  child: Text(
+                "End of Menu",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ));
+            } else if (homeController.filteredMenu[index] ==
+                    homeController.filteredMenu.last &&
+                !homeController.isLoading &&
+                homeController.haveMoreMenu &&
+                selectedCategory == -1) {
+              return const Center(
+                  child:
+                      SizedBox(height: 40, child: CircularProgressIndicator()));
+            } else if (homeController.filteredMenu[index].id == 0 &&
+                selectedCategory != -1) {
+              return SizedBox();
+            }
             return Container(
               decoration: BoxDecoration(
                 color: secondaryBackground,
@@ -618,6 +653,7 @@ class _HomeState extends State<Home> {
   }
 
   Padding buildHomeTop(BuildContext context) {
+    Timer? searchOnStoppedTyping;
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(15, 15, 15, 15),
       child: Row(
@@ -673,7 +709,21 @@ class _HomeState extends State<Home> {
                           height: 40,
                           child: TextField(
                               onChanged: (text) async {
-                                homeController.getMenuByKeyword(keyword: text);
+                                const duration = Duration(
+                                    seconds:
+                                        1); // set the duration that you want call search() after that.
+                                if (searchOnStoppedTyping != null) {
+                                  searchOnStoppedTyping!
+                                      .cancel(); // clear timer
+                                }
+                                searchOnStoppedTyping = Timer(duration, () {
+                                  homeController.menus.value.data!.clear();
+                                  homeController.filteredMenu.clear();
+                                  homeController.haveMoreMenu = true;
+                                  homeController.menuPageNumber = 1;
+                                  homeController.getMenuByKeyword(
+                                      keyword: text);
+                                });
                               },
                               keyboardType: TextInputType.text,
                               controller: textController,
@@ -692,6 +742,10 @@ class _HomeState extends State<Home> {
                                     ),
                                     onPressed: () {
                                       setState(() {
+                                        homeController.menus.value.data!.clear();
+                                        homeController.filteredMenu.clear();
+                                        homeController.haveMoreMenu = true;
+                                        homeController.menuPageNumber = 1;
                                         textController!.text = '';
                                         homeController.getMenuByKeyword();
                                       });
@@ -712,6 +766,10 @@ class _HomeState extends State<Home> {
                     8,
                     15,
                     40, onPressed: () {
+                  homeController.menus.value.data!.clear();
+                  homeController.filteredMenu.clear();
+                  homeController.haveMoreMenu = true;
+                  homeController.menuPageNumber = 1;
                   homeController.loadHomeData();
                   Utils.hidePopup();
                   Utils.hidePopup();
@@ -805,5 +863,4 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 }

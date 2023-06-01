@@ -23,7 +23,8 @@ import 'dart:io';
 HomeController homeController = Get.find();
 
 Future<void> showCustomDialog(BuildContext context, String title, Widget widget,
-    int heightReduce, int widthReduce, {bool reducePop = false}) async {
+    int heightReduce, int widthReduce,
+    {bool reducePop = false}) async {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -51,8 +52,13 @@ Future<void> showCustomDialog(BuildContext context, String title, Widget widget,
   );
 }
 
-Future<void> showCustomDialogResponsive(BuildContext context, String title,
-    Widget widget, double height, double width, ) async {
+Future<void> showCustomDialogResponsive(
+  BuildContext context,
+  String title,
+  Widget widget,
+  double height,
+  double width,
+) async {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -249,7 +255,8 @@ void showDiscountDialog(String title, TextEditingController controller,
   );
 }
 
-Widget dialogHeader(String title, BuildContext context, {bool reducePop = false}) {
+Widget dialogHeader(String title, BuildContext context,
+    {bool reducePop = false}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
     child: Row(
@@ -263,8 +270,8 @@ Widget dialogHeader(String title, BuildContext context, {bool reducePop = false}
         IconButton(
           onPressed: () {
             Get.back();
-            if(reducePop)Utils.hidePopup();
-            if(reducePop)Utils.hidePopup();
+            if (reducePop) Utils.hidePopup();
+            if (reducePop) Utils.hidePopup();
           },
           icon: Icon(
             Icons.close,
@@ -1700,6 +1707,7 @@ finalizeOrder(BuildContext context, Customer customer) {
 
   CustomerDisplay.totalPayPrint(
       '${homeController.settings.value.data![11].value}${homeController.order.value.data!.grandTotal}');
+  TextEditingController textController = TextEditingController();
   return Container(
     height: Size.infinite.height,
     width: Size.infinite.width,
@@ -1766,7 +1774,16 @@ finalizeOrder(BuildContext context, Customer customer) {
                 isExpanded: true,
                 dropdownColor: primaryBackground,
                 value: homeController.payMethod.value,
-                onChanged: (value) => homeController.payMethod.value = value!,
+                onChanged: (value) {
+                  homeController.payMethod.value = value!;
+                  if (homeController.payMethod.value == "Card") {
+                    textController.text = homeController.reward.value
+                        ? totalPayableWithReward.toStringAsFixed(2)
+                        : totalPayable.toStringAsFixed(2);
+                  } else {
+                    textController.text = "";
+                  }
+                },
               );
             })),
         SizedBox(height: 15),
@@ -1777,6 +1794,7 @@ finalizeOrder(BuildContext context, Customer customer) {
         SizedBox(
           height: 40,
           child: TextFormField(
+              controller: textController,
               keyboardType: TextInputType.number,
               onChanged: (text) =>
                   homeController.giveAmount.value = int.parse(text),

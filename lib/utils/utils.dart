@@ -188,7 +188,7 @@ class Utils {
       data = menus.data;
     } else {
       menus.data!.forEach((element) {
-        element.categories!.forEach((catId) {
+        element.categories?.forEach((catId) {
           if (catId == id) {
             data!.add(element);
           }
