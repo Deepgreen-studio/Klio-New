@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,7 +6,6 @@ import 'package:path/path.dart';
 import 'package:klio_staff/constant/color.dart';
 import 'package:klio_staff/constant/value.dart';
 import 'package:klio_staff/mvc/controller/transaction_management_controller.dart';
-import 'package:klio_staff/mvc/view/dialog/custom_dialog.dart';
 import 'package:klio_staff/mvc/view/widget/custom_widget.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:klio_staff/mvc/model/bank_list_data_model.dart' as Bank;
@@ -146,6 +146,7 @@ class _TransactionManagementState extends State<TransactionManagement>
   }
 
   Widget customTapbarHeader(TabController controller) {
+    Timer? stopOnSearch;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Row(
@@ -207,10 +208,25 @@ class _TransactionManagementState extends State<TransactionManagement>
                       height: 40,
                       child: TextField(
                           onChanged: (text) async {
-                            if(_currentSelection==0){
-                              _transactionsController.getBankByKeyword(keyword: text);
-                            }else{
-                              _transactionsController.getBankTransactionByKeyword(keyword: text);
+                            if (_currentSelection == 0) {
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _transactionsController
+                                      .getBankByKeyword(keyword: text));
+                            } else {
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _transactionsController
+                                      .getBankTransactionByKeyword(
+                                          keyword: text));
                             }
                           },
                           keyboardType: TextInputType.text,
@@ -235,18 +251,18 @@ class _TransactionManagementState extends State<TransactionManagement>
                                 color: textSecondary,
                               ),
                               onPressed: () {
-                                if(_currentSelection==0){
+                                if (_currentSelection == 0) {
                                   setState(() {
                                     textController!.text = '';
                                     _transactionsController.getBankByKeyword();
                                   });
-                                }else{
+                                } else {
                                   setState(() {
                                     textController!.text = '';
-                                    _transactionsController.getBankTransactionByKeyword();
+                                    _transactionsController
+                                        .getBankTransactionByKeyword();
                                   });
                                 }
-
                               },
                             ),
                             hintText: "Search Item",

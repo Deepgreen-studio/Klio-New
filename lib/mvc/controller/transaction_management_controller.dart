@@ -8,20 +8,21 @@ import 'package:image_picker/image_picker.dart';
 import 'package:klio_staff/constant/value.dart';
 import 'package:klio_staff/mvc/controller/error_controller.dart';
 import 'package:klio_staff/mvc/model/bank_list_data_model.dart';
-import 'package:klio_staff/mvc/model/bank_list_data_model.dart' as Bank ;
+import 'package:klio_staff/mvc/model/bank_list_data_model.dart' as Bank;
 import 'package:klio_staff/mvc/model/transaction_list_data_model.dart';
-import 'package:klio_staff/mvc/model/transaction_list_data_model.dart' as Transaction;
+import 'package:klio_staff/mvc/model/transaction_list_data_model.dart'
+    as Transaction;
 import 'package:klio_staff/service/api/api_client.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import '../../service/api/api_exception.dart';
 
-class TransactionsController extends GetxController with ErrorController{
+class TransactionsController extends GetxController with ErrorController {
   Rx<BankListModel> bankListData = BankListModel(data: []).obs;
-  Rx<TransactionListModel> transactionListData = TransactionListModel(data: []).obs;
+  Rx<TransactionListModel> transactionListData =
+      TransactionListModel(data: []).obs;
   File? signatureStoreImage;
-
 
   ///Api data fetch varriable
   int bankPageNumber = 1;
@@ -64,19 +65,20 @@ class TransactionsController extends GetxController with ErrorController{
   @override
   void onClose() {}
 
-  Future<void> transactionsDataLoading()async{
+  Future<void> transactionsDataLoading() async {
     token = (await SharedPref().getValue('token'))!;
     bankListDataList();
     transactionDataList();
   }
 
   Future<File> getImage() async {
-    File ?imageFile;
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    File? imageFile;
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       File signatureStoreImage = File(pickedFile.path);
-      imageFile=signatureStoreImage;
+      imageFile = signatureStoreImage;
       update();
     } else {
       print('No image selected.');
@@ -84,20 +86,20 @@ class TransactionsController extends GetxController with ErrorController{
     return imageFile!;
   }
 
-  Future<void> bankListDataList({dynamic id = ''})async{
-    if(!haveMoreBank){
+  Future<void> bankListDataList({dynamic id = ''}) async {
+    if (!haveMoreBank) {
       return;
     }
-    if(bankPageNumber ==1 && bankListData.value.data.isNotEmpty){
+    if (bankPageNumber == 1 && bankListData.value.data.isNotEmpty) {
       bankListData.value.data.clear();
     }
-    isLoadingBank =true;
+    isLoadingBank = true;
     String endPoint = 'finance/bank?page$bankPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     var temp = bankListModelFromJson(response);
-    List<Bank.Datum> datums= [];
+    List<Bank.Datum> datums = [];
     for (Bank.Datum it in temp.data) {
       datums.add(it);
     }
@@ -111,34 +113,27 @@ class TransactionsController extends GetxController with ErrorController{
     }
     isLoadingBank = false;
     update(['bankId']);
-
   }
 
-  void addNewBank(
-      String name,
-      String accountName,
-      String accountNumber,
-      String branchName,
-      String balance,
-      File? signatureImg
-      )async{
+  void addNewBank(String name, String accountName, String accountNumber,
+      String branchName, String balance, File? signatureImg) async {
     Utils.showLoading();
     var uri = Uri.parse(baseUrl + 'finance/bank');
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', uri);
       request.headers.addAll(Utils.apiHeader);
       if (signatureImg != null) {
-        http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('signature_image', signatureImg.path);
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            'signature_image', signatureImg.path);
         request.files.add(multipartFile);
       }
       Map<String, String> _fields = Map();
       _fields.addAll(<String, String>{
-          "name" : name,
-          "account_name" :accountName,
-          "account_number" : accountNumber,
-          "branch_name" : branchName,
-          "balance" : balance,
+        "name": name,
+        "account_name": accountName,
+        "account_number": accountNumber,
+        "branch_name": branchName,
+        "balance": balance,
       });
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
@@ -168,17 +163,17 @@ class TransactionsController extends GetxController with ErrorController{
   //   Utils.hidePopup();
   // }
 
-  Future<void> transactionDataList({dynamic id = ''}) async{
-    if(!haveMoreTransition){
+  Future<void> transactionDataList({dynamic id = ''}) async {
+    if (!haveMoreTransition) {
       return;
     }
-    isLoadingTransition =true;
+    isLoadingTransition = true;
     String endPoint = 'finance/bank-transaction?page=$transitionPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     var temp = transactionListModelFromJson(response);
-    List<Transaction.Datum> datums= [];
+    List<Transaction.Datum> datums = [];
     for (Transaction.Datum it in temp.data) {
       datums.add(it);
     }
@@ -192,36 +187,59 @@ class TransactionsController extends GetxController with ErrorController{
     }
     isLoadingTransition = false;
     update(['transId']);
-
   }
 
   /// Search methods for bank and bank transaction....
 
-  Future<void> getBankByKeyword({String keyword = ''})async{
-    String endPoint= keyword.isNotEmpty? "finance/bank?keyword=$keyword": "finance/bank";
+  Future<void> getBankByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint =
+        keyword.isNotEmpty ? "finance/bank?keyword=$keyword" : "finance/bank";
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     bankListData.value = bankListModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreBank = false;
+    }else{
+      haveMoreBank=true;
+      bankPageNumber=2;
+    }
     update(["bankId"]);
+    Utils.hidePopup();
   }
-  Future<void> getBankTransactionByKeyword({String keyword = ''})async{
-    String endPoint= keyword.isNotEmpty? "finance/bank-transaction?keyword=$keyword": "finance/bank-transaction";
+
+  Future<void> getBankTransactionByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint = keyword.isNotEmpty
+        ? "finance/bank-transaction?keyword=$keyword"
+        : "finance/bank-transaction";
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     transactionListData.value = transactionListModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreTransition = false;
+    }else{
+      haveMoreTransition=true;
+      transitionPageNumber=2;
+    }
     update(["transId"]);
+    Utils.hidePopup();
   }
-
-
 
   dynamic _processResponse(http.Response response) {
     var jsonResponse = utf8.decode(response.bodyBytes);
     print('check body response${response.body}');
-    var jsonDecode=json.decode(response.body);
+    var jsonDecode = json.decode(response.body);
     Utils.showSnackBar(jsonDecode['message']);
     print(response.statusCode);
     print(response.request!.url);
@@ -244,5 +262,4 @@ class TransactionsController extends GetxController with ErrorController{
             response.request!.url.toString());
     }
   }
-
 }

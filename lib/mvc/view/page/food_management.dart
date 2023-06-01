@@ -1503,7 +1503,7 @@ class _FoodManagementState extends State<FoodManagement>
   }
 
   Widget customTapbarHeader(TabController controller) {
-    Timer ? stopOnSearch;
+    Timer? stopOnSearch;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Row(
@@ -1589,52 +1589,61 @@ class _FoodManagementState extends State<FoodManagement>
                       height: 40,
                       child: TextField(
                           onChanged: (text) async {
-                            if(_currentSelection==0){
-
+                            if (_currentSelection == 0) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getFoodMenuByKeyword(keyword: text));
-
-                            }else if(_currentSelection==1){
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getFoodMenuByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getMealPeriodByKeyword(keyword: text));
-                            }else if(_currentSelection==2){
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getMealPeriodByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getMenuCategoryByKeyword(keyword: text));
-                            }else if(_currentSelection==3){
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getMenuCategoryByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 3) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getMenuAllergyByKeyword(keyword: text));
-                            }else if(_currentSelection==4){
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getMenuAllergyByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 4) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getMenuAddonsByKeyword(keyword: text));
-                            }else if(_currentSelection==5){
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getMenuAddonsByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 5) {
                               const duration = Duration(seconds: 1);
-                              if(stopOnSearch!=null){
+                              if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
                               }
-                              stopOnSearch= Timer(duration,()=>
-                                  foodCtlr.getMenuVariantsByKeyword(keyword: text));
-                            }
-                            else{}
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => foodCtlr.getMenuVariantsByKeyword(
+                                      keyword: text));
+                            } else {}
                           },
                           controller: textController,
                           style: const TextStyle(
@@ -1656,47 +1665,37 @@ class _FoodManagementState extends State<FoodManagement>
                                 color: textSecondary,
                               ),
                               onPressed: () {
-                                if(_currentSelection==0){
-                                    setState(() {
-                                      textController.text = '';
-                                      foodCtlr.getFoodMenuByKeyword();
-                                    });
-                                }
-                                else if(_currentSelection==1){
-                                    setState(() {
-                                      textController.text = '';
-                                      foodCtlr.getMealPeriodByKeyword();
-                                    });
-                                }
-                                else if(_currentSelection==2){
+                                if (_currentSelection == 0) {
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getFoodMenuByKeyword();
+                                  });
+                                } else if (_currentSelection == 1) {
+                                  setState(() {
+                                    textController.text = '';
+                                    foodCtlr.getMealPeriodByKeyword();
+                                  });
+                                } else if (_currentSelection == 2) {
                                   setState(() {
                                     textController.text = '';
                                     foodCtlr.getMenuCategoryByKeyword();
                                   });
-                                }
-                                else if(_currentSelection==3){
+                                } else if (_currentSelection == 3) {
                                   setState(() {
                                     textController.text = '';
                                     foodCtlr.getMenuAllergyByKeyword();
                                   });
-                                }
-                                else if(_currentSelection==4){
+                                } else if (_currentSelection == 4) {
                                   setState(() {
                                     textController.text = '';
                                     foodCtlr.getMenuAddonsByKeyword();
                                   });
-                                }
-                                else if(_currentSelection==5){
+                                } else if (_currentSelection == 5) {
                                   setState(() {
                                     textController.text = '';
                                     foodCtlr.getMenuVariantsByKeyword();
                                   });
-                                }
-
-                                else{
-
-                                }
-
+                                } else {}
                               },
                             ),
                             hintText: "Search Item",
@@ -2077,7 +2076,6 @@ class _FoodManagementState extends State<FoodManagement>
     return GetBuilder<FoodManagementController>(
         id: "refreshUpdateMenuForm",
         builder: (context) {
-
           return Container(
             height: Size.infinite.height,
             width: Size.infinite.width,
@@ -2176,14 +2174,13 @@ class _FoodManagementState extends State<FoodManagement>
                         child: GetBuilder<FoodManagementController>(
                             builder: (controller) {
                           return MultiSelectDropDown(
-
                             backgroundColor: secondaryBackground,
                             optionsBackgroundColor: secondaryBackground,
                             selectedOptionTextColor: primaryText,
                             selectedOptionBackgroundColor: primaryColor,
 
-                            selectedOptions: foodCtlr
-                                .foodSingleItemDetails.value.data!.mealPeriods!.data
+                            selectedOptions: foodCtlr.foodSingleItemDetails
+                                .value.data!.mealPeriods!.data
                                 .map((MenuAddon e) {
                               return ValueItem(
                                 label: e.name!,
@@ -2233,7 +2230,6 @@ class _FoodManagementState extends State<FoodManagement>
                         child: GetBuilder<FoodManagementController>(
                             builder: (controller) {
                           return MultiSelectDropDown(
-
                             backgroundColor: secondaryBackground,
                             optionsBackgroundColor: secondaryBackground,
                             selectedOptionTextColor: primaryText,
@@ -2287,29 +2283,29 @@ class _FoodManagementState extends State<FoodManagement>
                         flex: 1,
                         child: GetBuilder<FoodManagementController>(
                             builder: (controller) {
-                              List<ValueItem> selectedAdonsItems = [];
-                              for (int j = 0;
+                          List<ValueItem> selectedAdonsItems = [];
+                          for (int j = 0;
                               j < foodCtlr.updateMenuAllergyIdList.length;
                               j++) {
-                                for (int i = 0;
+                            for (int i = 0;
                                 i <
                                     controller
                                         .foodMenuAllergy.value.data!.length;
                                 i++) {
-                                  if (foodCtlr.updateMenuAllergyIdList[j] ==
-                                      controller
-                                          .foodMenuAllergy.value.data![i].id) {
-                                    selectedAdonsItems.add(ValueItem(
-                                      label: controller
-                                          .foodMenuAllergy.value.data![i].name
-                                          .toString(),
-                                      value: controller
-                                          .foodMenuAllergy.value.data![i]
-                                          .toString(),
-                                    ));
-                                  }
-                                }
+                              if (foodCtlr.updateMenuAllergyIdList[j] ==
+                                  controller
+                                      .foodMenuAllergy.value.data![i].id) {
+                                selectedAdonsItems.add(ValueItem(
+                                  label: controller
+                                      .foodMenuAllergy.value.data![i].name
+                                      .toString(),
+                                  value: controller
+                                      .foodMenuAllergy.value.data![i]
+                                      .toString(),
+                                ));
                               }
+                            }
+                          }
                           return MultiSelectDropDown(
                             backgroundColor: secondaryBackground,
                             optionsBackgroundColor: secondaryBackground,
@@ -2359,8 +2355,6 @@ class _FoodManagementState extends State<FoodManagement>
                       flex: 1,
                       child: GetBuilder<FoodManagementController>(
                         builder: (controller) {
-
-
                           return MultiSelectDropDown(
                             backgroundColor: secondaryBackground,
                             optionsBackgroundColor: secondaryBackground,
@@ -2368,8 +2362,8 @@ class _FoodManagementState extends State<FoodManagement>
                             selectedOptionBackgroundColor: primaryColor,
                             optionTextStyle:
                                 TextStyle(color: primaryText, fontSize: 16),
-                            selectedOptions: foodCtlr
-                                .foodSingleItemDetails.value.data!.allergies!.data!
+                            selectedOptions: foodCtlr.foodSingleItemDetails
+                                .value.data!.allergies!.data!
                                 .map((MenuAddon e) {
                               return ValueItem(
                                 label: e.name!,
@@ -2455,7 +2449,7 @@ class _FoodManagementState extends State<FoodManagement>
                             foodCtlr.descriptionUpdateEditingCtlr.text,
                             foodCtlr.updateMenuIngredientIdList.isNotEmpty
                                 ? foodCtlr.updateMenuIngredientIdList.first
-                                .toString()
+                                    .toString()
                                 : null,
                             foodCtlr.updateMealPeriodIdList,
                             foodCtlr.updateMenuAddonsIdList,
@@ -2477,7 +2471,6 @@ class _FoodManagementState extends State<FoodManagement>
                           });
                         }
                       }
-
                     }),
                   ],
                 ),
@@ -3856,5 +3849,4 @@ class _FoodManagementState extends State<FoodManagement>
       ),
     );
   }
-
 }

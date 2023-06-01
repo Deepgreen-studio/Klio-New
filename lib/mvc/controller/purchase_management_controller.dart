@@ -338,6 +338,7 @@ class PurchaseManagementController extends GetxController with ErrorController {
   ///Search methods for all items....
   ///
   Future<void> getPurchaseByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/purchase?keyword=$keyword"
         : "finance/purchase";
@@ -346,10 +347,21 @@ class PurchaseManagementController extends GetxController with ErrorController {
         .catchError(handleApiError);
     print(response);
     purchaseData.value = purchaseListModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMorePurchase = false;
+    }else{
+      haveMorePurchase = true;
+      purchasePageNumber=2;
+    }
     update(["purchaseId"]);
+    Utils.hidePopup();
   }
 
   Future<void> getExpenseByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/expense?keyword=$keyword"
         : "finance/expense";
@@ -358,10 +370,21 @@ class PurchaseManagementController extends GetxController with ErrorController {
         .catchError(handleApiError);
     print(response);
     expenseData.value = expenseDataListFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreExpence = false;
+    }else{
+      haveMoreExpence = true;
+      expencePageNumber=2;
+    }
     update(["expenceId"]);
+    Utils.hidePopup();
   }
 
   Future<void> getExpenseCategoryByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/expense-category?keyword=$keyword"
         : "finance/expense-category";
@@ -370,6 +393,16 @@ class PurchaseManagementController extends GetxController with ErrorController {
         .catchError(handleApiError);
     print(response);
     expenseCategoryData.value = expenseCategoryModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreExpenceCategory = false;
+    }else{
+      haveMoreExpenceCategory = true;
+      expenceCategoryPageNumber=2;
+    }
     update(["expCategoryId"]);
+    Utils.hidePopup();
   }
 }

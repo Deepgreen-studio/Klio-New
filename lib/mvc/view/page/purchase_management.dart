@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/constant/color.dart';
 import 'package:klio_staff/constant/value.dart';
-import 'package:klio_staff/mvc/controller/food_management_controller.dart';
 import 'package:klio_staff/mvc/controller/purchase_management_controller.dart';
 import 'package:klio_staff/mvc/model/purchase_list_model.dart';
 import 'package:klio_staff/mvc/model/expense_list_model.dart' as Expense;
@@ -193,6 +194,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
   }
 
   Widget customTapbarHeader(TabController controller) {
+    Timer? stopOnSearch;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Row(
@@ -261,13 +263,34 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       child: TextField(
                           onChanged: (text) async {
                             if (_currentSelection == 0) {
-                              purchaseCtrl.getPurchaseByKeyword(keyword: text);
+                              const duration = Duration(seconds: 2);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => purchaseCtrl.getPurchaseByKeyword(
+                                      keyword: text));
                             } else if (_currentSelection == 1) {
-                              purchaseCtrl.getExpenseByKeyword(keyword: text);
-                            } else if(_currentSelection==2) {
-                              purchaseCtrl.getExpenseCategoryByKeyword(
-                                  keyword: text);
-                            }else{}
+                              const duration = Duration(seconds: 2);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => purchaseCtrl.getExpenseByKeyword(
+                                      keyword: text));
+                            } else if (_currentSelection == 2) {
+                              const duration = Duration(seconds: 2);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () =>
+                                      purchaseCtrl.getExpenseCategoryByKeyword(
+                                          keyword: text));
+                            } else {}
                           },
                           controller: textController,
                           style: const TextStyle(
@@ -295,13 +318,13 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                       textController.text = '';
                                       purchaseCtrl.getExpenseByKeyword();
                                     });
-                                  } else if(_currentSelection==2) {
+                                  } else if (_currentSelection == 2) {
                                     setState(() {
                                       textController.text = '';
                                       purchaseCtrl
                                           .getExpenseCategoryByKeyword();
                                     });
-                                  }else{}
+                                  } else {}
                                 },
                                 icon: Icon(
                                   Icons.close,

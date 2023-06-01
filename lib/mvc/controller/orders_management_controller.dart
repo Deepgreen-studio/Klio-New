@@ -9,7 +9,6 @@ import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
 
 import '../../constant/value.dart';
-import '../model/orders.dart';
 
 class OrdersManagementController extends GetxController with ErrorController {
   ///Api data fetch varriable
@@ -292,64 +291,114 @@ class OrdersManagementController extends GetxController with ErrorController {
   ///Search methods for all orders item...
 
     Future<void> getAllOrderByKeyword({String keyword = ''})async{
+    Utils.showLoading();
       String endPoint = keyword.isNotEmpty?
           "orders/order?keyword=$keyword":
-          "orders/order" ;
-      haveMoreAllOrder=false;
+          "orders/order";
       var response = await ApiClient()
         .get(endPoint,header: Utils.apiHeader)
           .catchError(handleApiError);
       print(response);
       allOrdersData.value= allOrdersModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreAllOrder = false;
+    }else{
+      haveMoreAllOrder = true;
+      allOrderPageNumber=2;
+    }
       update(['allOrders']);
+      Utils.hidePopup();
     }
   Future<void> getSuccessOrderByKeyword({String keyword = ''})async{
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=success&keyword=$keyword":
     "orders/order?status=success";
-    haveMoreSuccessOrder=false;
     var response = await ApiClient()
         .get(endPoint,header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     allSuccessData.value= allOrdersModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreSuccessOrder = false;
+    }else{
+      haveMoreSuccessOrder = true;
+      successOrderPageNumber=2;
+    }
     update(['allSuccessOrders']);
+    Utils.hidePopup();
   }
   Future<void> getProcessingOrderByKeyword({String keyword = ''})async{
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=processing&keyword=$keyword":
     "orders/order?status=processing";
-    haveMoreProcessingOrder=false;
     var response = await ApiClient()
         .get(endPoint,header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     allProcessingData.value= allOrdersModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreProcessingOrder = false;
+    }else{
+      haveMoreProcessingOrder = true;
+      processingOrderPageNumber=2;
+    }
     update(['allProcessingOrders']);
+    Utils.hidePopup();
   }
   Future<void> getPendingOrderByKeyword({String keyword = ''})async{
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=pending&keyword=$keyword":
     "orders/order?status=pending";
-    haveMorePendingOrder=false;
     var response = await ApiClient()
         .get(endPoint,header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     allPendingData.value= allOrdersModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMorePendingOrder = false;
+    }else{
+      haveMorePendingOrder = true;
+      pendingOrderPageNumber=2;
+    }
     update(['allPendingOrders']);
+    Utils.hidePopup();
   }
   Future<void> getCancelOrderByKeyword({String keyword = ''})async{
+    Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=cancel&keyword=$keyword":
     "orders/order?status=cancel";
-    haveMoreCancelOrder=false;
     var response = await ApiClient()
         .get(endPoint,header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     allCancelData.value= allOrdersModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreCancelOrder = false;
+    }else{
+      haveMoreCancelOrder = true;
+      cancelOrderPageNumber=2;
+    }
     update(['allCancelOrders']);
+    Utils.hidePopup();
   }
 
 }

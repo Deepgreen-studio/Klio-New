@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 const Color primaryColor = Color(0xffED7402);
 const Color accentColor = Color(0xffFDAD2B);
+
+//Color for Bangladesh...
+// const Color primaryColor = Color(0xff263368);
+// const Color accentColor = Color(0xff00a79e);
+
 const Color secondaryPurple = Color(0xffFFE7E6);
 const Color secondaryAccentColor = Color(0xffFEF4E1);
 

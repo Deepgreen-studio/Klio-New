@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/constant/color.dart';
@@ -1073,6 +1075,7 @@ class _IngredientManagementState extends State<IngredientManagement>
   }
 
   Widget customTapbarHeader(TabController controller) {
+    Timer? stopOnSearch;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Row(
@@ -1140,19 +1143,44 @@ class _IngredientManagementState extends State<IngredientManagement>
                       child: TextField(
                           onChanged: (text) async {
                             if (_currentSelection == 0) {
-                              _ingredientController.getIngredientByKeyword(
-                                  keyword: text);
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _ingredientController
+                                      .getIngredientByKeyword(keyword: text));
                             } else if (_currentSelection == 1) {
-                              _ingredientController
-                                  .getIngredientCategoryByKeyword(
-                                      keyword: text);
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _ingredientController
+                                      .getIngredientCategoryByKeyword(
+                                          keyword: text));
                             } else if (_currentSelection == 2) {
-                              _ingredientController.getIngredientUnitByKeyword(
-                                  keyword: text);
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _ingredientController
+                                      .getIngredientUnitByKeyword(
+                                          keyword: text));
                             } else if (_currentSelection == 3) {
-                              _ingredientController
-                                  .getIngredientSupplierByKeyword(
-                                      keyword: text);
+                              const duration = Duration(seconds: 1);
+                              if (stopOnSearch != null) {
+                                stopOnSearch?.cancel();
+                              }
+                              stopOnSearch = Timer(
+                                  duration,
+                                  () => _ingredientController
+                                      .getIngredientSupplierByKeyword(
+                                          keyword: text));
                             } else {}
                           },
                           controller: textController,

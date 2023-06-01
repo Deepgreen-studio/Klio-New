@@ -549,52 +549,97 @@ class IngredientController extends GetxController with ErrorController {
     }
   }
 
-
   /// search methods for all items....
-   Future<void> getIngredientByKeyword({String keyword=''})async{
-     String endPoint = keyword.isNotEmpty?
-     "master/ingredient?keyword=$keyword"
-         :"master/ingredient";
-     var response = await ApiClient()
-      .get(endPoint, header: Utils.apiHeader)
-     .catchError(handleApiError);
-     print(response);
-     ingredientData.value =  ingredinetListModelFromJson(response);
-     update(["ingredientTab"]);
-   }
-
-   Future <void> getIngredientCategoryByKeyword({String keyword=''})async{
-      String endPoint= keyword.isNotEmpty?
-          "master/ingredient-category?keyword=$keyword":
-           "master/ingredient-category" ;
-      var response = await ApiClient()
+  Future<void> getIngredientByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint = keyword.isNotEmpty
+        ? "master/ingredient?keyword=$keyword"
+        : "master/ingredient";
+    var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
-      .catchError(handleApiError);
-      print(response);
-      ingredientCategoryData.value = ingredineCategoryModelFromJson(response);
-      update(['categoryTab']);
-   }
-  Future <void> getIngredientUnitByKeyword({String keyword=''})async{
-    String endPoint= keyword.isNotEmpty?
-    "master/ingredient-unit?keyword=$keyword":
-    "master/ingredient-unit" ;
+        .catchError(handleApiError);
+    print(response);
+    ingredientData.value = ingredinetListModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreIngredient = false;
+    } else {
+      haveMoreIngredient = true;
+      ingredientPageNumber = 2;
+    }
+    update(["ingredientTab"]);
+    Utils.hidePopup();
+  }
+
+  Future<void> getIngredientCategoryByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint = keyword.isNotEmpty
+        ? "master/ingredient-category?keyword=$keyword"
+        : "master/ingredient-category";
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+    print(response);
+    ingredientCategoryData.value = ingredineCategoryModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreCategory = false;
+    } else {
+      haveMoreCategory = true;
+      categoryPageNumber = 2;
+    }
+    update(['categoryTab']);
+    Utils.hidePopup();
+  }
+
+  Future<void> getIngredientUnitByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint = keyword.isNotEmpty
+        ? "master/ingredient-unit?keyword=$keyword"
+        : "master/ingredient-unit";
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     ingredientUnitData.value = ingredineUnitModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreUnit = false;
+    } else {
+      haveMoreUnit = true;
+      unitPageNumber = 2;
+    }
     update(['unitTab']);
+    Utils.hidePopup();
   }
-  Future <void> getIngredientSupplierByKeyword({String keyword=''})async{
-    String endPoint= keyword.isNotEmpty?
-    "master/supplier?keyword=$keyword":
-    "master/supplier" ;
+
+  Future<void> getIngredientSupplierByKeyword({String keyword = ''}) async {
+    Utils.showLoading();
+    String endPoint = keyword.isNotEmpty
+        ? "master/supplier?keyword=$keyword"
+        : "master/supplier";
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
     print(response);
     ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
+    var res = json.decode(response);
+    int to = res['meta']['to'];
+    int total = res['meta']['total'];
+    if (total <= to) {
+      haveMoreSupplier = false;
+    } else {
+      haveMoreSupplier = true;
+      supplierPageNumber = 2;
+    }
     update(['supplierTab']);
+    Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {

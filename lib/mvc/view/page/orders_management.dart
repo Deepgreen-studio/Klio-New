@@ -294,50 +294,30 @@ class _OrdersManagementState extends State<OrdersManagement>
                                         textController.text = '';
                                         _ordersManagementController
                                             .getAllOrderByKeyword();
-                                        _ordersManagementController
-                                            .haveMoreAllOrder = true;
-                                        _ordersManagementController
-                                            .allOrderPageNumber = 2;
                                       });
                                     } else if (_currentSelection == 1) {
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getSuccessOrderByKeyword();
-                                        _ordersManagementController
-                                            .haveMoreSuccessOrder = true;
-                                        _ordersManagementController
-                                            .successOrderPageNumber = 2;
                                       });
                                     } else if (_currentSelection == 2) {
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getProcessingOrderByKeyword();
-                                        _ordersManagementController
-                                            .haveMoreProcessingOrder = true;
-                                        _ordersManagementController
-                                            .processingOrderPageNumber = 2;
                                       });
                                     } else if (_currentSelection == 3) {
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getPendingOrderByKeyword();
-                                        _ordersManagementController
-                                            .haveMorePendingOrder = true;
-                                        _ordersManagementController
-                                            .pendingOrderPageNumber = 2;
                                       });
                                     } else if (_currentSelection == 4) {
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getCancelOrderByKeyword();
-                                        _ordersManagementController
-                                            .haveMoreCancelOrder = true;
-                                        _ordersManagementController
-                                            .cancelOrderPageNumber = 2;
                                       });
                                     }
                                   },
