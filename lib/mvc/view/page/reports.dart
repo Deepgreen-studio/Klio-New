@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/controller/report_management_controller.dart';
@@ -101,6 +103,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
   }
 
   customTapbarHeader(TabController controller) {
+    Timer? stopOnSearch;
     return Padding(
         padding: const EdgeInsets.all(15.0),
         child: Row(
@@ -174,20 +177,49 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     Card(
+                   _currentSelection==2?
+                   const Card(
+                     color: Colors.transparent,
+                       elevation: 0.0,
+                       child: SizedBox(width:300,height: 38)):
+                   Card(
                       elevation: 0.0,
                       child: SizedBox(
                           width: 300,
                           height: 40,
                           child: TextField(
-                              onChanged: (text)async{
-                                if(_currentSelection==0){
-                                  _reportController.getSaleReportByKeyword(keyword: text);
-                                }else if(_currentSelection==1){
-                                  _reportController.getStockReportByKeyword(keyword: text);
-                                }else if(_currentSelection==3){
-                                  _reportController.getWasteReportByKeyword(keyword: text);
-                                }else{}
+                              onChanged: (text) async {
+                                if (_currentSelection == 0) {
+                                  const duration = Duration(seconds: 1);
+                                  if (stopOnSearch != null) {
+                                    stopOnSearch?.cancel();
+                                  }
+                                  stopOnSearch = Timer(
+                                      duration,
+                                      () => _reportController
+                                          .getSaleReportByKeyword(
+                                              keyword: text));
+                                } else if (_currentSelection == 1) {
+                                  const duration = Duration(seconds: 2);
+                                  if (stopOnSearch != null) {
+                                    stopOnSearch?.cancel();
+                                  }
+                                  stopOnSearch = Timer(
+                                      duration,
+                                      () => _reportController
+                                          .getStockReportByKeyword(
+                                              keyword: text));
+                                } else if (_currentSelection == 3) {
+                                  const duration = Duration(seconds: 2);
+                                  if (stopOnSearch != null) {
+                                    stopOnSearch?.cancel();
+                                  }
+                                  stopOnSearch = Timer(
+                                      duration,
+                                      () => _reportController
+                                          .getWasteReportByKeyword(
+                                              keyword: text));
+                                } else {}
                               },
                               controller: textController,
                               style: const TextStyle(
@@ -204,56 +236,53 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                                   size: 20,
                                 ),
                                 suffixIcon: IconButton(
-                                    onPressed: (){
-                                      if(_currentSelection==0){
+                                    onPressed: () {
+                                      if (_currentSelection == 0) {
                                         setState(() {
-                                          textController.text= '';
-                                          _reportController.getSaleReportByKeyword();
+                                          textController.text = '';
+                                          _reportController
+                                              .getSaleReportByKeyword();
                                         });
-                                      }else if(_currentSelection==1){
+                                      } else if (_currentSelection == 1) {
                                         setState(() {
-                                          textController.text= '';
-                                          _reportController.getStockReportByKeyword();
+                                          textController.text = '';
+                                          _reportController
+                                              .getStockReportByKeyword();
                                         });
-                                      }else if(_currentSelection==3){
+                                      } else if (_currentSelection == 3) {
                                         setState(() {
-                                          textController.text= '';
-                                          _reportController.getWasteReportByKeyword();
-                                        });
-                                      }else{}
+                                          textController.text = '';
+                                          _reportController
+                                              .getWasteReportByKeyword();
 
+                                        });
+                                      } else {}
                                     },
                                     icon: Icon(
                                       Icons.close,
-                                      color:textSecondary,
+                                      color: textSecondary,
                                     )),
                                 hintText: "Search Item",
                                 hintStyle: const TextStyle(
                                     fontSize: fontSmall, color: black),
                                 border: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                                 disabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                                 errorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                                 focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                                 focusedErrorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent)),
+                                        width: 1, color: Colors.transparent)),
                               ))),
                     ),
                   ],
@@ -270,12 +299,14 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         child: GetBuilder<ReportManagementController>(
             id: "saleId",
             builder: (controller) {
-              if(controller.saleRepData.value.data!.isEmpty){
-                return  Center(child: Container(
-                    height:40,
-                    width: 40,
-                    margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                    child: CircularProgressIndicator()));
+              if (controller.saleRepData.value.data!.isEmpty) {
+                return Center(
+                    child: Container(
+                        height: 40,
+                        width: 40,
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.3),
+                        child: const CircularProgressIndicator()));
               }
               if (!controller.haveMoreAllSale &&
                   controller.saleRepData.value.data!.last.id != 0) {
@@ -325,14 +356,15 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                   rows: controller.saleRepData.value.data!.map(
                     (item) {
                       if (item.id == 0 && !controller.haveMoreAllSale) {
-                        return  DataRow(cells: [
+                        return DataRow(cells: [
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                          DataCell(Text('No Data',
+                              style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
@@ -341,7 +373,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               _reportController.saleRepData.value.data!.last &&
                           !controller.isLoadingAllSale &&
-                          controller.haveMoreAllSale) {
+                          controller.haveMoreAllSale || controller.onSearch) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -466,14 +498,15 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                   rows: controller.stockRepData.value.data!.map(
                     (item) {
                       if (item.id == 0 && !controller.haveMoreStockReport) {
-                        return  DataRow(cells: [
+                        return DataRow(cells: [
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(Text('No Data',style: TextStyle(color: primaryText))),
+                          DataCell(Text('No Data',
+                              style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
@@ -484,7 +517,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               controller.stockRepData.value.data!.last &&
                           !controller.isLoadingStockReport &&
-                          controller.haveMoreStockReport) {
+                          controller.haveMoreStockReport || controller.onSearch) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -573,8 +606,9 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                 DataRow(cells: [
                   DataCell(Text("Total Purchase Shipping Charge : ",
                       style: TextStyle(color: primaryText))),
-                  DataCell(Text(controller.profitLossData.value.grossProfit!
-                      .toStringAsFixed(2),
+                  DataCell(Text(
+                      controller.profitLossData.value.grossProfit!
+                          .toStringAsFixed(2),
                       style: TextStyle(color: primaryText))),
                 ]),
                 DataRow(cells: [
@@ -745,9 +779,10 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(Text('No Data',style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
+                          DataCell(Text('No Data',
+                              style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
@@ -756,7 +791,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               controller.wasteRepData.value.data!.last &&
                           !controller.isLoadingWasteReport &&
-                          controller.haveMoreWasteReport) {
+                          controller.haveMoreWasteReport|| controller.onSearch) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -764,9 +799,9 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(CircularProgressIndicator()),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
+                          DataCell(CircularProgressIndicator()),
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
                           DataCell(CircularProgressIndicator(

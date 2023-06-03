@@ -35,6 +35,7 @@ class ReportManagementController extends GetxController with ErrorController{
   bool haveMoreStockReport = true;
   bool haveMoreWasteReport = true;
 
+  bool onSearch= false;
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -97,7 +98,6 @@ class ReportManagementController extends GetxController with ErrorController{
     for (StockReport.Datum it in temp.data!) {
       datums.add(it);
     }
-
     stockRepData.value.data?.addAll(datums);
     stockRepData.value.meta = temp.meta;
     stockPageNumber++;
@@ -145,6 +145,7 @@ class ReportManagementController extends GetxController with ErrorController{
   ///Search methods for all reports.....
 
   Future<void> getSaleReportByKeyword({String keyword=''})async{
+    onSearch=true;
     String endPoint= keyword.isNotEmpty?
         "report/sale?keyword=$keyword":
         "report/sale";
@@ -153,9 +154,17 @@ class ReportManagementController extends GetxController with ErrorController{
       .catchError(handleApiError);
     print(response);
     saleRepData.value = saleReportListModelFromJson(response);
+    if (saleRepData.value.meta!.total <= saleRepData.value.meta!.to) {
+      haveMoreAllSale = false;
+    }else{
+      haveMoreAllSale = true;
+      allSalePageNumber=2;
+    }
     update(['saleId']);
+    onSearch=false;
   }
   Future<void> getStockReportByKeyword({String keyword=''})async{
+    onSearch=true;
     String endPoint= keyword.isNotEmpty?
         "report/stock?keyword=$keyword":
         "report/stock";
@@ -164,9 +173,17 @@ class ReportManagementController extends GetxController with ErrorController{
       .catchError(handleApiError);
     print(response);
     stockRepData.value = stockReportListModelFromJson(response);
+    if (stockRepData.value.meta!.total <= stockRepData.value.meta!.to) {
+      haveMoreStockReport = false;
+    }else{
+      haveMoreStockReport = true;
+      stockPageNumber=2;
+    }
     update(['stockId']);
+    onSearch=false;
   }
   Future<void> getWasteReportByKeyword({String keyword=''})async{
+    onSearch=true;
     String endPoint= keyword.isNotEmpty?
         "report/waste?keyword=$keyword":
         "report/waste";
@@ -175,7 +192,14 @@ class ReportManagementController extends GetxController with ErrorController{
       .catchError(handleApiError);
     print(response);
     wasteRepData.value = wasteReportListModelFromJson(response);
+    if (wasteRepData.value.meta!.total <= wasteRepData.value.meta!.to) {
+      haveMoreWasteReport = false;
+    }else{
+      haveMoreWasteReport = true;
+      wastePageNumber=2;
+    }
     update(['wasteId']);
+    onSearch=false;
   }
 
 }
