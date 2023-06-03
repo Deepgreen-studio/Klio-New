@@ -12,10 +12,8 @@ import '../../../service/printer/customer_display.dart';
 import '../../../service/printer/print_service.dart';
 import '../../controller/food_management_controller.dart';
 import '../../controller/home_controller.dart';
-import '../../model/Meal_period_model.dart';
-import '../../model/food_menu_addons.dart';
-import '../../model/food_menu_allergy.dart';
-import '../../model/food_menu_category_model.dart';
+import '../../model/add_menu_model.dart';
+import '../../model/add_menu_model.dart' as add_menu_model;
 import '../widget/custom_widget.dart';
 import 'package:path/path.dart';
 import 'dart:io';
@@ -283,6 +281,74 @@ Widget dialogHeader(String title, BuildContext context,
   );
 }
 
+Widget addRider(BuildContext context, bool isUpdate,
+    {Customer? customer, Function()? onPressed}) {
+  return Container(
+    height: Size.infinite.height,
+    width: Size.infinite.width,
+    padding: const EdgeInsets.all(30),
+    child: ListView(children: [
+      Text(
+        'First Name*',
+        style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+      ),
+      const SizedBox(height: 10),
+      normalTextField(homeController.controllerName.value),
+      const SizedBox(height: 10),
+      Text(
+        'Last name*',
+        style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+      ),
+      const SizedBox(height: 10),
+      normalTextField(homeController.lastNameComtroller.value),
+      const SizedBox(height: 10),
+      Text(
+        'Email',
+        style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+      ),
+      const SizedBox(height: 10),
+      normalTextField(homeController.controllerEmail.value),
+      const SizedBox(height: 10),
+      Text(
+        'Phone*',
+        style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+      ),
+      const SizedBox(height: 10),
+      normalTextField(homeController.controllerPhone.value),
+      if (!isUpdate) const SizedBox(height: 10),
+      if (!isUpdate)
+        Text(
+          'Password*',
+          style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+        ),
+      if (!isUpdate) const SizedBox(height: 10),
+      if (!isUpdate) normalTextField(homeController.controllerPassword.value),
+      if (!isUpdate) const SizedBox(height: 10),
+      if (!isUpdate)
+        Text(
+          'Confirm Password*',
+          style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+        ),
+      if (!isUpdate) const SizedBox(height: 10),
+      if (!isUpdate) normalTextField(homeController.controllerConfirmPass.value),
+      const SizedBox(height: 10),
+      Text(
+        'Address',
+        style: TextStyle(fontSize: fontMediumExtra, color: primaryText),
+      ),
+      const SizedBox(height: 10),
+      normalTextField(homeController.controllerAddress.value),
+      const SizedBox(height: 20),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          normalButton('Submit', primaryColor, white, onPressed: onPressed),
+        ],
+      )
+    ]),
+  );
+}
+
 Widget addCustomer(BuildContext context, bool isDetail,
     {Customer? customer, Function()? onPressed}) {
   return Container(
@@ -346,7 +412,6 @@ Widget addCustomer(BuildContext context, bool isDetail,
 }
 
 Widget foodMenuBody(BuildContext context, MenuData data) {
-  homeController.tables.value.data = [];
   homeController.menuData.value = data;
   homeController.menuData.value.quantity = 1;
 
@@ -2464,9 +2529,10 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                     //     value: e.id.toString(),
                     //   );
                     // }).toList(),
-                    options: controller.mealPeriod.value.data!.map((Meal e) {
+                    options: controller.addMenuModel.mealPeriods
+                        .map((MealPeriods e) {
                       return ValueItem(
-                        label: e.name!,
+                        label: e.name,
                         value: e.id.toString(),
                       );
                     }).toList(),
@@ -2507,10 +2573,10 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                     //     value: e.id.toString(),
                     //   );
                     // }).toList(),
-                    options: controller.foodMenuCategory.value.data!
-                        .map((MenuCategory e) {
+                    options:
+                        controller.addMenuModel.categories.map((Categories e) {
                       return ValueItem(
-                        label: e.name!,
+                        label: e.name,
                         value: e.id.toString(),
                       );
                     }).toList(),
@@ -2557,10 +2623,9 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                     //     value: e.id.toString(),
                     //   );
                     // }).toList(),
-                    options:
-                        controller.foodAddons.value.data!.map((MenuAddon e) {
+                    options: controller.addMenuModel.addons.map((Addons e) {
                       return ValueItem(
-                        label: e.name!,
+                        label: e.name,
                         value: e.id.toString(),
                       );
                     }).toList(),
@@ -2601,10 +2666,10 @@ Widget addNewMenuForm(FoodManagementController foodCtlr) {
                     //     value: e.id.toString(),
                     //   );
                     // }).toList(),
-                    options:
-                        controller.foodMenuAllergy.value.data!.map((Allergy e) {
+                    options: controller.addMenuModel.allergies
+                        .map((add_menu_model.Allergies e) {
                       return ValueItem(
-                        label: e.name!,
+                        label: e.name,
                         value: e.id.toString(),
                       );
                     }).toList(),

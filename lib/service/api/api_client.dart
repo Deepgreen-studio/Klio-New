@@ -36,6 +36,11 @@ class ApiClient {
       var response = await http
           .post(uri, body: payloadObj, headers: header)
           .timeout(Duration(seconds: 20));
+      print(payloadObj);
+      print("*********////////////////////////////////////////////////////////**********");
+      print(response.body);
+      print(response.statusCode);
+      print("====================================================== post response");
       return _processResponse(response);
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
@@ -52,6 +57,11 @@ class ApiClient {
       var response = await http
           .put(uri, body: payloadObj, headers: header)
           .timeout(Duration(seconds: 20));
+      print(payloadObj);
+      print("*********////////////////////////////////////////////////////////**********");
+      print(response.body);
+      print(response.statusCode);
+      print("====================================================== response");
       return _processResponse(response);
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());

@@ -40,7 +40,8 @@ class SingleMenuDetailsData {
     this.variants,
     this.variant,
     this.mealPeriods,
-    this.allergies
+    this.allergies,
+    this.categories
   });
 
   int ? id;
@@ -56,6 +57,7 @@ class SingleMenuDetailsData {
   String? variant;
   MealPeriods? mealPeriods;
   Allergies? allergies;
+  Categories? categories;
 
   factory SingleMenuDetailsData.fromJson(Map<String, dynamic> json) => SingleMenuDetailsData(
     id: json["id"],
@@ -70,6 +72,7 @@ class SingleMenuDetailsData {
     variant: json["variant"] ?? " ",
     mealPeriods : MealPeriods.fromJson(json["mealPeriods"]),
     allergies : Allergies.fromJson(json["allergies"]),
+    categories : Categories.fromJson(json["categories"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -84,6 +87,7 @@ class SingleMenuDetailsData {
     "variant": variant,
     "mealPeriods" : mealPeriods!.toJson(),
     "allergies" : allergies!.toJson(),
+    "categories" : categories!.toJson(),
   };
 }
 class MealPeriods {
@@ -126,6 +130,24 @@ class Allergies {
   List<MenuAddon>? data;
 
   Allergies.fromJson(Map<String, dynamic> json){
+    data = List.from(json['data']).map((e)=>MenuAddon.fromJson(e)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['data'] = data!.map((e)=>e.toJson()).toList();
+    return _data;
+  }
+}
+
+
+class Categories {
+  Categories({
+    required this.data,
+  });
+  List<MenuAddon>? data;
+
+  Categories.fromJson(Map<String, dynamic> json){
     data = List.from(json['data']).map((e)=>MenuAddon.fromJson(e)).toList();
   }
 

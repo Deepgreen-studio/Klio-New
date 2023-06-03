@@ -32,6 +32,7 @@ class MenuAddon {
      this.image,
      this.details,
      this.status,
+    this.isDrinks
   });
 
   int? id;
@@ -40,6 +41,7 @@ class MenuAddon {
   String ?image;
   String ?details;
   int? status;
+  int? isDrinks;
 
   factory MenuAddon.fromJson(Map<String, dynamic> json) => MenuAddon(
     id: json["id"],
@@ -48,6 +50,7 @@ class MenuAddon {
     image: json["image"],
     details: json["details"],
     status: json["status"],
+    isDrinks: json['is_drinks'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -57,5 +60,6 @@ class MenuAddon {
     "image": image,
     "details": details,
     "status": status,
+    "is_drinks": isDrinks,
   };
 }

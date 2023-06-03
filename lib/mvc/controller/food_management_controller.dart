@@ -26,6 +26,8 @@ import 'package:klio_staff/service/api/api_exception.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
 
+import '../model/add_menu_model.dart';
+
 class FoodManagementController extends GetxController with ErrorController {
   /// Api data fetch variable
   Rx<FoodMenuManagement> menusData = FoodMenuManagement(data: []).obs;
@@ -85,6 +87,7 @@ class FoodManagementController extends GetxController with ErrorController {
   List<SingleMenuDetailsData> updateMealIngrediantSelectMeal = [];
   RxBool isDrinks = false.obs;
   RxString currentSelectedValue = ''.obs;
+  AddMenuModel addMenuModel = AddMenuModel(categories: [], mealPeriods: [], addons: [], allergies: [], ingredients: []);
 
   /// Meal period
   File? mealPeriodStoreImage;
@@ -173,6 +176,7 @@ class FoodManagementController extends GetxController with ErrorController {
     debugPrint('checkToken\n$token');
     //getIngredientDataList();
     getFoodDataList();
+    getAddMenuData();
     // getFoodMealPeriod();
     // getFoodMenuCategory();
     // getFoodMenuAllergy();
@@ -252,6 +256,17 @@ class FoodManagementController extends GetxController with ErrorController {
     update();
 
     */
+  }
+
+  Future<void> getAddMenuData({dynamic id = ''}) async {
+    String endPoint = 'food/menu/partials';
+    var response = await ApiClient()
+        .get(endPoint, header: Utils.apiHeader)
+        .catchError(handleApiError);
+
+    addMenuModel = addMenuModelFromJson(response);
+    update();
+    // print('check meal period${mealPeriod.value.data!.length}');
   }
 
   Future<void> getFoodMealPeriod({dynamic id = ''}) async {

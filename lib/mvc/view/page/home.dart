@@ -56,6 +56,7 @@ class _HomeState extends State<Home> {
   FoodManagementController foodCtlr = Get.put(FoodManagementController());
   TextEditingController searchText = TextEditingController();
   late ScrollController menuScrollController;
+  int tabLimit = 1200;
 
   @override
   void initState() {
@@ -98,7 +99,7 @@ class _HomeState extends State<Home> {
                 Obx(
                   () => SizedBox(
                     width: homeController.currentPage.value == 0
-                        ? size.width > 1300
+                        ? size.width > tabLimit
                             ? size.width * 0.7
                             : size.width
                         : size.width,
@@ -128,7 +129,7 @@ class _HomeState extends State<Home> {
                   right: 0,
                   child: Obx(() {
                     return homeController.currentPage.value == 0
-                        ? size.width > 1300
+                        ? size.width > tabLimit
                             ? SizedBox(
                                 width: size.width * 0.3,
                                 height: size.height,
@@ -413,7 +414,7 @@ class _HomeState extends State<Home> {
             crossAxisCount: size.width > size.height ? 3 : 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 2.5,
+            childAspectRatio: 2.3,
           ),
           scrollDirection: Axis.vertical,
           itemCount: homeController.filteredMenu.length,

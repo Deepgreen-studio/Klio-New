@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:klio_staff/mvc/model/Ingredient_list_model.dart';
 import 'package:klio_staff/mvc/model/food_menu_details_single_item.dart';
-import 'package:klio_staff/mvc/model/food_menu_single_variant_details.dart';
+import '../../model/add_menu_model.dart' as add_menu_model;
 import 'package:klio_staff/mvc/model/food_menu_variants.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:path/path.dart';
@@ -399,6 +399,14 @@ class _FoodManagementState extends State<FoodManagement>
           if (tempData.addons!.data![i].id != null) {
             foodCtlr.updateMenuAddonsIdList
                 .add(tempData.addons!.data![i].id ?? -1);
+          }
+        }
+      }
+      if (tempData.categories != null && tempData.categories?.data != null) {
+        for (int i = 0; i < tempData.categories!.data!.length; i++) {
+          if (tempData.categories!.data![i].id != null) {
+            foodCtlr.updateMenuCategoryIdList
+                .add(tempData.categories!.data![i].id ?? -1);
           }
         }
       }
@@ -1841,7 +1849,7 @@ class _FoodManagementState extends State<FoodManagement>
                       //     value: e.id.toString(),
                       //   );
                       // }).toList(),
-                      options: controller.mealPeriod.value.data!.map((Meal e) {
+                      options: controller.addMenuModel.mealPeriods.map((add_menu_model.MealPeriods e) {
                         return ValueItem(
                           label: e.name!,
                           value: e.id.toString(),
@@ -1885,8 +1893,8 @@ class _FoodManagementState extends State<FoodManagement>
                       //     value: e.id.toString(),
                       //   );
                       // }).toList(),
-                      options: controller.foodMenuCategory.value.data!
-                          .map((MenuCategory e) {
+                      options: controller.addMenuModel.categories
+                          .map((add_menu_model.Categories e) {
                         return ValueItem(
                           label: e.name ?? '',
                           value: e.id.toString(),
@@ -1938,7 +1946,7 @@ class _FoodManagementState extends State<FoodManagement>
                       //   );
                       // }).toList(),
                       options:
-                          controller.foodAddons.value.data!.map((MenuAddon e) {
+                          controller.addMenuModel.addons.map((add_menu_model.Addons e) {
                         return ValueItem(
                           label: e.name ?? '',
                           value: e.id.toString(),
@@ -1982,8 +1990,8 @@ class _FoodManagementState extends State<FoodManagement>
                       //     value: e.id.toString(),
                       //   );
                       // }).toList(),
-                      options: controller.foodMenuAllergy.value.data!
-                          .map((Allergy e) {
+                      options: controller.addMenuModel.allergies
+                          .map((add_menu_model.Allergies e) {
                         return ValueItem(
                           label: e.name ?? '',
                           value: e.id.toString(),
@@ -2243,6 +2251,13 @@ class _FoodManagementState extends State<FoodManagement>
                                       .map((ValueItem e) => int.parse(e.value!))
                                       .toList();
                             },
+                            selectedOptions: foodCtlr.foodSingleItemDetails
+                                .value.data!.categories!.data!.map((MenuAddon e) {
+                              return ValueItem(
+                                label: e.name!,
+                                value: e.id.toString(),
+                              );
+                            }).toList(),
                             // selectedOptions: foodCtlr.foodSingleItemDetails.value.data!.addons!.data!.map((MenuAddon e) {
                             //   return ValueItem(
                             //     label:e.name!,

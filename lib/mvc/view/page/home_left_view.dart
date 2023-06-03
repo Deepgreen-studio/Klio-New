@@ -8,6 +8,7 @@ import '../../../utils/utils.dart';
 import '../../controller/food_management_controller.dart';
 import '../../controller/home_controller.dart';
 import '../../model/menu.dart';
+import '../../model/riders_model.dart' as riders_model;
 import '../dialog/custom_dialog.dart';
 import '../widget/custom_widget.dart';
 
@@ -62,6 +63,8 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   homeController.orderTypeNumber = 1;
                                   Utils.showLoading();
                                   await homeController.getTables();
+                                  homeController
+                                      .update(["UpdateDeliveryManUi"]);
                                   Utils.hidePopup();
                                   showCustomDialog(context, "Table Reservation",
                                       tableBody(context, false), 50, 200);
@@ -70,16 +73,22 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   homeController.orderTypeNumber = 2;
                                   homeController.customerName.value = "None";
                                   homeController.withoutTable.value = true;
+                                  homeController
+                                      .update(["UpdateDeliveryManUi"]);
                                   break;
                                 case 3:
                                   homeController.customerName.value = "None";
                                   homeController.orderTypeNumber = 3;
                                   homeController.withoutTable.value = true;
+                                  homeController
+                                      .update(["UpdateDeliveryManUi"]);
                                   break;
                                 default:
                                   homeController.customerName.value = "None";
                                   homeController.orderTypeNumber = 4;
                                   homeController.withoutTable.value = false;
+                                  homeController
+                                      .update(["UpdateDeliveryManUi"]);
                                   // Utils.showLoading();
                                   homeController.getTables();
                                   // Utils.hidePopup();
@@ -114,7 +123,10 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               ),
                               child: Obx(() {
                                 return DropdownButton<String>(
-                                  items: homeController.customers.value.data!
+                                  items: (homeController.customers.value.data !=
+                                              null
+                                          ? homeController.customers.value.data!
+                                          : [])
                                       .map((dynamic val) {
                                     return DropdownMenuItem<String>(
                                       value: val.name.toString(),
@@ -271,6 +283,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                       ],
                     ),
                   ),
+                  deliveryManWidget(homeController, context),
                   Row(
                     // Start
                     mainAxisSize: MainAxisSize.max,
@@ -529,7 +542,6 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                               ],
                             ),
                             Obx(() {
-
                               return Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -538,7 +550,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                      '${homeController.settings.value.data![11].value}${Utils.calcSubTotal(homeController.cardList).toStringAsFixed(2)}'
+                                      '${homeController.settings.value.data != null ? homeController.settings.value.data![11].value : "?"}${Utils.calcSubTotal(homeController.cardList).toStringAsFixed(2)}'
                                           .toString(),
                                       style: TextStyle(
                                           color: primaryText,
@@ -549,7 +561,9 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                      '${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
+                                      homeController.settings.value.data == null
+                                          ? "?"
+                                          : '${homeController.settings.value.data![11].value}${homeController.settings.value.data![14].value} + ${homeController.settings.value.data![11].value}${Utils.vatTotal(homeController.cardList).toStringAsFixed(2)}',
                                       style: TextStyle(
                                           color: primaryText,
                                           fontSize: fontVerySmall,
@@ -559,7 +573,7 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                      '${homeController.settings.value.data![11].value}-${homeController.discount.value.toStringAsFixed(2)}',
+                                      '${homeController.settings.value.data != null ? homeController.settings.value.data![11].value : "?"}-${homeController.discount.value.toStringAsFixed(2)}',
                                       style: TextStyle(
                                           color: primaryText,
                                           fontSize: fontVerySmall,
@@ -569,7 +583,9 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                                   Expanded(
                                     flex: 4,
                                     child: Text(
-                                      '${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
+                                      homeController.settings.value.data == null
+                                          ? "?"
+                                          : '${homeController.settings.value.data![11].value}${((Utils.calcSubTotal(homeController.cardList) + double.parse(homeController.settings.value.data![14].value.toString()) + Utils.vatTotal(homeController.cardList)) - homeController.discount.value).toStringAsFixed(2)}',
                                       style: TextStyle(
                                           fontSize: fontMedium,
                                           color: primaryColor,
@@ -597,13 +613,16 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
                           homeController.isUpdate.value ? 'UPDATE' : 'ORDER',
                           primaryColor,
                           white, onPressed: () async {
+
                         if (homeController.orderTypeNumber == 2 &&
                             homeController.customerName.value == "None") {
                           Utils.showSnackBar("Please select customer name");
                         } else if (homeController.orderTypeNumber == 3) {
                           if (homeController.customerName.value == "None") {
                             Utils.showSnackBar("Please select customer name");
-                          } else {
+                          }else  if (homeController.riderName.value == "None") {
+                            Utils.showSnackBar("Please select a rider");
+                          }else {
                             Customer customer = await homeController
                                 .getCustomer(Utils.findIdByListNearValue(
                                     homeController.customers.value.data!
@@ -727,4 +746,141 @@ Widget leftSideView(BuildContext context, ScaffoldState? currentState) {
       ),
     ),
   );
+}
+
+GetBuilder<HomeController> deliveryManWidget(
+    HomeController homeController, BuildContext context) {
+  return GetBuilder<HomeController>(
+      id: "UpdateDeliveryManUi",
+      builder: (controllerContext) {
+        return homeController.orderTypeNumber != 3
+            ? const SizedBox()
+            : Container(
+                height: 40,
+                margin: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 25),
+                decoration: BoxDecoration(
+                  color: primaryBackground,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                alignment: Alignment.center,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButton<String>(
+                        items: (homeController.posRiders.value.data ?? [])
+                            .map((dynamic val) {
+                          return DropdownMenuItem<String>(
+                            value: val.name.toString(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(val.name,
+                                  style: TextStyle(color: primaryText)),
+                            ),
+                          );
+                        }).toList(),
+                        borderRadius: BorderRadius.circular(10),
+                        underline: SizedBox(),
+                        isExpanded: true,
+                        dropdownColor: primaryBackground,
+                        value: homeController.riderName.value,
+                        onChanged: (value) {
+                          homeController.riderName.value = value ?? '';
+                          homeController.update(["UpdateDeliveryManUi"]);
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      height: 26,
+                      width: 26,
+                      child: MaterialButton(
+                        elevation: 0,
+                        padding: EdgeInsets.zero,
+                        color: secondaryBackground,
+                        onPressed: () async {
+                          showCustomDialog(
+                              context,
+                              "Update Rider",
+                              addRider(context, true, onPressed: () {
+                                //perform validation
+                                homeController
+                                    .addUpdateRider(false,
+                                        id: Utils.findIdByListNearValue(
+                                            homeController.posRiders.value.data
+                                                .toList(),
+                                            homeController.riderName.value))
+                                    .then((value) {
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.pop(context);
+                                  }
+                                });
+                              }),
+                              60,
+                              400);
+                          riders_model.Data rider = await homeController
+                              .getRider(Utils.findIdByListNearValue(
+                                  homeController.posRiders.value.data.toList(),
+                                  homeController.riderName.value));
+                          homeController.controllerName.value.text = rider.firstName ?? "";
+                          homeController.lastNameComtroller.value.text = rider.lastName?? "";
+                          homeController.controllerEmail.value.text =
+                              rider.email ?? "";
+                          homeController.controllerPhone.value.text =
+                              rider.phone;
+
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        child: Image.asset(
+                          "assets/edit-alt.png",
+                          color: primaryText,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      height: 26,
+                      width: 26,
+                      child: MaterialButton(
+                        elevation: 0,
+                        padding: EdgeInsets.zero,
+                        color: secondaryBackground,
+                        onPressed: () {
+                          homeController.controllerName.value.text = '';
+                          homeController.lastNameComtroller.value.text = '';
+                          homeController.controllerEmail.value.text = '';
+                          homeController.controllerPhone.value.text = '';
+                          homeController.controllerAddress.value.text = '';
+                          homeController.controllerPassword.value.text = '';
+                          homeController.controllerConfirmPass.value.text = '';
+                          showCustomDialog(
+                              context,
+                              "Add Rider",
+                              addRider(context, false, onPressed: () async {
+                                homeController
+                                    .addUpdateRider(true)
+                                    .then((value) {
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.pop(context);
+                                  }
+                                });
+                              }),
+                              60,
+                              400);
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        child: Image.asset(
+                          "assets/add.png",
+                          color: primaryText,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                  ],
+                ),
+              );
+      });
 }

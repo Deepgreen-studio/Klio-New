@@ -21,6 +21,11 @@ import '../model/menus.dart';
 import '../model/online_order.dart';
 import '../model/order.dart';
 import '../model/orders.dart';
+import '../model/pos_riders.dart' as pos_riders;
+import '../model/pos_riders.dart';
+import '../model/riders_model.dart';
+import '../model/riders_model.dart' as riders_model;
+
 import '../model/user.dart';
 import 'error_controller.dart';
 
@@ -29,6 +34,8 @@ class HomeController extends GetxController with ErrorController {
   Rx<Category> category = Category().obs;
   Rx<Menus> menus = Menus(data: []).obs;
   Rx<Customers> customers = Customers().obs;
+  Rx<RidersModel> deliveryMans = RidersModel().obs;
+  Rx<PosRiders> posRiders = PosRiders(data: []).obs;
   Rx<Orders> orders = Orders().obs;
   Rx<Orders> searchedOrders = Orders().obs;
   Rx<Order> order = Order().obs;
@@ -37,11 +44,17 @@ class HomeController extends GetxController with ErrorController {
   Rx<TableList> tables = TableList(data: []).obs;
   Rx<TextEditingController> controllerName =
       TextEditingController(text: '').obs;
+  Rx<TextEditingController> lastNameComtroller =
+      TextEditingController(text: '').obs;
   Rx<TextEditingController> controllerEmail =
       TextEditingController(text: '').obs;
   Rx<TextEditingController> controllerPhone =
       TextEditingController(text: '').obs;
   Rx<TextEditingController> controllerAddress =
+      TextEditingController(text: '').obs;
+  Rx<TextEditingController> controllerPassword =
+      TextEditingController(text: '').obs;
+  Rx<TextEditingController> controllerConfirmPass =
       TextEditingController(text: '').obs;
   RxBool withoutTable = false.obs;
   int orderTypeNumber = 1;
@@ -50,6 +63,7 @@ class HomeController extends GetxController with ErrorController {
   // temp variables
   RxList filteredMenu = [].obs;
   RxString customerName = ''.obs;
+  RxString riderName = ''.obs;
   Rx<MenuData> menuData = MenuData().obs;
   List<MenuData> cardList = [];
 
@@ -82,7 +96,8 @@ class HomeController extends GetxController with ErrorController {
     Utils.showLoading();
     await getCurrentUserData();
     getOrders();
-    await getCustomers();
+    getCustomers();
+    getPosRiders();
     await getCategory();
     await getMenuByKeyword();
     getOnlineOrder(0);
@@ -126,15 +141,16 @@ class HomeController extends GetxController with ErrorController {
     if (!haveMoreMenu) {
       return;
     }
-    if(keyword != ''){
+    if (keyword != '') {
       menus.value.data!.clear();
     }
     isLoading = true;
     //Map<String, String> qParams = {'keyword': keyword};
     //String endPoint = "pos/menu?page=$menuPageNumber";
-    String endPoint = keyword == '' ? "pos/menu?page=$menuPageNumber" : "pos/menu?page=$menuPageNumber&keyword=$keyword";
-    var response = await ApiClient()
-        .get(endPoint, header: Utils.apiHeader);
+    String endPoint = keyword == ''
+        ? "pos/menu?page=$menuPageNumber"
+        : "pos/menu?page=$menuPageNumber&keyword=$keyword";
+    var response = await ApiClient().get(endPoint, header: Utils.apiHeader);
     // .catchError(handleApiError);
 
     var temp = menuFromJson(response);
@@ -149,11 +165,9 @@ class HomeController extends GetxController with ErrorController {
     print(menus.value.data!.length);
     print(filteredMenu.length);
 
-
     var res = json.decode(response);
     int to = res['meta']['to'];
     int total = res['meta']['total'];
-
 
     if (total <= to) {
       haveMoreMenu = false;
@@ -180,11 +194,37 @@ class HomeController extends GetxController with ErrorController {
     customerName.value = "None";
   }
 
+  Future<void> getPosRiders() async {
+    var response = await ApiClient()
+        .get('pos/rider', header: Utils.apiHeader)
+        .catchError(handleApiError);
+
+    var temp = posRidersModelFromJson(response);
+    List<pos_riders.Data> ridersData = temp.data ?? [];
+
+    if (posRiders.value.data.isNotEmpty) {
+      posRiders.value.data.clear();
+    }
+
+    posRiders.value.data.insert(0, pos_riders.Data(id: 0, name: "None"));
+    riderName.value = "None";
+    posRiders.value.data.addAll(ridersData);
+    update(["UpdateDeliveryManUi"]);
+  }
+
   Future<Customer> getCustomer(String id) async {
     var response = await ApiClient()
         .get('pos/customer/$id', header: Utils.apiHeader)
         .catchError(handleApiError);
     return cusFromJson(response);
+  }
+
+  Future<riders_model.Data> getRider(String id) async {
+    var response = await ApiClient()
+        .get('client/rider/$id', header: Utils.apiHeader)
+        .catchError(handleApiError);
+
+    return riderFromJson(response);
   }
 
   Future<void> getOrders() async {
@@ -240,6 +280,81 @@ class HomeController extends GetxController with ErrorController {
         .catchError(handleApiError);
     if (response == null) return;
     tables.value = tableListFromJson(response);
+  }
+
+  Future<void> addUpdateRider(bool add, {String id = ''}) async {
+    Utils.showLoading();
+    var body = jsonEncode({
+      "first_name": controllerName.value.text,
+      "last_name": lastNameComtroller.value.text,
+      "email": controllerEmail.value.text,
+      "phone": controllerPhone.value.text,
+      "address": controllerAddress.value.text,
+      if (add) "password": controllerPassword.value.text,
+      if (add) "password_confirmation": controllerConfirmPass.value.text,
+    });
+
+    var response;
+    if (add) {
+      if (lastNameComtroller.value.text.isNotEmpty &&
+          controllerName.value.text.isNotEmpty &&
+          controllerPhone.value.text.isNotEmpty &&
+          controllerPassword.value.text.isNotEmpty &&
+          controllerConfirmPass.value.text.isNotEmpty &&
+          controllerPassword.value.text == controllerConfirmPass.value.text &&
+          controllerPassword.value.text.length >= 8) {
+        response = await ApiClient()
+            .post('client/rider', body, header: Utils.apiHeader)
+            .catchError(handleApiError);
+      } else {
+        if (controllerName.value.text.isEmpty) {
+          Utils.showSnackBar("First name is required");
+        } else if (lastNameComtroller.value.text.isEmpty) {
+          Utils.showSnackBar("Last name is required");
+        } else if (controllerPhone.value.text.isEmpty) {
+          Utils.showSnackBar("Phone is required");
+        } else if (controllerPassword.value.text.isEmpty) {
+          Utils.showSnackBar("Password is required");
+        } else if (controllerConfirmPass.value.text.isEmpty) {
+          Utils.showSnackBar("Password is required");
+        } else if (controllerPassword.value.text !=
+            controllerConfirmPass.value.text) {
+          Utils.showSnackBar("Password did not match");
+        }else if(controllerPassword.value.text.length < 8){
+          Utils.showSnackBar("Password must be 8 character long");
+        }
+      }
+    } else {
+      if (lastNameComtroller.value.text.isNotEmpty &&
+          controllerName.value.text.isNotEmpty &&
+          controllerPhone.value.text.isNotEmpty) {
+        response = await ApiClient()
+            .put('client/rider/$id', body, header: Utils.apiHeader)
+            .catchError(handleApiError);
+      } else {
+        if (controllerName.value.text.isEmpty) {
+          Utils.showSnackBar("First name is required");
+        } else if (lastNameComtroller.value.text.isEmpty) {
+          Utils.showSnackBar("Last name is required");
+        } else if (controllerPhone.value.text.isEmpty) {
+          Utils.showSnackBar("Phone is required");
+        }
+      }
+    }
+    if (response == null) return;
+    getPosRiders();
+    Utils.hidePopup();
+    if (add) {
+      Utils.showSnackBar("Rider added successfully");
+    } else {
+      Utils.showSnackBar("Rider updated successfully");
+    }
+
+    controllerName.value.clear();
+    lastNameComtroller.value.clear();
+    controllerEmail.value.clear();
+    controllerPhone.value.clear();
+    controllerAddress.value.clear();
   }
 
   Future<void> addUpdateCustomer(bool add, {String id = ''}) async {
@@ -307,11 +422,15 @@ class HomeController extends GetxController with ErrorController {
     items.removeAt(0);
     String customerId = Utils.findIdByListNearValue(
         customers.value.data!.toList(), customerName.value);
+
+    String riderId = Utils.findIdByListNearValue(
+        posRiders.value.data.toList(), riderName.value);
     var body = jsonEncode({
       "order_type": orderTypes.entries.elementAt(topBtnPosition.value - 1).key,
       "customer": customerId == "0" ? "" : customerId,
+      if(orderTypeNumber == 3 && riderId.isNotEmpty && riderId != "0") "rider": riderId,
       "items": items,
-      "discount": discount.value ?? 0,
+      "discount": discount.value,
       "tables": [
         for (var i in tables.value.data!.toList())
           if (i.person != 0)
