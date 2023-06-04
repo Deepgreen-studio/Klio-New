@@ -1039,8 +1039,8 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   ///Serch methods of all items...
-  Future<void> getFoodMenuByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getFoodMenuByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/menu?keyword=$keyword" : "food/menu";
     var response = await ApiClient()
@@ -1059,11 +1059,11 @@ class FoodManagementController extends GetxController with ErrorController {
     }
     update(["menuDataTable"]);
 
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getMealPeriodByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getMealPeriodByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "food/meal-period?keyword=$keyword"
         : "food/meal-period";
@@ -1073,11 +1073,11 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     mealPeriod.value = mealPeriodFromJson(response);
     update(["mealPeriodTable"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getMenuCategoryByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getMenuCategoryByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/category?keyword=$keyword" : "food/category";
     var response = await ApiClient()
@@ -1095,11 +1095,11 @@ class FoodManagementController extends GetxController with ErrorController {
       categoryPageNumber = 2;
     }
     update(["categoryDataTable"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getMenuAllergyByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getMenuAllergyByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/allergy?keyword=$keyword" : "food/allergy";
     var response = await ApiClient()
@@ -1117,11 +1117,11 @@ class FoodManagementController extends GetxController with ErrorController {
       allergyPageNumber = 2;
     }
     update(["allergyDataTable"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getMenuAddonsByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getMenuAddonsByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/addon?keyword=$keyword" : "food/addon";
     var response = await ApiClient()
@@ -1139,11 +1139,11 @@ class FoodManagementController extends GetxController with ErrorController {
       addonsPageNumber = 2;
     }
     update(["addonsDataTable"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getMenuVariantsByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getMenuVariantsByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/variant?keyword=$keyword" : "food/variant";
     var response = await ApiClient()
@@ -1161,7 +1161,7 @@ class FoodManagementController extends GetxController with ErrorController {
       variantPageNumber = 2;
     }
     update(["variantDataTable"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {

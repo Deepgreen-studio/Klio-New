@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
   FoodManagementController foodCtlr = Get.put(FoodManagementController());
   TextEditingController searchText = TextEditingController();
   late ScrollController menuScrollController;
-  int tabLimit = 1200;
+  int tabLimit = 1300;
 
   @override
   void initState() {

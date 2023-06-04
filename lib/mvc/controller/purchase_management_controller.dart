@@ -337,8 +337,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
 
   ///Search methods for all items....
   ///
-  Future<void> getPurchaseByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getPurchaseByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/purchase?keyword=$keyword"
         : "finance/purchase";
@@ -357,11 +357,11 @@ class PurchaseManagementController extends GetxController with ErrorController {
       purchasePageNumber=2;
     }
     update(["purchaseId"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getExpenseByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getExpenseByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/expense?keyword=$keyword"
         : "finance/expense";
@@ -380,11 +380,11 @@ class PurchaseManagementController extends GetxController with ErrorController {
       expencePageNumber=2;
     }
     update(["expenceId"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getExpenseCategoryByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getExpenseCategoryByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/expense-category?keyword=$keyword"
         : "finance/expense-category";
@@ -403,6 +403,6 @@ class PurchaseManagementController extends GetxController with ErrorController {
       expenceCategoryPageNumber=2;
     }
     update(["expCategoryId"]);
-    Utils.hidePopup();
+    if(showLoading) Utils.hidePopup();
   }
 }

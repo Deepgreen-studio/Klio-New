@@ -270,7 +270,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => purchaseCtrl.getPurchaseByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 2);
                               if (stopOnSearch != null) {
@@ -279,7 +279,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => purchaseCtrl.getExpenseByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 2);
                               if (stopOnSearch != null) {
@@ -289,7 +289,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                   duration,
                                   () =>
                                       purchaseCtrl.getExpenseCategoryByKeyword(
-                                          keyword: text));
+                                          keyword: text,showLoading: false));
                             } else {}
                           },
                           controller: textController,

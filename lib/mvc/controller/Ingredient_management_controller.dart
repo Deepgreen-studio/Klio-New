@@ -550,8 +550,8 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   /// search methods for all items....
-  Future<void> getIngredientByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getIngredientByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient?keyword=$keyword"
         : "master/ingredient";
@@ -570,11 +570,11 @@ class IngredientController extends GetxController with ErrorController {
       ingredientPageNumber = 2;
     }
     update(["ingredientTab"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getIngredientCategoryByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getIngredientCategoryByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient-category?keyword=$keyword"
         : "master/ingredient-category";
@@ -593,11 +593,11 @@ class IngredientController extends GetxController with ErrorController {
       categoryPageNumber = 2;
     }
     update(['categoryTab']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getIngredientUnitByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getIngredientUnitByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient-unit?keyword=$keyword"
         : "master/ingredient-unit";
@@ -616,11 +616,11 @@ class IngredientController extends GetxController with ErrorController {
       unitPageNumber = 2;
     }
     update(['unitTab']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getIngredientSupplierByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getIngredientSupplierByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/supplier?keyword=$keyword"
         : "master/supplier";
@@ -639,7 +639,7 @@ class IngredientController extends GetxController with ErrorController {
       supplierPageNumber = 2;
     }
     update(['supplierTab']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {

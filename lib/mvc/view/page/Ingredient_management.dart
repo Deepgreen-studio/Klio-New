@@ -1150,7 +1150,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => _ingredientController
-                                      .getIngredientByKeyword(keyword: text));
+                                      .getIngredientByKeyword(keyword: text,showLoading: false));
                             } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1160,7 +1160,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientCategoryByKeyword(
-                                          keyword: text));
+                                          keyword: text,showLoading: false));
                             } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1170,7 +1170,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientUnitByKeyword(
-                                          keyword: text));
+                                          keyword: text,showLoading: false));
                             } else if (_currentSelection == 3) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1180,7 +1180,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientSupplierByKeyword(
-                                          keyword: text));
+                                          keyword: text,showLoading: false));
                             } else {}
                           },
                           controller: textController,

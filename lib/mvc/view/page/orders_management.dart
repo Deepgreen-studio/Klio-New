@@ -230,7 +230,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                 stopOnSearch = Timer(
                                     duration,
                                     () => _ordersManagementController
-                                        .getAllOrderByKeyword(keyword: text));
+                                        .getAllOrderByKeyword(keyword: text,showLoading: false));
                               } else if (_currentSelection == 1) {
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
@@ -240,7 +240,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                     duration,
                                     () => _ordersManagementController
                                         .getSuccessOrderByKeyword(
-                                            keyword: text));
+                                            keyword: text,showLoading: false));
                               } else if (_currentSelection == 2) {
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
@@ -250,7 +250,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                     duration,
                                     () => _ordersManagementController
                                         .getProcessingOrderByKeyword(
-                                            keyword: text));
+                                            keyword: text,showLoading: false));
                               } else if (_currentSelection == 3) {
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
@@ -260,7 +260,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                     duration,
                                     () => _ordersManagementController
                                         .getPendingOrderByKeyword(
-                                            keyword: text));
+                                            keyword: text,showLoading: false));
                               } else if (_currentSelection == 4) {
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
@@ -270,7 +270,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                     duration,
                                     () => _ordersManagementController
                                         .getCancelOrderByKeyword(
-                                            keyword: text));
+                                            keyword: text,showLoading: false));
                               } else {}
                             },
                             controller: textController,

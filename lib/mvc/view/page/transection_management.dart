@@ -216,7 +216,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => _transactionsController
-                                      .getBankByKeyword(keyword: text));
+                                      .getBankByKeyword(keyword: text,showLoading: false));
                             } else {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -226,7 +226,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                                   duration,
                                   () => _transactionsController
                                       .getBankTransactionByKeyword(
-                                          keyword: text));
+                                          keyword: text,showLoading: false));
                             }
                           },
                           keyboardType: TextInputType.text,

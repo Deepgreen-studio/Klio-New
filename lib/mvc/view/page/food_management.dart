@@ -1605,7 +1605,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getFoodMenuByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1614,7 +1614,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMealPeriodByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1623,7 +1623,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuCategoryByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 3) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1632,7 +1632,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuAllergyByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 4) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1641,7 +1641,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuAddonsByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else if (_currentSelection == 5) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1650,7 +1650,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuVariantsByKeyword(
-                                      keyword: text));
+                                      keyword: text,showLoading: false));
                             } else {}
                           },
                           controller: textController,

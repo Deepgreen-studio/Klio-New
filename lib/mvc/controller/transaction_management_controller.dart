@@ -191,8 +191,8 @@ class TransactionsController extends GetxController with ErrorController {
 
   /// Search methods for bank and bank transaction....
 
-  Future<void> getBankByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getBankByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "finance/bank?keyword=$keyword" : "finance/bank";
     var response = await ApiClient()
@@ -210,11 +210,11 @@ class TransactionsController extends GetxController with ErrorController {
       bankPageNumber=2;
     }
     update(["bankId"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
-  Future<void> getBankTransactionByKeyword({String keyword = ''}) async {
-    Utils.showLoading();
+  Future<void> getBankTransactionByKeyword({String keyword = '', bool showLoading = true}) async {
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "finance/bank-transaction?keyword=$keyword"
         : "finance/bank-transaction";
@@ -233,7 +233,7 @@ class TransactionsController extends GetxController with ErrorController {
       transitionPageNumber=2;
     }
     update(["transId"]);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {

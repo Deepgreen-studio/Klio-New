@@ -290,8 +290,8 @@ class OrdersManagementController extends GetxController with ErrorController {
 
   ///Search methods for all orders item...
 
-    Future<void> getAllOrderByKeyword({String keyword = ''})async{
-    Utils.showLoading();
+    Future<void> getAllOrderByKeyword({String keyword = '', bool showLoading = true})async{
+      if(showLoading)Utils.showLoading();
       String endPoint = keyword.isNotEmpty?
           "orders/order?keyword=$keyword":
           "orders/order";
@@ -310,10 +310,10 @@ class OrdersManagementController extends GetxController with ErrorController {
       allOrderPageNumber=2;
     }
       update(['allOrders']);
-      Utils.hidePopup();
+      if(showLoading)Utils.hidePopup();
     }
-  Future<void> getSuccessOrderByKeyword({String keyword = ''})async{
-    Utils.showLoading();
+  Future<void> getSuccessOrderByKeyword({String keyword = '', bool showLoading = true})async{
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=success&keyword=$keyword":
     "orders/order?status=success";
@@ -332,10 +332,10 @@ class OrdersManagementController extends GetxController with ErrorController {
       successOrderPageNumber=2;
     }
     update(['allSuccessOrders']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
-  Future<void> getProcessingOrderByKeyword({String keyword = ''})async{
-    Utils.showLoading();
+  Future<void> getProcessingOrderByKeyword({String keyword = '', bool showLoading = true})async{
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=processing&keyword=$keyword":
     "orders/order?status=processing";
@@ -354,10 +354,10 @@ class OrdersManagementController extends GetxController with ErrorController {
       processingOrderPageNumber=2;
     }
     update(['allProcessingOrders']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
-  Future<void> getPendingOrderByKeyword({String keyword = ''})async{
-    Utils.showLoading();
+  Future<void> getPendingOrderByKeyword({String keyword = '', bool showLoading = true})async{
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=pending&keyword=$keyword":
     "orders/order?status=pending";
@@ -376,10 +376,10 @@ class OrdersManagementController extends GetxController with ErrorController {
       pendingOrderPageNumber=2;
     }
     update(['allPendingOrders']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
-  Future<void> getCancelOrderByKeyword({String keyword = ''})async{
-    Utils.showLoading();
+  Future<void> getCancelOrderByKeyword({String keyword = '', bool showLoading = true})async{
+    if(showLoading)Utils.showLoading();
     String endPoint = keyword.isNotEmpty?
     "orders/order?status=cancel&keyword=$keyword":
     "orders/order?status=cancel";
@@ -398,7 +398,7 @@ class OrdersManagementController extends GetxController with ErrorController {
       cancelOrderPageNumber=2;
     }
     update(['allCancelOrders']);
-    Utils.hidePopup();
+    if(showLoading)Utils.hidePopup();
   }
 
 }
