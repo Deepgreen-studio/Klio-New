@@ -2299,7 +2299,10 @@ Widget orderInvoice(BuildContext context, String method) {
               onPressed: () async {
                 // DefaultPrinter.startPrinting();
                 Utils.showSnackBar("Printing... wait!");
-                await SumniPrinter.printText();
+                 bool isTableAvailable =
+                (homeController.order.value.data!.tables!.data != null &&
+                    homeController.order.value.data!.tables!.data!.isNotEmpty);
+                await SumniPrinter.printText(isTableAvailable);
                 CustomerDisplay.sleep();
               },
               shape: RoundedRectangleBorder(

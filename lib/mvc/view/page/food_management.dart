@@ -147,7 +147,7 @@ class _FoodManagementState extends State<FoodManagement>
             builder: (controller) {
               List<FoodMenuManagementDatum> data =
                   controller.menusData.value.data ?? [];
-              if (data.isEmpty) {
+              if (data.isEmpty && controller.haveMoreMenuItem) {
                 return Center(
                     child: Container(
                         height: 40,
@@ -155,6 +155,9 @@ class _FoodManagementState extends State<FoodManagement>
                         margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.3),
                         child: CircularProgressIndicator()));
+              }
+              if (data.isEmpty && !controller.haveMoreMenuItem) {
+                data.add(FoodMenuManagementDatum(id: 0));
               }
               if (!controller.haveMoreMenuItem && data.last.id != 0) {
                 data.add(FoodMenuManagementDatum(id: 0));
@@ -575,6 +578,10 @@ class _FoodManagementState extends State<FoodManagement>
               print("=============--------=====");
               List<MenuCategory> data =
                   controller.foodMenuCategory.value.data ?? [];
+
+              if (data.isEmpty && !controller.haveMoreMealCategory) {
+                data.add(MenuCategory(id: 0));
+              }
               if (!controller.haveMoreMealCategory && data.last.id != 0) {
                 data.add(MenuCategory(id: 0));
               }
@@ -746,6 +753,9 @@ class _FoodManagementState extends State<FoodManagement>
             id: "allergyDataTable",
             builder: (controller) {
               List<Allergy> data = controller.foodMenuAllergy.value.data ?? [];
+              if (data.isEmpty && !controller.haveMoreAllergy) {
+                data.add(Allergy(id: 0));
+              }
               if (!controller.haveMoreAllergy && data.last.id != 0) {
                 data.add(Allergy(id: 0));
               }
@@ -902,6 +912,9 @@ class _FoodManagementState extends State<FoodManagement>
             id: "addonsDataTable",
             builder: (controller) {
               List<MenuAddon> data = controller.foodAddons.value.data ?? [];
+              if (data.isEmpty && !controller.haveMoreAddons) {
+                data.add(MenuAddon(id: 0));
+              }
               if (!controller.haveMoreAddons && data.last.id != 0) {
                 data.add(MenuAddon(id: 0));
               }
@@ -1097,6 +1110,9 @@ class _FoodManagementState extends State<FoodManagement>
             id: "variantDataTable",
             builder: (controller) {
               List<Variant> data = controller.foodVariants.value.data ?? [];
+              if (data.isEmpty && !controller.haveMoreVariants) {
+                data.add(Variant(id: 0));
+              }
               if (!controller.haveMoreVariants && data.last.id != 0) {
                 data.add(Variant(id: 0));
               }
@@ -1597,6 +1613,7 @@ class _FoodManagementState extends State<FoodManagement>
                       height: 40,
                       child: TextField(
                           onChanged: (text) async {
+                            foodCtlr.searchText = text;
                             if (_currentSelection == 0) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1605,7 +1622,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getFoodMenuByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1614,7 +1631,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMealPeriodByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1623,7 +1640,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuCategoryByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else if (_currentSelection == 3) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1632,7 +1649,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuAllergyByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else if (_currentSelection == 4) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1641,7 +1658,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuAddonsByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else if (_currentSelection == 5) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1650,7 +1667,7 @@ class _FoodManagementState extends State<FoodManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => foodCtlr.getMenuVariantsByKeyword(
-                                      keyword: text,showLoading: false));
+                                      keyword: text, showLoading: false));
                             } else {}
                           },
                           controller: textController,
@@ -1673,6 +1690,7 @@ class _FoodManagementState extends State<FoodManagement>
                                 color: textSecondary,
                               ),
                               onPressed: () {
+                                foodCtlr.searchText = '';
                                 if (_currentSelection == 0) {
                                   setState(() {
                                     textController.text = '';
@@ -1849,7 +1867,8 @@ class _FoodManagementState extends State<FoodManagement>
                       //     value: e.id.toString(),
                       //   );
                       // }).toList(),
-                      options: controller.addMenuModel.mealPeriods.map((add_menu_model.MealPeriods e) {
+                      options: controller.addMenuModel.mealPeriods
+                          .map((add_menu_model.MealPeriods e) {
                         return ValueItem(
                           label: e.name!,
                           value: e.id.toString(),
@@ -1945,8 +1964,8 @@ class _FoodManagementState extends State<FoodManagement>
                       //     value: e.id.toString(),
                       //   );
                       // }).toList(),
-                      options:
-                          controller.addMenuModel.addons.map((add_menu_model.Addons e) {
+                      options: controller.addMenuModel.addons
+                          .map((add_menu_model.Addons e) {
                         return ValueItem(
                           label: e.name ?? '',
                           value: e.id.toString(),
@@ -2252,7 +2271,8 @@ class _FoodManagementState extends State<FoodManagement>
                                       .toList();
                             },
                             selectedOptions: foodCtlr.foodSingleItemDetails
-                                .value.data!.categories!.data!.map((MenuAddon e) {
+                                .value.data!.categories!.data!
+                                .map((MenuAddon e) {
                               return ValueItem(
                                 label: e.name!,
                                 value: e.id.toString(),

@@ -107,14 +107,14 @@ class Links {
 }
 
 class Meta {
-  int currentPage;
-  int from;
-  int lastPage;
-  List<Link> links;
-  String path;
-  int perPage;
-  int to;
-  int total;
+  int? currentPage;
+  int? from;
+  int? lastPage;
+  List<Link>? links;
+  String? path;
+  int? perPage;
+  int? to;
+  int? total;
 
   Meta({
     required this.currentPage,
@@ -142,7 +142,7 @@ class Meta {
     "current_page": currentPage,
     "from": from,
     "last_page": lastPage,
-    "links": List<dynamic>.from(links.map((x) => x.toJson())),
+    //"links": List<dynamic>.from(links.map((x) => x.toJson())),
     "path": path,
     "per_page": perPage,
     "to": to,

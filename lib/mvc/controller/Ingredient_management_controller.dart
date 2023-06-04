@@ -98,6 +98,8 @@ class IngredientController extends GetxController with ErrorController {
   bool haveMoreUnit = true;
   bool haveMoreSupplier = true;
 
+  String searchText = '';
+
   ///
   ///
 
@@ -169,7 +171,11 @@ class IngredientController extends GetxController with ErrorController {
       ingredientData.value.data!.clear();
     }
     isLoading = true;
-    String endPoint = id == '' ? 'master/ingredient' : 'master/ingredient/$id';
+    String endPoint = id == ''
+        ? searchText.isEmpty
+            ? 'master/ingredient'
+            : 'master/ingredient?keyword=$searchText'
+        : 'master/ingredient/$id';
     var response = await ApiClient()
         .get("$endPoint?page=$ingredientPageNumber", header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -180,8 +186,8 @@ class IngredientController extends GetxController with ErrorController {
     ingredientData.value.data?.addAll(ingredient);
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreIngredient = false;
@@ -225,7 +231,9 @@ class IngredientController extends GetxController with ErrorController {
     isLoading = true;
 
     String endPoint = id == ''
-        ? 'master/ingredient-category?page=$categoryPageNumber'
+        ? searchText.isEmpty
+            ? 'master/ingredient-category?page=$categoryPageNumber'
+            : 'master/ingredient-category?keyword=$searchText&page=$categoryPageNumber'
         : 'master/ingredient-category/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -237,8 +245,8 @@ class IngredientController extends GetxController with ErrorController {
     ingredientCategoryData.value.data.addAll(ingredientCategory);
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreCategory = false;
@@ -272,7 +280,9 @@ class IngredientController extends GetxController with ErrorController {
     isLoading = true;
 
     String endPoint = id == ''
-        ? 'master/ingredient-unit?page=$unitPageNumber'
+        ? searchText.isEmpty
+            ? 'master/ingredient-unit?page=$unitPageNumber'
+            : 'master/ingredient-unit?keyword=$searchText&page=$unitPageNumber'
         : 'master/ingredient-unit/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -284,8 +294,8 @@ class IngredientController extends GetxController with ErrorController {
     ingredientUnitData.value.data.addAll(ingredientUnit);
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreUnit = false;
@@ -322,7 +332,11 @@ class IngredientController extends GetxController with ErrorController {
     }
     isLoading = true;
 
-    String endPoint = id == '' ? 'master/supplier' : 'master/supplier/$id';
+    String endPoint = id == ''
+        ? searchText.isEmpty
+            ? 'master/supplier?page=$unitPageNumber'
+            : 'master/supplier?keyword=$searchText&page=$unitPageNumber'
+        : 'master/supplier/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -333,8 +347,8 @@ class IngredientController extends GetxController with ErrorController {
     ingredientSupplierData.value.data.addAll(ingredientUnit);
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreSupplier = false;
@@ -550,8 +564,9 @@ class IngredientController extends GetxController with ErrorController {
   }
 
   /// search methods for all items....
-  Future<void> getIngredientByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getIngredientByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient?keyword=$keyword"
         : "master/ingredient";
@@ -561,8 +576,8 @@ class IngredientController extends GetxController with ErrorController {
     print(response);
     ingredientData.value = ingredinetListModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreIngredient = false;
     } else {
@@ -570,11 +585,12 @@ class IngredientController extends GetxController with ErrorController {
       ingredientPageNumber = 2;
     }
     update(["ingredientTab"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getIngredientCategoryByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getIngredientCategoryByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient-category?keyword=$keyword"
         : "master/ingredient-category";
@@ -584,8 +600,8 @@ class IngredientController extends GetxController with ErrorController {
     print(response);
     ingredientCategoryData.value = ingredineCategoryModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreCategory = false;
     } else {
@@ -593,11 +609,12 @@ class IngredientController extends GetxController with ErrorController {
       categoryPageNumber = 2;
     }
     update(['categoryTab']);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getIngredientUnitByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getIngredientUnitByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/ingredient-unit?keyword=$keyword"
         : "master/ingredient-unit";
@@ -607,8 +624,8 @@ class IngredientController extends GetxController with ErrorController {
     print(response);
     ingredientUnitData.value = ingredineUnitModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreUnit = false;
     } else {
@@ -616,11 +633,12 @@ class IngredientController extends GetxController with ErrorController {
       unitPageNumber = 2;
     }
     update(['unitTab']);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getIngredientSupplierByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getIngredientSupplierByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "master/supplier?keyword=$keyword"
         : "master/supplier";
@@ -630,8 +648,8 @@ class IngredientController extends GetxController with ErrorController {
     print(response);
     ingredientSupplierData.value = ingredineSupplierModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreSupplier = false;
     } else {
@@ -639,7 +657,7 @@ class IngredientController extends GetxController with ErrorController {
       supplierPageNumber = 2;
     }
     update(['supplierTab']);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {

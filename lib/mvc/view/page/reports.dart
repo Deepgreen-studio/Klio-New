@@ -50,7 +50,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
           print('===================');
         } else if (_currentSelection == 1 &&
             !_reportController.isLoadingStockReport) {
-          _reportController.getSaleReportDataList();
+          _reportController.getStockReportDataList();
         } else if (_currentSelection == 2) {
           _reportController.getProfitLossReportList();
         } else if (_currentSelection == 3 &&
@@ -190,6 +190,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                           child: TextField(
                               onChanged: (text) async {
                                 if (_currentSelection == 0) {
+                                  _reportController.searchText = text;
                                   const duration = Duration(seconds: 1);
                                   if (stopOnSearch != null) {
                                     stopOnSearch?.cancel();
@@ -237,6 +238,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                                 ),
                                 suffixIcon: IconButton(
                                     onPressed: () {
+                                      _reportController.searchText = '';
                                       if (_currentSelection == 0) {
                                         setState(() {
                                           textController.text = '';
@@ -299,7 +301,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         child: GetBuilder<ReportManagementController>(
             id: "saleId",
             builder: (controller) {
-              if (controller.saleRepData.value.data!.isEmpty) {
+              if (controller.saleRepData.value.data!.isEmpty && controller.haveMoreAllSale) {
                 return Center(
                     child: Container(
                         height: 40,
@@ -307,6 +309,9 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                         margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.3),
                         child: const CircularProgressIndicator()));
+              }
+              if (controller.saleRepData.value.data!.isEmpty && !controller.haveMoreAllSale) {
+                controller.saleRepData.value.data!.add(SaleReport.Datum(id: 0));
               }
               if (!controller.haveMoreAllSale &&
                   controller.saleRepData.value.data!.last.id != 0) {
@@ -373,7 +378,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               _reportController.saleRepData.value.data!.last &&
                           !controller.isLoadingAllSale &&
-                          controller.haveMoreAllSale || controller.onSearch) {
+                          controller.haveMoreAllSale ) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -443,6 +448,10 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         child: GetBuilder<ReportManagementController>(
             id: 'stockId',
             builder: (controller) {
+              if (controller.stockRepData.value.data!.isEmpty && !controller.haveMoreStockReport) {
+                controller.stockRepData.value.data!
+                    .add(StockReport.Datum(id: 0));
+              }
               if (!controller.haveMoreStockReport &&
                   controller.stockRepData.value.data!.last.id != 0) {
                 controller.stockRepData.value.data!
@@ -517,7 +526,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               controller.stockRepData.value.data!.last &&
                           !controller.isLoadingStockReport &&
-                          controller.haveMoreStockReport || controller.onSearch) {
+                          controller.haveMoreStockReport ) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -717,6 +726,10 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
         child: GetBuilder<ReportManagementController>(
             id: 'wasteId',
             builder: (controller) {
+              if (controller.wasteRepData.value.data!.isEmpty && !controller.haveMoreWasteReport) {
+                controller.wasteRepData.value.data!
+                    .add(WasteReport.Datum(id: 0));
+              }
               if (!controller.haveMoreWasteReport &&
                   controller.wasteRepData.value.data!.last.id != 0) {
                 controller.wasteRepData.value.data!
@@ -791,7 +804,7 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                       } else if (item ==
                               controller.wasteRepData.value.data!.last &&
                           !controller.isLoadingWasteReport &&
-                          controller.haveMoreWasteReport|| controller.onSearch) {
+                          controller.haveMoreWasteReport) {
                         return const DataRow(cells: [
                           DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),

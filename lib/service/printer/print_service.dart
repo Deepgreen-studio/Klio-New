@@ -62,9 +62,9 @@ class DefaultPrinter {
   }
 
   static pw.Widget invoicePage(String method) {
-    bool isTableAvailable  = (homeController
-        .order.value.data!.tables!.data != null && homeController
-        .order.value.data!.tables!.data!.isNotEmpty);
+    bool isTableAvailable =
+        (homeController.order.value.data!.tables!.data != null &&
+            homeController.order.value.data!.tables!.data!.isNotEmpty);
     return pw.Padding(
         padding: pw.EdgeInsets.symmetric(horizontal: 30),
         child: pw.Column(children: [
@@ -84,8 +84,9 @@ class DefaultPrinter {
           ),
           pw.SizedBox(height: 10),
           pw.Row(
-
-            mainAxisAlignment: isTableAvailable ? pw.MainAxisAlignment.spaceBetween : pw.MainAxisAlignment.center,
+            mainAxisAlignment: isTableAvailable
+                ? pw.MainAxisAlignment.spaceBetween
+                : pw.MainAxisAlignment.center,
             children: [
               if (isTableAvailable)
                 textMixerPw(
@@ -366,7 +367,9 @@ class DefaultPrinter {
 }
 
 class SumniPrinter {
-  static Future<void> printText() async {
+
+
+  static Future<void> printText(bool isTableAvailable) async {
     await SunmiPrinter.startTransactionPrint(true);
 
     await SunmiPrinter.setFontSize(SunmiFontSize.XL);
@@ -378,8 +381,15 @@ class SumniPrinter {
     await SunmiPrinter.printText(
         'We are just preparing your food, will \nbring it table as soon as possible');
 
-    await SunmiPrinter.printText(
-        'Table: ${Utils.getTables(homeController.order.value.data!.tables!.data!.toList())}              Order Number: ${homeController.order.value.data!.invoice.toString()}');
+    if (isTableAvailable) {
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      await SunmiPrinter.printText(
+          'Table: ${Utils.getTables(homeController.order.value.data!.tables!.data!.toList())}              Order Number: ${homeController.order.value.data!.invoice.toString()}');
+    } else {
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      await SunmiPrinter.printText(
+          'Order Number: ${homeController.order.value.data!.invoice.toString()}');
+    }
     await SunmiPrinter.lineWrap(2);
 
     await SunmiPrinter.setFontSize(SunmiFontSize.XL);

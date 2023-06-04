@@ -137,7 +137,7 @@ class _IngredientManagementState extends State<IngredientManagement>
             builder: (controller) {
               List<Ingrediant> data =
                   controller.ingredientData.value.data ?? [];
-              if (data.isEmpty) {
+              if (data.isEmpty && controller.haveMoreIngredient) {
                 return Center(
                     child: Container(
                         height: 40,
@@ -145,6 +145,9 @@ class _IngredientManagementState extends State<IngredientManagement>
                         margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.3),
                         child: CircularProgressIndicator()));
+              }
+              if (data.isEmpty && !controller.haveMoreIngredient) {
+                data.add(Ingrediant(id: 0));
               }
               if (!controller.haveMoreIngredient && data.last.id != 0) {
                 data.add(Ingrediant(id: 0));
@@ -406,7 +409,8 @@ class _IngredientManagementState extends State<IngredientManagement>
             builder: (controller) {
               List<IngrediantCategory> data =
                   controller.ingredientCategoryData.value.data;
-              if (controller.ingredientCategoryData.value.data.isEmpty) {
+              if (controller.ingredientCategoryData.value.data.isEmpty &&
+                  controller.haveMoreCategory) {
                 return Center(
                     child: Container(
                         height: 40,
@@ -414,6 +418,9 @@ class _IngredientManagementState extends State<IngredientManagement>
                         margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.3),
                         child: CircularProgressIndicator()));
+              }
+              if (data.isEmpty && !controller.haveMoreCategory) {
+                data.add(IngrediantCategory(id: 0, name: ''));
               }
               if (!controller.haveMoreCategory && data.last.id != 0) {
                 data.add(IngrediantCategory(id: 0, name: ''));
@@ -525,7 +532,9 @@ class _IngredientManagementState extends State<IngredientManagement>
             builder: (controller) {
               List<IngrediantUnit> data =
                   controller.ingredientUnitData.value.data;
-
+              if (data.isEmpty && !controller.haveMoreUnit) {
+                data.add(IngrediantUnit(id: 0, name: '', description: ''));
+              }
               if (!controller.haveMoreUnit && data.last.id != 0) {
                 data.add(IngrediantUnit(id: 0, name: '', description: ''));
               }
@@ -647,6 +656,22 @@ class _IngredientManagementState extends State<IngredientManagement>
             builder: (controller) {
               List<supplier.Datum> data =
                   controller.ingredientSupplierData.value.data;
+
+              if (data.isEmpty && !controller.haveMoreSupplier) {
+                data.add(
+                  supplier.Datum(
+                    id: 0,
+                    name: '',
+                    address: '',
+                    email: '',
+                    idCardBack: '',
+                    idCardFront: '',
+                    phone: '',
+                    reference: '',
+                    status: '',
+                  ),
+                );
+              }
 
               if (!controller.haveMoreSupplier && data.last.id != 0) {
                 data.add(
@@ -1142,6 +1167,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                       height: 40,
                       child: TextField(
                           onChanged: (text) async {
+                            _ingredientController.searchText = text;
                             if (_currentSelection == 0) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1150,7 +1176,8 @@ class _IngredientManagementState extends State<IngredientManagement>
                               stopOnSearch = Timer(
                                   duration,
                                   () => _ingredientController
-                                      .getIngredientByKeyword(keyword: text,showLoading: false));
+                                      .getIngredientByKeyword(
+                                          keyword: text, showLoading: false));
                             } else if (_currentSelection == 1) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1160,7 +1187,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientCategoryByKeyword(
-                                          keyword: text,showLoading: false));
+                                          keyword: text, showLoading: false));
                             } else if (_currentSelection == 2) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1170,7 +1197,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientUnitByKeyword(
-                                          keyword: text,showLoading: false));
+                                          keyword: text, showLoading: false));
                             } else if (_currentSelection == 3) {
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
@@ -1180,7 +1207,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                                   duration,
                                   () => _ingredientController
                                       .getIngredientSupplierByKeyword(
-                                          keyword: text,showLoading: false));
+                                          keyword: text, showLoading: false));
                             } else {}
                           },
                           controller: textController,
@@ -1199,6 +1226,7 @@ class _IngredientManagementState extends State<IngredientManagement>
                             ),
                             suffixIcon: IconButton(
                                 onPressed: () {
+                                  _ingredientController.searchText = '';
                                   if (_currentSelection == 0) {
                                     setState(() {
                                       textController.text = '';

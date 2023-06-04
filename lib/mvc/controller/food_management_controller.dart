@@ -87,7 +87,12 @@ class FoodManagementController extends GetxController with ErrorController {
   List<SingleMenuDetailsData> updateMealIngrediantSelectMeal = [];
   RxBool isDrinks = false.obs;
   RxString currentSelectedValue = ''.obs;
-  AddMenuModel addMenuModel = AddMenuModel(categories: [], mealPeriods: [], addons: [], allergies: [], ingredients: []);
+  AddMenuModel addMenuModel = AddMenuModel(
+      categories: [],
+      mealPeriods: [],
+      addons: [],
+      allergies: [],
+      ingredients: []);
 
   /// Meal period
   File? mealPeriodStoreImage;
@@ -157,6 +162,8 @@ class FoodManagementController extends GetxController with ErrorController {
   int addonsPageNumber = 1;
   int variantPageNumber = 1;
 
+  String searchText = '';
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -221,8 +228,11 @@ class FoodManagementController extends GetxController with ErrorController {
         .get('pos/category', header: Utils.apiHeader)
         .catchError(handleApiError);*/
 
-    String endPoint =
-        id == '' ? 'food/menu?page=$menuPageNumber' : 'food/menu/$id';
+    String endPoint = id == ''
+        ? searchText.isEmpty
+            ? 'food/menu?page=$menuPageNumber'
+            : 'food/menu?keyword=$searchText&page=$menuPageNumber'
+        : 'food/menu/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -236,8 +246,8 @@ class FoodManagementController extends GetxController with ErrorController {
     menuPageNumber++;
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreMenuItem = false;
@@ -289,7 +299,9 @@ class FoodManagementController extends GetxController with ErrorController {
     }
     isLoading = true;
     String endPoint = id == ''
-        ? 'food/category?page=$categoryPageNumber'
+        ? searchText.isEmpty
+            ? 'food/category?page=$categoryPageNumber'
+            : 'food/category?keyword=$searchText&page=$categoryPageNumber'
         : 'food/category/$id';
 
     var response = await ApiClient()
@@ -304,8 +316,8 @@ class FoodManagementController extends GetxController with ErrorController {
     categoryPageNumber++;
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreMealCategory = false;
@@ -325,8 +337,11 @@ class FoodManagementController extends GetxController with ErrorController {
     }
     isLoading = true;
 
-    String endPoint =
-        id == '' ? 'food/allergy?page=$allergyPageNumber' : 'food/allergy/$id';
+    String endPoint = id == ''
+        ? searchText.isEmpty
+            ? 'food/allergy?page=$allergyPageNumber'
+            : 'food/allergy?keyword=$searchText&page=$allergyPageNumber'
+        : 'food/allergy/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -340,8 +355,8 @@ class FoodManagementController extends GetxController with ErrorController {
     allergyPageNumber++;
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreAllergy = false;
@@ -365,7 +380,10 @@ class FoodManagementController extends GetxController with ErrorController {
         .catchError(handleApiError);*/
 
     String endPoint =
-        id == '' ? 'food/addon?page=$addonsPageNumber' : 'food/addon/$id';
+        id == '' ? searchText.isEmpty
+            ?'food/addon?page=$addonsPageNumber'
+            :'food/addon?keyword=$searchText&page=$addonsPageNumber'
+            : 'food/addon/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -378,8 +396,8 @@ class FoodManagementController extends GetxController with ErrorController {
     addonsPageNumber++;
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreAddons = false;
@@ -400,7 +418,10 @@ class FoodManagementController extends GetxController with ErrorController {
     isLoading = true;
 
     String endPoint =
-        id == '' ? 'food/variant?page=$variantPageNumber' : 'food/variant/$id';
+        id == '' ? searchText.isEmpty
+            ?'food/variant?page=$variantPageNumber'
+            :'food/variant?keyword=$searchText&page=$variantPageNumber'
+            : 'food/variant/$id';
 
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -414,8 +435,8 @@ class FoodManagementController extends GetxController with ErrorController {
     variantPageNumber++;
 
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']?? 0;
+    int total = res['meta']['total']?? 0;
 
     if (total <= to) {
       haveMoreVariants = false;
@@ -1039,18 +1060,23 @@ class FoodManagementController extends GetxController with ErrorController {
   }
 
   ///Serch methods of all items...
-  Future<void> getFoodMenuByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getFoodMenuByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/menu?keyword=$keyword" : "food/menu";
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    print(response);
+
     menusData.value = foodMenuManagementFromJson(response);
+
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
+    if (total == 0) {
+      haveMoreMenuItem = false;
+    }
     if (total <= to) {
       haveMoreMenuItem = false;
     } else {
@@ -1059,11 +1085,12 @@ class FoodManagementController extends GetxController with ErrorController {
     }
     update(["menuDataTable"]);
 
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getMealPeriodByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading) Utils.showLoading();
+  Future<void> getMealPeriodByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint = keyword.isNotEmpty
         ? "food/meal-period?keyword=$keyword"
         : "food/meal-period";
@@ -1073,11 +1100,12 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     mealPeriod.value = mealPeriodFromJson(response);
     update(["mealPeriodTable"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getMenuCategoryByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getMenuCategoryByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/category?keyword=$keyword" : "food/category";
     var response = await ApiClient()
@@ -1086,8 +1114,8 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     foodMenuCategory.value = foodMenuCategoryFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreMealCategory = false;
     } else {
@@ -1095,11 +1123,12 @@ class FoodManagementController extends GetxController with ErrorController {
       categoryPageNumber = 2;
     }
     update(["categoryDataTable"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getMenuAllergyByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getMenuAllergyByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/allergy?keyword=$keyword" : "food/allergy";
     var response = await ApiClient()
@@ -1108,8 +1137,8 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     foodMenuAllergy.value = foodMenuAllergyFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreAllergy = false;
     } else {
@@ -1117,11 +1146,12 @@ class FoodManagementController extends GetxController with ErrorController {
       allergyPageNumber = 2;
     }
     update(["allergyDataTable"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getMenuAddonsByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getMenuAddonsByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/addon?keyword=$keyword" : "food/addon";
     var response = await ApiClient()
@@ -1130,8 +1160,8 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     foodAddons.value = foodMenuAddonsFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreAddons = false;
     } else {
@@ -1139,11 +1169,12 @@ class FoodManagementController extends GetxController with ErrorController {
       addonsPageNumber = 2;
     }
     update(["addonsDataTable"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
-  Future<void> getMenuVariantsByKeyword({String keyword = '', bool showLoading = true}) async {
-    if(showLoading)Utils.showLoading();
+  Future<void> getMenuVariantsByKeyword(
+      {String keyword = '', bool showLoading = true}) async {
+    if (showLoading) Utils.showLoading();
     String endPoint =
         keyword.isNotEmpty ? "food/variant?keyword=$keyword" : "food/variant";
     var response = await ApiClient()
@@ -1152,8 +1183,8 @@ class FoodManagementController extends GetxController with ErrorController {
     print(response);
     foodVariants.value = foodMenuVariantsFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to'] ?? 0;
+    int total = res['meta']['total'] ?? 0;
     if (total <= to) {
       haveMoreVariants = false;
     } else {
@@ -1161,7 +1192,7 @@ class FoodManagementController extends GetxController with ErrorController {
       variantPageNumber = 2;
     }
     update(["variantDataTable"]);
-    if(showLoading)Utils.hidePopup();
+    if (showLoading) Utils.hidePopup();
   }
 
   dynamic _processResponse(http.Response response) {
