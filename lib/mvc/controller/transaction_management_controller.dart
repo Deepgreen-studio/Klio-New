@@ -42,6 +42,8 @@ class TransactionsController extends GetxController with ErrorController {
   TextEditingController branchCtlr = TextEditingController();
   TextEditingController balanceCtlr = TextEditingController();
 
+  String searchText='';
+
   // Validator
   String? Function(String?)? textValidator = (String? value) {
     if (value!.isEmpty) {
@@ -94,7 +96,9 @@ class TransactionsController extends GetxController with ErrorController {
       bankListData.value.data.clear();
     }
     isLoadingBank = true;
-    String endPoint = 'finance/bank?page$bankPageNumber';
+    String endPoint =searchText.isEmpty?
+    'finance/bank?page$bankPageNumber'
+    :'finance/bank?keyword=$searchText&page$bankPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -168,7 +172,9 @@ class TransactionsController extends GetxController with ErrorController {
       return;
     }
     isLoadingTransition = true;
-    String endPoint = 'finance/bank-transaction?page=$transitionPageNumber';
+    String endPoint =searchText.isEmpty?
+    'finance/bank-transaction?page=$transitionPageNumber'
+    : 'finance/bank-transaction?keyword=$searchText&page=$transitionPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -201,8 +207,8 @@ class TransactionsController extends GetxController with ErrorController {
     print(response);
     bankListData.value = bankListModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreBank = false;
     }else{
@@ -224,8 +230,8 @@ class TransactionsController extends GetxController with ErrorController {
     print(response);
     transactionListData.value = transactionListModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreTransition = false;
     }else{

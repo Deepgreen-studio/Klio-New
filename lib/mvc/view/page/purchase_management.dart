@@ -263,6 +263,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       child: TextField(
                           onChanged: (text) async {
                             if (_currentSelection == 0) {
+                              purchaseCtrl.searchText=text;
                               const duration = Duration(seconds: 2);
                               if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
@@ -272,6 +273,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                   () => purchaseCtrl.getPurchaseByKeyword(
                                       keyword: text,showLoading: false));
                             } else if (_currentSelection == 1) {
+                              purchaseCtrl.searchText=text;
                               const duration = Duration(seconds: 2);
                               if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
@@ -281,6 +283,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                   () => purchaseCtrl.getExpenseByKeyword(
                                       keyword: text,showLoading: false));
                             } else if (_currentSelection == 2) {
+                              purchaseCtrl.searchText=text;
                               const duration = Duration(seconds: 2);
                               if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
@@ -309,16 +312,19 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                             suffixIcon: IconButton(
                                 onPressed: () {
                                   if (_currentSelection == 0) {
+                                    purchaseCtrl.searchText='';
                                     setState(() {
                                       textController.text = '';
                                       purchaseCtrl.getPurchaseByKeyword();
                                     });
                                   } else if (_currentSelection == 1) {
+                                    purchaseCtrl.searchText='';
                                     setState(() {
                                       textController.text = '';
                                       purchaseCtrl.getExpenseByKeyword();
                                     });
                                   } else if (_currentSelection == 2) {
+                                    purchaseCtrl.searchText='';
                                     setState(() {
                                       textController.text = '';
                                       purchaseCtrl
@@ -379,7 +385,11 @@ class _PurchaseManagementState extends State<PurchaseManagement>
               //           child: CircularProgressIndicator()));
               // }
               if (!controller.haveMorePurchase &&
+                  controller.purchaseData.value.data.isNotEmpty &&
                   controller.purchaseData.value.data.last.id != 0) {
+                controller.purchaseData.value.data.add(Datum(id: 0));
+              }
+              else if(controller.purchaseData.value.data.isEmpty && !controller.haveMorePurchase){
                 controller.purchaseData.value.data.add(Datum(id: 0));
               }
               return DataTable(
@@ -439,7 +449,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                               color: Colors.transparent)),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
-                          DataCell(Text('No Data',
+                          DataCell(Text('Data not found',
                               style: TextStyle(color: primaryText))),
                           const DataCell(CircularProgressIndicator(
                               color: Colors.transparent)),
@@ -554,7 +564,10 @@ class _PurchaseManagementState extends State<PurchaseManagement>
             id: 'expenceId',
             builder: (controller) {
               if (!controller.haveMoreExpence &&
+                  controller.expenseData.value.data.isNotEmpty &&
                   controller.expenseData.value.data.last.id != 0) {
+                controller.expenseData.value.data.add(Expense.Datum(id: 0));
+              }else if(controller.expenseData.value.data.isEmpty && !controller.haveMoreExpence){
                 controller.expenseData.value.data.add(Expense.Datum(id: 0));
               }
               return DataTable(
@@ -834,9 +847,12 @@ class _PurchaseManagementState extends State<PurchaseManagement>
             id: 'expCategoryId',
             builder: (controller) {
               if (!controller.haveMoreExpenceCategory &&
+                  controller.expenseCategoryData.value.data.isNotEmpty &&
                   controller.expenseCategoryData.value.data.last.id != 0) {
                 controller.expenseCategoryData.value.data
                     .add(ExpCategory.Datum(id: 0));
+              }else if(controller.expenseCategoryData.value.data.isEmpty && !controller.haveMoreExpenceCategory){
+                controller.expenseCategoryData.value.data.add(ExpCategory.Datum(id: 0));
               }
               return DataTable(
                   dataRowHeight: 70,

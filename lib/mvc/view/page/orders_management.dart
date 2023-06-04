@@ -223,6 +223,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                         child: TextField(
                             onChanged: (text) async {
                               if (_currentSelection == 0) {
+                                _ordersManagementController.searchText=text;
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
                                   stopOnSearch?.cancel();
@@ -232,6 +233,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                     () => _ordersManagementController
                                         .getAllOrderByKeyword(keyword: text,showLoading: false));
                               } else if (_currentSelection == 1) {
+                                _ordersManagementController.searchText=text;
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
                                   stopOnSearch?.cancel();
@@ -242,6 +244,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                         .getSuccessOrderByKeyword(
                                             keyword: text,showLoading: false));
                               } else if (_currentSelection == 2) {
+                                _ordersManagementController.searchText=text;
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
                                   stopOnSearch?.cancel();
@@ -252,7 +255,8 @@ class _OrdersManagementState extends State<OrdersManagement>
                                         .getProcessingOrderByKeyword(
                                             keyword: text,showLoading: false));
                               } else if (_currentSelection == 3) {
-                                const duration = Duration(seconds: 1);
+                              _ordersManagementController.searchText=text;
+                              const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
                                   stopOnSearch?.cancel();
                                 }
@@ -262,6 +266,7 @@ class _OrdersManagementState extends State<OrdersManagement>
                                         .getPendingOrderByKeyword(
                                             keyword: text,showLoading: false));
                               } else if (_currentSelection == 4) {
+                                _ordersManagementController.searchText=text;
                                 const duration = Duration(seconds: 1);
                                 if (stopOnSearch != null) {
                                   stopOnSearch?.cancel();
@@ -290,30 +295,35 @@ class _OrdersManagementState extends State<OrdersManagement>
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     if (_currentSelection == 0) {
+                                      _ordersManagementController.searchText='';
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getAllOrderByKeyword();
                                       });
                                     } else if (_currentSelection == 1) {
+                                      _ordersManagementController.searchText='';
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getSuccessOrderByKeyword();
                                       });
                                     } else if (_currentSelection == 2) {
+                                      _ordersManagementController.searchText='';
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getProcessingOrderByKeyword();
                                       });
                                     } else if (_currentSelection == 3) {
+                                      _ordersManagementController.searchText='';
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
                                             .getPendingOrderByKeyword();
                                       });
                                     } else if (_currentSelection == 4) {
+                                      _ordersManagementController.searchText='';
                                       setState(() {
                                         textController.text = '';
                                         _ordersManagementController
@@ -361,7 +371,7 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allOrders",
           builder: (controller) {
-            if (controller.allOrdersData.value.data!.isEmpty) {
+            if (controller.allOrdersData.value.data!.isEmpty && controller.haveMoreAllOrder) {
               return Center(
                   child: Container(
                       height: 40,
@@ -393,7 +403,7 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allSuccessOrders",
           builder: (controller) {
-            if (controller.allSuccessData.value.data!.isEmpty) {
+            if (controller.allSuccessData.value.data!.isEmpty && controller.haveMoreSuccessOrder) {
               return Center(
                   child: Container(
                       height: 40,
@@ -425,7 +435,7 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allProcessingOrders",
           builder: (controller) {
-            if (controller.allProcessingData.value.data!.isEmpty) {
+            if (controller.allProcessingData.value.data!.isEmpty && controller.haveMoreProcessingOrder) {
               return Center(
                   child: Container(
                       height: 40,
@@ -460,7 +470,7 @@ class _OrdersManagementState extends State<OrdersManagement>
             print(controller.allPendingData.value.data!.length);
             print("Length printed");
             if (controller.allPendingData.value.data!.isEmpty &&
-                controller.isLoadingPendingOrder) {
+                controller.isLoadingPendingOrder && controller.haveMorePendingOrder) {
               return Center(
                   child: Container(
                       height: 40,
@@ -492,7 +502,7 @@ class _OrdersManagementState extends State<OrdersManagement>
         child: GetBuilder<OrdersManagementController>(
           id: "allCancelOrders",
           builder: (controller) {
-            if (controller.allCancelData.value.data!.isEmpty) {
+            if (controller.allCancelData.value.data!.isEmpty && controller.haveMoreCancelOrder) {
               return Center(
                   child: Container(
                       height: 40,
@@ -517,10 +527,11 @@ class _OrdersManagementState extends State<OrdersManagement>
 
   DataTable dataTable(OrdersManagementController controller, List<Datum> data,
       Datum lastItem, bool haveMoreData, bool isLoading) {
-    if (!haveMoreData && (data.isEmpty || data.last.id != 0)) {
+    if (!haveMoreData && data.isNotEmpty && (data.isEmpty || data.last.id != 0)) {
+      data.add(Datum(id: 0));
+    }else if(data.isEmpty && !haveMoreData){
       data.add(Datum(id: 0));
     }
-
     return DataTable(
         dataRowHeight: 70,
         columns: [

@@ -209,6 +209,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                       child: TextField(
                           onChanged: (text) async {
                             if (_currentSelection == 0) {
+                              _transactionsController.searchText=text;
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
@@ -218,6 +219,7 @@ class _TransactionManagementState extends State<TransactionManagement>
                                   () => _transactionsController
                                       .getBankByKeyword(keyword: text,showLoading: false));
                             } else {
+                              _transactionsController.searchText=text;
                               const duration = Duration(seconds: 1);
                               if (stopOnSearch != null) {
                                 stopOnSearch?.cancel();
@@ -252,11 +254,13 @@ class _TransactionManagementState extends State<TransactionManagement>
                               ),
                               onPressed: () {
                                 if (_currentSelection == 0) {
+                                  _transactionsController.searchText='';
                                   setState(() {
                                     textController!.text = '';
                                     _transactionsController.getBankByKeyword();
                                   });
                                 } else {
+                                  _transactionsController.searchText='';
                                   setState(() {
                                     textController!.text = '';
                                     _transactionsController
@@ -304,7 +308,7 @@ class _TransactionManagementState extends State<TransactionManagement>
         child: GetBuilder<TransactionsController>(
             id: 'bankId',
             builder: (controller) {
-              if (controller.bankListData.value.data.isEmpty) {
+              if (controller.bankListData.value.data.isEmpty && controller.haveMoreBank) {
                 return Center(
                     child: Container(
                         height: 40,
@@ -314,7 +318,10 @@ class _TransactionManagementState extends State<TransactionManagement>
                         child: CircularProgressIndicator()));
               }
               if (!controller.haveMoreBank &&
+                  controller.bankListData.value.data.isNotEmpty &&
                   controller.bankListData.value.data.last.id != 0) {
+                controller.bankListData.value.data.add(Bank.Datum(id: 0));
+              }else if(controller.bankListData.value.data.isEmpty && !controller.haveMoreBank){
                 controller.bankListData.value.data.add(Bank.Datum(id: 0));
               }
               return DataTable(
@@ -449,7 +456,11 @@ class _TransactionManagementState extends State<TransactionManagement>
             id: 'transId',
             builder: (controller) {
               if (!controller.haveMoreTransition &&
+                  controller.transactionListData.value.data.isNotEmpty &&
                   controller.transactionListData.value.data.last.id != 0) {
+                controller.transactionListData.value.data
+                    .add(Transaction.Datum(id: 0));
+              }else if(controller.transactionListData.value.data.isEmpty && !controller.haveMoreTransition){
                 controller.transactionListData.value.data
                     .add(Transaction.Datum(id: 0));
               }

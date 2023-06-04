@@ -30,6 +30,8 @@ class OrdersManagementController extends GetxController with ErrorController {
   bool haveMorePendingOrder = true;
   bool haveMoreCancelOrder = true;
 
+  String searchText= '';
+
   static AllOrdersModel dummy = AllOrdersModel(
     data: [],
     links: Links(first: '', last: '', prev: null, next: ''),
@@ -146,7 +148,9 @@ class OrdersManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingAllOrder = true;
-    String endPoint = 'orders/order?page=$allOrderPageNumber';
+    String endPoint = searchText.isEmpty?
+    'orders/order?page=$allOrderPageNumber'
+    :'orders/order?keyword=$searchText&page=$allOrderPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -175,8 +179,9 @@ class OrdersManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingSuccessOrder = true;
-    String endPoint =
-        'orders/order?page=$successOrderPageNumber&status=success';
+    String endPoint = searchText.isEmpty?
+        'orders/order?page=$successOrderPageNumber&status=success'
+    :'orders/order?keyword=$searchText&page=$successOrderPageNumber&status=success';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -201,8 +206,9 @@ class OrdersManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingProcessingOrder = true;
-    String endPoint =
-        'orders/order?page=$processingOrderPageNumber&status=processing';
+    String endPoint = searchText.isEmpty?
+        'orders/order?page=$processingOrderPageNumber&status=processing'
+    :'orders/order?keyword=$searchText&page=$processingOrderPageNumber&status=processing' ;
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -228,8 +234,9 @@ class OrdersManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingPendingOrder = true;
-    String endPoint =
-        'orders/order?page=$pendingOrderPageNumber&status=pending';
+    String endPoint = searchText.isEmpty?
+        'orders/order?page=$pendingOrderPageNumber&status=pending'
+    : 'orders/order?keyword=$searchText&page=$pendingOrderPageNumber&status=pending';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -267,7 +274,9 @@ class OrdersManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingCancelOrder = true;
-    String endPoint = 'orders/order?page=$cancelOrderPageNumber&status=cancel';
+    String endPoint =searchText.isEmpty?
+    'orders/order?page=$cancelOrderPageNumber&status=cancel'
+     :'orders/order?keyword=$searchText&page=$cancelOrderPageNumber&status=cancel';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -301,8 +310,8 @@ class OrdersManagementController extends GetxController with ErrorController {
       print(response);
       allOrdersData.value= allOrdersModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreAllOrder = false;
     }else{
@@ -323,8 +332,8 @@ class OrdersManagementController extends GetxController with ErrorController {
     print(response);
     allSuccessData.value= allOrdersModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreSuccessOrder = false;
     }else{
@@ -345,8 +354,8 @@ class OrdersManagementController extends GetxController with ErrorController {
     print(response);
     allProcessingData.value= allOrdersModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreProcessingOrder = false;
     }else{
@@ -389,8 +398,8 @@ class OrdersManagementController extends GetxController with ErrorController {
     print(response);
     allCancelData.value= allOrdersModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreCancelOrder = false;
     }else{

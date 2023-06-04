@@ -59,6 +59,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
   var total = 0.0.obs;
   var isBank = false.obs;
 
+  String searchText= '';
+
   Rx<String> itemDatetext = 'Choose Date'.obs;
 
   ///add Expense
@@ -113,7 +115,9 @@ class PurchaseManagementController extends GetxController with ErrorController {
       return;
     }
     isLoadingPurchase = true;
-    String endPoint = 'finance/purchase?page=$purchasePageNumber';
+    String endPoint =searchText.isEmpty?
+    'finance/purchase?page=$purchasePageNumber'
+    :'finance/purchase?keyword=$searchText&page=$purchasePageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -165,7 +169,9 @@ class PurchaseManagementController extends GetxController with ErrorController {
       expenseData.value.data.clear();
     }
     isLoadingExpence = true;
-    String endPoint = 'finance/expense?page=$expencePageNumber';
+    String endPoint = searchText.isEmpty?
+    'finance/expense?page=$expencePageNumber'
+    :     'finance/expense?keyword=$searchText&page=$expencePageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -273,8 +279,9 @@ class PurchaseManagementController extends GetxController with ErrorController {
       expenseCategoryData.value.data.clear();
     }
     isLoadingExpenceCategory = true;
-    String endPoint =
-        'finance/expense-category?page=$expenceCategoryPageNumber';
+    String endPoint = searchText.isEmpty?
+        'finance/expense-category?page=$expenceCategoryPageNumber'
+    :'finance/expense-category?keyword=$searchText&page=$expenceCategoryPageNumber';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
@@ -345,11 +352,11 @@ class PurchaseManagementController extends GetxController with ErrorController {
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
         .catchError(handleApiError);
-    print(response);
+    print("ik$response");
     purchaseData.value = purchaseListModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMorePurchase = false;
     }else{
@@ -371,8 +378,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
     print(response);
     expenseData.value = expenseDataListFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreExpence = false;
     }else{
@@ -394,8 +401,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
     print(response);
     expenseCategoryData.value = expenseCategoryModelFromJson(response);
     var res = json.decode(response);
-    int to = res['meta']['to'];
-    int total = res['meta']['total'];
+    int to = res['meta']['to']??0;
+    int total = res['meta']['total']??0;
     if (total <= to) {
       haveMoreExpenceCategory = false;
     }else{
