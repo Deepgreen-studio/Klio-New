@@ -24,6 +24,7 @@ class _OrdersManagementState extends State<OrdersManagement>
   late TabController controller;
   int dropdownvalue = 1;
 
+
   TextEditingController textController = TextEditingController();
   late ScrollController scrollController;
 
@@ -37,23 +38,24 @@ class _OrdersManagementState extends State<OrdersManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       _ordersManagementController.update(['changeTabBar']);
-
-      if (_currentSelection == 1 &&
-          _ordersManagementController.allSuccessData.value.data!.isEmpty &&
+      textController.text = '';
+      _ordersManagementController.searchText='';
+      if (_currentSelection == 0  &&
+          !_ordersManagementController.isLoadingAllOrder) {
+        _ordersManagementController.getAllOrderByKeyword(showLoading: false);
+      }
+      else if (_currentSelection == 1  &&
           !_ordersManagementController.isLoadingSuccessOrder) {
-        _ordersManagementController.getSuccessData();
-      } else if (_currentSelection == 2 &&
-          _ordersManagementController.allProcessingData.value.data!.isEmpty &&
+        _ordersManagementController.getSuccessOrderByKeyword(showLoading: false);
+      } else if (_currentSelection == 2  &&
           !_ordersManagementController.isLoadingProcessingOrder) {
-        _ordersManagementController.getProcessingData();
+        _ordersManagementController.getProcessingOrderByKeyword(showLoading: false);
       } else if (_currentSelection == 3 &&
-          _ordersManagementController.allPendingData.value.data!.isEmpty &&
           !_ordersManagementController.isLoadingPendingOrder) {
-        _ordersManagementController.getPendingData();
-      } else if (_currentSelection == 4 &&
-          _ordersManagementController.allCancelData.value.data!.isEmpty &&
+        _ordersManagementController.getPendingOrderByKeyword(showLoading: false);
+      } else if (_currentSelection == 4  &&
           !_ordersManagementController.isLoadingCancelOrder) {
-        _ordersManagementController.getCancelData();
+        _ordersManagementController.getCancelOrderByKeyword(showLoading: false);
       }
     });
 
