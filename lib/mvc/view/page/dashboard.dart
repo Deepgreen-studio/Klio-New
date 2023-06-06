@@ -682,62 +682,19 @@ class _DashboardState extends State<Dashboard> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Padding(
-          padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Order History",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: fontMedium,
-                        color: primaryText),
-                  ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 250,
-                            height: 30,
-                            child: TextField(
-                                style: TextStyle(
-                                  fontSize: fontSmall,
-                                  color: Colors.blueAccent,
-                                ),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white10,
-                                  contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                    size: 18,
-                                  ),
-                                  hintText: "",
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.blueAccent,
-                                      ),
-                                      borderRadius:
-                                      BorderRadius.circular(10.0)),
-                                )),
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.sort,
-                              color: textSecondary,
-                            ))
-                      ],
-                    ),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  "Order History",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: fontMedium,
+                      color: primaryText),
+                ),
               ),
               Container(
                 width: double.infinity,

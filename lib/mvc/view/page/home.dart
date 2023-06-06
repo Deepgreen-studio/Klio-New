@@ -422,10 +422,13 @@ class _HomeState extends State<Home> {
             if (homeController.filteredMenu[index].id == 0 &&
                 !homeController.haveMoreMenu &&
                 selectedCategory == -1) {
-              return const Center(
+              return Center(
                   child: Text(
                 "End of Menu",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    color: textSecondary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600),
               ));
             } else if (homeController.filteredMenu[index] ==
                     homeController.filteredMenu.last &&
@@ -743,7 +746,8 @@ class _HomeState extends State<Home> {
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        homeController.menus.value.data!.clear();
+                                        homeController.menus.value.data!
+                                            .clear();
                                         homeController.filteredMenu.clear();
                                         homeController.haveMoreMenu = true;
                                         homeController.menuPageNumber = 1;
@@ -761,20 +765,22 @@ class _HomeState extends State<Home> {
                                   contentPadding: EdgeInsets.zero))),
                 ),
                 const SizedBox(width: 12),
-                topBarIconBtn(
-                    Image.asset('assets/reload.png', color: primaryColor),
-                    secondaryBackground,
-                    8,
-                    15,
-                    40, onPressed: () {
-                  homeController.menus.value.data!.clear();
-                  homeController.filteredMenu.clear();
-                  homeController.haveMoreMenu = true;
-                  homeController.menuPageNumber = 1;
-                  homeController.loadHomeData();
-                  Utils.hidePopup();
-                  Utils.hidePopup();
-                }),
+                Obx(() => homeController.currentPage != 0
+                    ? SizedBox()
+                    : topBarIconBtn(
+                        Image.asset('assets/reload.png', color: primaryColor),
+                        secondaryBackground,
+                        8,
+                        15,
+                        40, onPressed: () {
+                        homeController.menus.value.data!.clear();
+                        homeController.filteredMenu.clear();
+                        homeController.haveMoreMenu = true;
+                        homeController.menuPageNumber = 1;
+                        homeController.loadHomeData();
+                        Utils.hidePopup();
+                        Utils.hidePopup();
+                      })),
                 const SizedBox(width: 12),
                 Stack(
                   children: [

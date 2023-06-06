@@ -38,6 +38,21 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
     controller.addListener(() {
       _currentSelection = controller.index;
       _reportController.update(['changeCustomTabBar']);
+
+      if (_currentSelection == 0) {
+          textController.text = '';
+          _reportController
+              .getSaleReportByKeyword();
+      } else if (_currentSelection == 1) {
+          textController.text = '';
+          _reportController
+              .getStockReportByKeyword();
+      } else if (_currentSelection == 3) {
+          textController.text = '';
+          _reportController
+              .getWasteReportByKeyword();
+      } else {}
+
     });
 
     scrollController = ScrollController();
@@ -150,21 +165,21 @@ class _ReportsState extends State<Reports> with SingleTickerProviderStateMixin {
                           unselectedColor: Colors.white,
                           borderRadius: 32.0,
                           onSegmentTapped: (index) {
-                            if (index == 0 &&
-                                _reportController
-                                    .saleRepData.value.data!.isEmpty) {
-                              _reportController.getSaleReportDataList();
-                            } else if (index == 1 &&
-                                _reportController
-                                    .stockRepData.value.data!.isEmpty) {
-                              _reportController.getStockReportDataList();
-                            } else if (index == 2) {
-                              _reportController.getProfitLossReportList();
-                            } else if (index == 3 &&
-                                _reportController
-                                    .wasteRepData.value.data!.isEmpty) {
-                              _reportController.getWasteReportDataList();
-                            }
+                            // if (index == 0 &&
+                            //     _reportController
+                            //         .saleRepData.value.data!.isEmpty) {
+                            //   _reportController.getSaleReportDataList();
+                            // } else if (index == 1 &&
+                            //     _reportController
+                            //         .stockRepData.value.data!.isEmpty) {
+                            //   _reportController.getStockReportDataList();
+                            // } else if (index == 2) {
+                            //   _reportController.getProfitLossReportList();
+                            // } else if (index == 3 &&
+                            //     _reportController
+                            //         .wasteRepData.value.data!.isEmpty) {
+                            //   _reportController.getWasteReportDataList();
+                            // }
                             print(index);
                             setState(() {
                               _currentSelection = index;

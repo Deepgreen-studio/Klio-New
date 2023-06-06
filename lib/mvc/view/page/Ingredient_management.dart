@@ -42,6 +42,24 @@ class _IngredientManagementState extends State<IngredientManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       _ingredientController.update(['changeCustomTabBar']);
+
+      if (_currentSelection == 0) {
+          textController.text = '';
+          _ingredientController
+              .getIngredientByKeyword(showLoading: false);
+      } else if (_currentSelection == 1) {
+          textController.text = '';
+          _ingredientController
+              .getIngredientCategoryByKeyword(showLoading: false);
+      } else if (_currentSelection == 2) {
+          textController.text = '';
+          _ingredientController
+              .getIngredientUnitByKeyword(showLoading: false);
+      } else if (_currentSelection == 3) {
+          textController.text = '';
+          _ingredientController
+              .getIngredientSupplierByKeyword(showLoading: false);
+      }
     });
 
     scrollController.addListener(() {

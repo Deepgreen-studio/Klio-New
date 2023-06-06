@@ -17,6 +17,8 @@ import 'package:klio_staff/service/api/api_client.dart';
 import 'package:klio_staff/service/local/shared_pref.dart';
 import 'package:klio_staff/utils/utils.dart';
 
+import '../model/responsible_person_model.dart';
+
 class PurchaseManagementController extends GetxController with ErrorController {
   Rx<PurchaseListModel> purchaseData = PurchaseListModel(data: []).obs;
   Rx<ExpenseDataList> expenseData = ExpenseDataList(data: []).obs;
@@ -25,6 +27,7 @@ class PurchaseManagementController extends GetxController with ErrorController {
 
   Rx<SinglePurchaseData> singlePurchaseData = SinglePurchaseData().obs;
   Rx<SingleExpenseData> singleExpenseData = SingleExpenseData().obs;
+  List<ResponsiblePersonModel> responsiblePersons = [];
 
   ///Api data fetch varriable
   int purchasePageNumber = 1;
@@ -81,6 +84,7 @@ class PurchaseManagementController extends GetxController with ErrorController {
   Future<void> onInit() async {
     super.onInit();
     purchaseDataLoading();
+    fetchResponsiblePersons();
   }
 
   @override
@@ -98,6 +102,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
     getExpenseCategoryList();
   }
 
+
+
   Future<void> getChooseDate(BuildContext context) async {
     DateTime? pickDate = await showDatePicker(
       context: context,
@@ -107,7 +113,8 @@ class PurchaseManagementController extends GetxController with ErrorController {
     );
     if (pickDate == null) return;
     dateCtlr.value = DateFormat('yyyy-MM-dd').format(pickDate);
-    update();
+    print(dateCtlr.value);
+    update(['dateId']);
   }
 
   Future<void> getPurchaseDataList({dynamic id = ''}) async {
@@ -137,6 +144,18 @@ class PurchaseManagementController extends GetxController with ErrorController {
     isLoadingPurchase = false;
     update(['purchaseId']);
   }
+
+    Future<void> fetchResponsiblePersons() async {
+      String endPoint = 'staff';
+      var response = await ApiClient()
+          .get(endPoint, header: Utils.apiHeader)
+          .catchError(handleApiError);
+      final List<dynamic> data = json.decode(response);
+      responsiblePersons = data.map((e) =>
+          ResponsiblePersonModel.fromJson(e)).toList();
+      print(responsiblePersons[0].name);
+    }
+
 
   Future<void> getSinglePurchaseData({dynamic id = ''}) async {
     String endPoint = 'finance/purchase/$id';

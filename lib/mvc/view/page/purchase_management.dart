@@ -41,6 +41,20 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       purchaseCtrl.update(['changeCustomTabBar']);
+
+      if (_currentSelection == 0) {
+          textController.text = '';
+          purchaseCtrl.getPurchaseByKeyword(showLoading: false);
+      } else if (_currentSelection == 1) {
+          textController.text = '';
+          purchaseCtrl.getExpenseByKeyword(showLoading: false);
+      } else if (_currentSelection == 2) {
+          textController.text = '';
+          purchaseCtrl
+              .getExpenseCategoryByKeyword(showLoading: false);
+      } else {}
+
+
     });
 
     scrollController.addListener(() {
@@ -135,7 +149,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   ),
                   onPressed: () {
                     showCustomDialog(
-                        context, "Add New Expence", addNewExpence(), 100, 300);
+                        context, "Add New Expence", addNewExpence(context), 100, 300);
                   },
                   style: ElevatedButton.styleFrom(
                     side: const BorderSide(width: 1.0, color: primaryColor),
@@ -231,16 +245,16 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                       6,
                     ],
                     onSegmentChosen: (index) {
-                      if (index == 0 &&
-                          purchaseCtrl.purchaseData.value.data.isEmpty) {
-                        purchaseCtrl.getPurchaseDataList();
-                      } else if (index == 1 &&
-                          purchaseCtrl.expenseData.value.data.isEmpty) {
-                        purchaseCtrl.getExpenseDataList();
-                      } else if (index == 2 &&
-                          purchaseCtrl.expenseCategoryData.value.data.isEmpty) {
-                        purchaseCtrl.getExpenseCategoryList();
-                      }
+                      // if (index == 0 &&
+                      //     purchaseCtrl.purchaseData.value.data.isEmpty) {
+                      //   purchaseCtrl.getPurchaseDataList();
+                      // } else if (index == 1 &&
+                      //     purchaseCtrl.expenseData.value.data.isEmpty) {
+                      //   purchaseCtrl.getExpenseDataList();
+                      // } else if (index == 2 &&
+                      //     purchaseCtrl.expenseCategoryData.value.data.isEmpty) {
+                      //   purchaseCtrl.getExpenseCategoryList();
+                      // }
                       print(index);
                       setState(() {
                         _currentSelection = index;
@@ -785,7 +799,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                         showCustomDialog(
                                             context,
                                             "Update Expence",
-                                            updateExpenceForm(item.id),
+                                            updateExpenceForm(item.id, context),
                                             100,
                                             300);
                                       });
@@ -1317,7 +1331,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
     );
   }
 
-  Widget addNewExpence() {
+  Widget addNewExpence(BuildContext context) {
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
@@ -1345,10 +1359,10 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                   .toList();
                           print(purchaseCtrl.uploadExpenceResPersonList);
                         },
-                        options: controller.expenseData.value.data.map((e) {
+                        options: controller.responsiblePersons.map((e) {
                           return ValueItem(
-                            label: e.person?.name ?? "",
-                            value: e.person?.id.toString(),
+                            label: e.name ?? "",
+                            value: e.id.toString(),
                           );
                         }).toList(),
                         hint: 'Select Person',
@@ -1442,6 +1456,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   child: SizedBox(
                     height: 52,
                     child: GetBuilder<PurchaseManagementController>(
+                      id: 'dateId',
                       builder: (controller) => GestureDetector(
                         onTap: () {
                           controller.getChooseDate(context);
@@ -1521,7 +1536,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
         ));
   }
 
-  Widget updateExpenceForm(dynamic itemId) {
+  Widget updateExpenceForm(dynamic itemId, BuildContext context) {
     return Container(
         height: Size.infinite.height,
         width: Size.infinite.width,
@@ -1549,10 +1564,10 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                                   .toList();
                           print(purchaseCtrl.updateExpenceResPersonList);
                         },
-                        options: controller.expenseData.value.data.map((e) {
+                        options: controller.responsiblePersons.map((e) {
                           return ValueItem(
-                            label: e.person?.name ?? "",
-                            value: e.person?.id.toString(),
+                            label: e.name ?? "",
+                            value: e.id.toString(),
                           );
                         }).toList(),
                         selectedOptions:
@@ -1691,6 +1706,7 @@ class _PurchaseManagementState extends State<PurchaseManagement>
                   child: SizedBox(
                     height: 52,
                     child: GetBuilder<PurchaseManagementController>(
+                      id: 'dateId',
                       builder: (controller) => GestureDetector(
                         onTap: () {
                           controller.getChooseDate(context);

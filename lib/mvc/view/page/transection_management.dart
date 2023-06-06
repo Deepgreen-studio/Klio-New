@@ -35,7 +35,19 @@ class _TransactionManagementState extends State<TransactionManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       _transactionsController.update(['changeCustomTabBar']);
+
+      if (_currentSelection == 0) {
+          textController!.text = '';
+          _transactionsController.getBankByKeyword(showLoading: false);
+      } else {
+          textController!.text = '';
+          _transactionsController
+              .getBankTransactionByKeyword(showLoading: false);
+      }
     });
+
+
+
     scrollController = ScrollController();
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
@@ -178,15 +190,15 @@ class _TransactionManagementState extends State<TransactionManagement>
                       6,
                     ],
                     onSegmentChosen: (index) {
-                      if (index == 0 &&
-                          _transactionsController
-                              .bankListData.value.data.isEmpty) {
-                        _transactionsController.bankListDataList();
-                      } else if (index == 1 &&
-                          _transactionsController
-                              .transactionListData.value.data.isEmpty) {
-                        _transactionsController.transactionDataList();
-                      }
+                      // if (index == 0 &&
+                      //     _transactionsController
+                      //         .bankListData.value.data.isEmpty) {
+                      //   _transactionsController.bankListDataList();
+                      // } else if (index == 1 &&
+                      //     _transactionsController
+                      //         .transactionListData.value.data.isEmpty) {
+                      //   _transactionsController.transactionDataList();
+                      // }
                       print(index);
                       setState(() {
                         _currentSelection = index;

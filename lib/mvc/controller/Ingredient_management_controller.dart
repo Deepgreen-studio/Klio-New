@@ -334,8 +334,8 @@ class IngredientController extends GetxController with ErrorController {
 
     String endPoint = id == ''
         ? searchText.isEmpty
-            ? 'master/supplier?page=$unitPageNumber'
-            : 'master/supplier?keyword=$searchText&page=$unitPageNumber'
+            ? 'master/supplier?page=$supplierPageNumber'
+            : 'master/supplier?keyword=$searchText&page=$supplierPageNumber'
         : 'master/supplier/$id';
     var response = await ApiClient()
         .get(endPoint, header: Utils.apiHeader)
@@ -506,12 +506,11 @@ class IngredientController extends GetxController with ErrorController {
       request.fields.addAll(_fields);
       http.StreamedResponse response = await request.send();
       responseData = await http.Response.fromStream(response);
-      print(response.statusCode);
-      print(responseData);
+      print("+++++++++++++++++++++++++++++++++++++");
       Utils.hidePopup();
       Get.back();
       _processResponse(responseData);
-      ingredientDataLoading();
+      getIngredientSupplier();
     } on SocketException {
       throw ProcessDataException("No internet connection", uri.toString());
     } on TimeoutException {

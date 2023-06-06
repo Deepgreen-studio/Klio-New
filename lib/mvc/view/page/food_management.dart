@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:klio_staff/mvc/model/Ingredient_list_model.dart';
-import 'package:klio_staff/mvc/model/food_menu_details_single_item.dart';
 import '../../model/add_menu_model.dart' as add_menu_model;
 import 'package:klio_staff/mvc/model/food_menu_variants.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -59,6 +57,27 @@ class _FoodManagementState extends State<FoodManagement>
     controller.addListener(() {
       _currentSelection = controller.index;
       foodCtlr.update(['changeCustomTabBar']);
+
+      if (_currentSelection == 0) {
+        textController.text = '';
+        foodCtlr.getFoodMenuByKeyword(showLoading: false);
+      } else if (_currentSelection == 1) {
+        textController.text = '';
+        foodCtlr.getMealPeriodByKeyword(showLoading: false);
+      } else if (_currentSelection == 2) {
+        textController.text = '';
+        foodCtlr.getMenuCategoryByKeyword(showLoading: false);
+      } else if (_currentSelection == 3) {
+        textController.text = '';
+        foodCtlr.getMenuAllergyByKeyword(showLoading: false);
+      } else if (_currentSelection == 4) {
+        textController.text = '';
+        foodCtlr.getMenuAddonsByKeyword(showLoading: false);
+      } else if (_currentSelection == 5) {
+        textController.text = '';
+        foodCtlr.getMenuVariantsByKeyword(showLoading: false);
+      } else {}
+
     });
 
     scrollController.addListener(() {
@@ -1596,6 +1615,27 @@ class _FoodManagementState extends State<FoodManagement>
                       setState(() {
                         _currentSelection = index;
                         controller.index = _currentSelection;
+
+                        // if (_currentSelection == 0) {
+                        //     textController.text = '';
+                        //     foodCtlr.getFoodMenuByKeyword(showLoading: false);
+                        // } else if (_currentSelection == 1) {
+                        //     textController.text = '';
+                        //     foodCtlr.getMealPeriodByKeyword(showLoading: false);
+                        // } else if (_currentSelection == 2) {
+                        //     textController.text = '';
+                        //     foodCtlr.getMenuCategoryByKeyword(showLoading: false);
+                        // } else if (_currentSelection == 3) {
+                        //     textController.text = '';
+                        //     foodCtlr.getMenuAllergyByKeyword(showLoading: false);
+                        // } else if (_currentSelection == 4) {
+                        //     textController.text = '';
+                        //     foodCtlr.getMenuAddonsByKeyword(showLoading: false);
+                        // } else if (_currentSelection == 5) {
+                        //     textController.text = '';
+                        //     foodCtlr.getMenuVariantsByKeyword(showLoading: false);
+                        // } else {}
+
                       });
                     },
                   ),
@@ -3675,7 +3715,7 @@ class _FoodManagementState extends State<FoodManagement>
             ),
           ),
           SizedBox(
-            height: 40,
+            height:40,
             child: Row(
               children: [
                 Expanded(
@@ -3691,20 +3731,24 @@ class _FoodManagementState extends State<FoodManagement>
                     )),
                 Expanded(
                     flex: 7,
-                    child: Container(
-                        // child: Text(
-                        //   foodCtlr.foodSingleItemDetails.value.data!.calories!,
-                        //   style: TextStyle(
-                        //       fontSize: fontVerySmall,
-                        //       color: primaryText,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: foodCtlr.foodSingleItemDetails
+                          .value.data!.categories!.data!
+                          .map((MenuAddon e) {
+                        return Text("${e.name}, ",
+                          style: TextStyle(
+                              fontSize: fontVerySmall,
+                              color: primaryText,
+                              fontWeight: FontWeight.bold),
+                        );
+                      }).toList(),
+                    )),
               ],
             ),
           ),
           SizedBox(
-            height: 40,
+            height:40,
             child: Row(
               children: [
                 Expanded(
@@ -3720,15 +3764,20 @@ class _FoodManagementState extends State<FoodManagement>
                     )),
                 Expanded(
                     flex: 7,
-                    child: Container(
-                        // child: Text(
-                        //   foodCtlr.foodSingleItemDetails.value.data!.calories!,
-                        //   style: TextStyle(
-                        //       fontSize: fontVerySmall,
-                        //       color: primaryText,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: foodCtlr.foodSingleItemDetails
+                          .value.data!.mealPeriods!.data
+                          .map((MenuAddon e) {
+                        return Text("${e.name}, ",
+                          style: TextStyle(
+                              fontSize: fontVerySmall,
+                              color: primaryText,
+                              fontWeight: FontWeight.bold),
+                        );
+                      }).toList(),
+                    )
+                ),
               ],
             ),
           ),
@@ -3749,38 +3798,19 @@ class _FoodManagementState extends State<FoodManagement>
                     )),
                 Expanded(
                     flex: 7,
-                    child: Container(
-                        child: Row(
-                      children: [
-                        for (int i = 0;
-                            i <
-                                foodCtlr.foodSingleItemDetails.value.data!
-                                    .addons!.data!.length;
-                            i++)
-                          Text(
-                            'Name :' +
-                                foodCtlr.foodSingleItemDetails.value.data!
-                                    .addons!.data![i].name! +
-                                "  " +
-                                "price:" +
-                                foodCtlr.foodSingleItemDetails.value.data!
-                                    .addons!.data![i].price! +
-                                "  ",
-                            style: TextStyle(
-                                fontSize: fontVerySmall,
-                                color: primaryText,
-                                fontWeight: FontWeight.bold),
-                          ),
-                      ],
-                    )
-                        // child: Text(
-                        //   foodCtlr.foodSingleItemDetails.value.data!.calories!,
-                        //   style: TextStyle(
-                        //       fontSize: fontVerySmall,
-                        //       color: primaryText,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: foodCtlr.foodSingleItemDetails
+                          .value.data!.addons!.data!
+                          .map((MenuAddon e) {
+                        return Text("${e.name}, ",
+                          style: TextStyle(
+                              fontSize: fontVerySmall,
+                              color: primaryText,
+                              fontWeight: FontWeight.bold),
+                        );
+                      }).toList(),
+                    )),
               ],
             ),
           ),
@@ -3801,44 +3831,19 @@ class _FoodManagementState extends State<FoodManagement>
                     )),
                 Expanded(
                     flex: 7,
-                    child: Container(
-                        // child: Text(
-                        //   foodCtlr.foodSingleItemDetails.value.data!.calories!,
-                        //   style: TextStyle(
-                        //       fontSize: fontVerySmall,
-                        //       color: primaryText,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        )),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: Text(
-                        'Ingredient:',
-                        style: TextStyle(
-                            fontSize: fontVerySmall,
-                            color: primaryText,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: foodCtlr.foodSingleItemDetails
+                          .value.data!.allergies!.data!
+                          .map((MenuAddon e) {
+                        return Text("${e.name}, ",
+                          style: TextStyle(
+                              fontSize: fontVerySmall,
+                              color: primaryText,
+                              fontWeight: FontWeight.bold),
+                        );
+                      }).toList(),
                     )),
-                Expanded(
-                    flex: 7,
-                    child: Container(
-                        // child: Text(
-                        //   foodCtlr.foodSingleItemDetails.value.data!.calories!,
-                        //   style: TextStyle(
-                        //       fontSize: fontVerySmall,
-                        //       color: primaryText,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        )),
               ],
             ),
           ),
